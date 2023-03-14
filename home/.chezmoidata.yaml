@@ -1,0 +1,19 @@
+# Global data for any .tmpl file except .chezmoi.yaml.tmpl
+# Use this for global data that can be used on all machines
+# Use .chezmoi.yaml.tmpl for machine specific data
+contact:
+  name: Simon D. Woodtli
+  email: simonwoodtli@posteo.net
+  homepage: https://simonwoodtli.com
+  github: https://github.com/SimonWoodtli
+  linkedin: https://linkedin.com
+  twitter: SimonWoodtliDev
+
+## Used for showcase only:
+languages: [ German, English, Chinese, Spanish ]
+favouriteQuote: Success isn't determined by how many times you win, but by how you play the week after you lose. -- Pele
+witticisms: [
+  	"The problems that exist in the world today cannot be solved by the level of thinking that created them - Albert Einstein",
+  	"In war it does not matter who is right, but who is left - Winston Churchill",
+  	"You have the right to remain silent. Anything you say will be misquoted then used against you."
+]

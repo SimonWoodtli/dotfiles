@@ -1,0 +1,26 @@
+{{- /* Allows `chezmoi init` to ignore files to copy from source to destination.
+It's useful when you want to ignore files you don't want on a specific
+machine. 
+
+Important:
+
+1. The paths in Chezmoi ignore files are interpreted as paths in the destination folder.
+2. Chezmoi ignore files are processed as templates
+3. Test which files are ignored on current machine: `chezmoi execute-template < $(chezmoi source-path)/.chezmoiignore.tmpl`
+*/ -}}
+
+{{- if ( env "SHELL" | ne "/bin/bash" ) }}
+# not running Bash, so ignore Bash profile
+.bash_profile
+{{- else }}
+# using Bash, so not ignoring Bash profile
+{{- end }}
+
+{{- if ( env "SHELL" | ne "/bin/zsh" ) }}
+# not running Zsh, so ignore Zsh environment
+.zshenv
+{{- else }}
+# using Zsh, so not ignoring Zsh environment
+{{- end }}
+
+example/

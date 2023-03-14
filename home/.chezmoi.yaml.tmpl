@@ -1,0 +1,90 @@
+{{/* 
+* This file supports Go's text/template language, sprig functions and some custom functions from `chezmoi` itself.
+* Used to customize configuration when doing a `chezmoi init` 
+
+You have two choices for how to add your own data, and you can mix-and-match if you like. You can add data directly in your Chezmoi config file, or, into a stand-alone data file. For now, it makes no difference where you define your data, but when you start to use Chezmoi across multiple computers you’ll find that it’s best to define data that’s universal in the stand-alone data file, and data that changes from computer to computer in the config file.
+
+Important:
+
+1. If you use variables inside of conditionals they need to be initialized with a default value at first, that gets reassigned in you
+condition
+2. Minimise your use of the prompt functions in your config template — you don’t want to be overwhelmed each time you update the template and have to re-init!
+3. Distinguish between specific computers by hostname
+4. Use the config template to define useful boolean data fields, this will make the if actions in your templates much easier to read
+5. To test what gets outputted to .chezmoi.yaml: 
+`chezmoi execute-template --init --promptString email=xnasero@posteo.net < $(chezmoi source-path)/.chezmoi.yaml.tmpl`
+*/}}
+
+
+{{/* Default values for variable that are used in conditionals.*/}}
+{{- $personal := false -}}
+{{- $secrets := false -}}
+{{- $key_recipient := false -}}
+{{- $key_sign := false -}}
+{{- $key_encrypt := false -}}
+{{- $gitemail := "" -}}
+
+{{/* Recognize OS: */}}
+{{ $isMac := eq .chezmoi.os "darwin" }}
+{{- $osid := .chezmoi.os -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{- $gitemail := "" -}}
+{{/* Prompt email question only once at first `chezmoi init`
+Chezmoi promptStringOnce variable reads from .config/chezmoi.yaml. But
+not only that it requires the file to exist or throws an error. It would be
+great if it would fall back to promptString function if the file is not
+there but ... Well that is what this hacked conditional code is for.
+: */}}
+{{- $configFileExist := output "bash" "-c" "$HOME/.local/share/chezmoi/scripts/file-exist.sh $HOME/.config/chezmoi/chezmoi.yaml" | trim -}}{{/* exec external script*/}}
+{{- if eq $configFileExist "true" -}}
+{{- $gitemail = promptStringOnce .git "email" "What is your email address" "1@posteo.net" -}}
+{{- else -}}
+{{- $gitemail = promptString "What is your email address" "2@posteo.net" -}}
+{{- end -}}
+
+
+
+
+{{- $gituser := "SimonWoodtli" -}}
+
+{{- if eq $gituser "SimonWoodtli" -}}
+{{- $key_recipient = "agexxxxxxxxxx" -}}
+{{- $key_sign = "8E3785DE31AAE73F98098744FD696BDDAA8FDC50" -}}{{/* Not sure yet, how to setup GPG , because I sign my git commits with it*/}}
+{{- $key_encrypt = "59154216260D8EA2580DF9D4E2ADD2080A6B28AE" -}}
+{{- $personal = true -}}
+{{- $secrets = true -}}
+{{- end -}}
+
+{{/* File encryption: */}}
+{{- if $secrets -}}
+encryption: age
+age:
+  recipient: {{ $key_recipient }}
+  identity: ~/key.txt
+{{ end -}}
+
+{{/* Here we "export" the variables, so we can access them outside this file: `chezmoi data` */ -}}
+{{/* exported variables get written to ~/.config/chezmoi/chezmoi.toml */}}
+
+
+data:
+  osid: {{ $osid }}
+  isMac: {{ $isMac }}
+  {{/* coalesce is like default, but it allows for multiple default
+  arguments and picks the first one that is a found value. If you combine
+  it with looking for env. var. and only at the end have a hardcoded
+  option it can be useful. 
+  Note the use of brackets to nest the function calls.*/ -}}
+  editor: {{ coalesce (env "VISUAL") (env "EDITOR") "/usr/bin/vim" }}
+  personal: {{ $personal }}
+  secrets: {{ $secrets }}
+  key_recipient: {{ $key_recipient }}
+  key_sign: {{ $key_sign | quote }}
+  key_encrypt: {{ $key_encrypt }}
+
+  git:
+    user: {{ $gituser }}
+    email: {{ $gitemail }}
