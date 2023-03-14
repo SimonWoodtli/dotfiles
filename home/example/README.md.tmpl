@@ -1,0 +1,126 @@
+# Example of chezmoi template usage
+
+chezmoi uses go text/template pkg and sprig pkg functions and some custom functions do handle templates.↵
+This file is just an example of things you can do with it.
+
+## simple variable usage:
+
+twittername={{ .contact.twitter }}
+
+## Arrays 
+
+### Looping over Arrays
+
+I speak:
+{{ range .languages }} 
+* {{ . }} 
+{{ end }}
+
+Trimming White Space:
+
+I speak: 
+{{ range .languages -}} 
+* {{ . }} 
+{{ end }}
+
+Sorting printed result alphabetically:
+
+{{ range .languages | sortAlpha -}}
+* {{ . }}
+{{ end }}
+
+### Accessing Array Element
+
+* select element 2 from language array: ***{{ index .languages 2 }}***
+* with go text/template pkg: My first language is Swiss-{{ index .languages 0 }}
+* with sprig pkg: My first language is Swiss-{{ .languages | first }}
+
+### Count Array Elements
+
+* amount of elements in language array: ***{{ len .languages }}***
+
+### Differentiate Singular Plural Array Element(s)
+
+* Hardcoded example: I speak {{len .languages }} language(s)
+{{/* Differentiate between if 1 language and pluarl 2 languages 
+The function is named plural and expects three arguments, the singular
+form of the string, the plural form of the string, and a number.  */ -}}
+* Dynamic example: I speak {{len .languages }} {{ len .languages | plural "language" "languages" }}
+
+## Objects
+
+### Looping over Objects:
+
+You'll find me on:
+{{ range $key, $val := .contact -}}
+* key: {{ $key }} value: {{$val}}
+{{ end }}
+
+
+## Math
+
+* print random number from 0-4: ***{{ randInt 0 5 }}***
+* pick random language from language array: ***{{ index .languages (randInt 0 (len .languages)) }}***
+
+## Text Manipulation
+
+* with nested functions indent: {{ indent 4 (wrap 76 (replace "\n" " " .favouriteQuote)) }}
+* with pipes indent:: {{ .favouriteQuote | replace "\n" " " | wrap 76 | indent 4 }}
+
+{{ repeat 80 "-" }}
+{{ len .witticisms | randInt 0 | index .witticisms | wrap 76 | indent 2 }}
+{{ repeat 80 "-" }}
+
+## Conditionals, Variable Assignment & Initializing
+
+{{/* Example 1: */}}
+{{- $osid := .chezmoi.os -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{- /* Example 2: */ -}}
+{{- /* Capture a human-friendly version of the OS */ -}}
+{{- $os := "some weird OS" -}}{{- /* initialise the variable with a default value */ -}}
+{{- if eq .chezmoi.os "linux" -}}
+  {{- $os = "some Linux Distro" -}}
+{{- else if eq .chezmoi.os "windows" -}}
+  {{- $os = "Windows" -}}
+{{- else if eq .chezmoi.os "darwin" -}}
+  {{- $os = "macOS" -}}
+{{- end -}}
+
+* Example 1: (Generated on {{ $osid }})
+* Example 2: (Generated on {{ $os }})
+
+
+## Date
+
+{{ $timestamp := now.UTC }}
+{{- $iso8601 := printf "%d-%02d-%02dT%02d:%02d:%02dZ" $timestamp.Year $timestamp.Month $timestamp.Day $timestamp.Hour $timestamp.Minute $timestamp.Second -}}
+* Current Timzone Timestamp: {{ now | date "15:04 on Jan 2 2006"}}
+* Current Timezone Timestamp: {{ now | date "2006-01-02 15:04" }}
+* UTC Timezone Timestamp: {{ dateInZone "2006-01-02 15:04" (now) "UTC" }}
+* UTC ISO Timestamp: {{ $iso8601 }}
+
+## More Useful functions
+
+1. `quote` — wrap the input in quotation marks and escape any quotation marks within the string.
+1. `squote` — same as quote but uses single quotes, also known as apostrophes.
+1. `js` — convert the passed value to a valid JavaScript variable definition.
+1. `toJson` — convert the passed value to a valid JSON string.
+1. `toPrettyJason` — convert the passed value to nicely formatted JSON string.
+1. `default` —  to set a simple default value
+1. `coalesce` — to set a default value, from a list of given values it accepts the first one that is not empty
+1. `ternary` — takes two values, and a test value, if test is true first value gets returned otherwise second value. similar to the c ternary operator
+
+When it comes to shells, I'm {{ env "SHELL" | eq "/bin/zsh" | ternary "a hipster" "oldschool" }}!
+
+Related:
+
+* <https://pbs.bartificer.net/pbs123.html>
+* <https://pbs.bartificer.net/pbs124.html>
+* <https://pbs.bartificer.net/pbs125.html>
+* <https://pkg.go.dev/text/template#section-documentation>
+* <https://masterminds.github.io/sprig/>
+* <https://www.chezmoi.io/reference/templates/>
