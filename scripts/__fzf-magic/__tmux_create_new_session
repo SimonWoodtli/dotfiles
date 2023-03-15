@@ -1,0 +1,6 @@
+#!/usr/bin/sh
+##create new session
+declare num="$(( $RANDOM % 100 + 1 ))"
+
+tmux new -As "$num" -d
+tmux switch-client -t "$num" 

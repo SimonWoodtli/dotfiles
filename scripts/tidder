@@ -1,0 +1,48 @@
+#!/bin/bash
+declare subcommand="$1"; shift
+## $1,$2 etc. as script input is not the same as $1 inside a function.
+## Although I run `reddit month linux` `reddit month` is the function call.
+## Honestly I still don't get it :O
+
+comment() {
+  ## input are things like: t3_t1c8lo
+  local input="$1"
+  reddio print comments/$input | less
+}
+
+month() {
+  ## inside functions $1 gets reassigned after each function call.
+  local input="$1"
+  reddio print -l 10 -t month r/$input/top | boxes -d dog | less
+}
+
+week() {
+  local input="$1"
+  reddio print -l 10 -t week r/$input/top | boxes -d dog | less
+}
+
+latest() {
+  local input="$1"
+  reddio print -l 10 r/$input | boxes -d dog | less
+}
+
+news() {
+  reddio | boxes -d dog | less
+}
+
+## function call from $1 argument
+declare -a commands=( comment month week latest news )
+for i in ${commands[@]}; do
+  if [[ $i == "$subcommand" ]]; then
+    "$subcommand" $*
+    exit 0
+  fi
+done
+
+## Tab completion - add to bashrc: `complete -C reddit reddit`
+if [ -n "$COMP_LINE" ]; then
+  for cmd in ${commands[@]}; do
+    [[ "${cmd:0:${#1}}" == "$1" ]] && echo $cmd
+  done
+  exit 0
+fi

@@ -1,0 +1,3 @@
+#!/bin/sh
+## TODO find a way to make it work in vim with !!
+sed -i -e '2,${s/\s*#.*//g}' -e '/^$/d' $1

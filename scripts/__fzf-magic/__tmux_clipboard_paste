@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##paste current clipboard
+tmux paste-buffer

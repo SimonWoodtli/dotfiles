@@ -1,0 +1,17 @@
+#!/usr/bin/sh
+##create 'workspace' session and jump to first window
+##or if session exists just jump to first window
+#
+##if my current session restore is not enough:
+##https://github.com/tmux-plugins/tmux-resurrect
+declare session="workspace"
+tmux has-session -t $session &> /dev/null
+## create tmux session if it doesn't already exist
+if [[ "$?" ]]; then
+  tmux new-session -d -s "$session" -c "$HOME"
+  ## create windows:
+  tmux new-window -t "$session":2 -c "$HOME"
+  tmux new-window -t "$session":3 -c "$HOME"
+fi
+## jump to first window in "workspace" session
+tmux switch-client -t "$session":1

@@ -1,0 +1,12 @@
+#!/bin/bash
+## Turn on/off on Gnome
+if [[ "$1" == "on" ]]; then
+  echo "Automatic suspend is turned on after 30min. And Display turn off time is set to 15min"
+  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'suspend'
+  gsettings set org.gnome.desktop.session idle-delay 900
+fi
+if [[ "$1" == "off" ]]; then
+  echo "Automatic suspend is turned off. And Display won't turn off either."
+  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+  gsettings set org.gnome.desktop.session idle-delay 0
+fi

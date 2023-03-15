@@ -1,0 +1,6 @@
+#!/usr/bin/sh
+declare selection="$(fd . "$SCRIPTS" --max-depth 2                            \
+  | sort                                                                      \
+  | fzf -e -i --prompt="fzf-magic: " --preview-window='right:45%:wrap'        \
+  --info=default --layout=reverse --tiebreak=index)"
+eval "${selection}"

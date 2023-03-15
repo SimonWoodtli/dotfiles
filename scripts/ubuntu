@@ -1,0 +1,3 @@
+#!/bin/sh
+## Starts virtual box headless VM, next `ssh ubuntu` to access your VM
+exec vboxmanage startvm --type headless ubuntu

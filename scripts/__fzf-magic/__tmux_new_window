@@ -1,0 +1,2 @@
+#!/usr/bin/sh
+tmux new-window -c "#{pane_current_path}"

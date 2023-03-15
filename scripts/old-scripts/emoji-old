@@ -1,0 +1,64 @@
+#!/bin/bash
+## old emoji script
+_createEmojiList() {                                                            
+  ## fetch emoji json data                                                      
+  local emojiData=$(curl https://raw.githubusercontent.com/muan/unicode-emoji-json/main/data-by-emoji.json) 
+  ## filter relevant data                                                       
+  local filterEmojiData="$(echo "$emojiData" | egrep '*": {|name')"             
+  touch "$HOME/.local/share/emojidb/emojilist"                                  
+  ##FIXME find a cleaner way to do the IFS newline only                         
+  local saveIfs=$IFS   # Save current IFS (Internal Field Separator)            
+  IFS=$'\n'      # Change IFS to newline char                                   
+  ## create array from multiline variable, each line = one element, use \n as delimiter
+  local filterEmojiData=($filterEmojiData) # split the `names` string into an array by the same name
+  IFS=$saveIfs   # Restore original IFS                                         
+  ## loop over array and join lines if line number uneven                       
+  for (( i=0; i<"${#filterEmojiData[@]}"; i++ )); do                            
+    if [[ $((i % 2)) -eq 0 ]]; then                                             
+      #echo "$i is even";                                                       
+      local lengthEmoji="${#filterEmojiData[$i]}" #get emojiline length         
+      local emoji="${filterEmojiData[$i]::lengthEmoji-3}" #get emojiline and remove last 3 chars
+      local lengthEmojiText="${#filterEmojiData[$i+1]}" #get emoji name line length
+      local emojiText="${filterEmojiData[$i+1]::lengthEmojiText-1}" #get emoji name line and remove last char
+      ##FIXME it'd be better to add textblock at once after loop but formatting issues
+      echo "$emoji $emojiText" >> "$HOME/.local/share/emojidb/emojilist" #add both on same line
+      ##FIXME text and emoji are not matching and printed in wrong order first text than emoji:
+      ##starting "name": "Japanese symbol for beginner"                         
+      ##ending: "name": "flag Suriname" has no emoji at all, but from           
+      ##"name": "flag South Sudan" everything is working again                  
+    #else                                                                       
+      #echo "$i is odd";                                                        
+    fi                                                                          
+  done                                                                          
+}                                                                               
+if [[ ! -d "$HOME/.local/share/emojidb" ]]; then                                
+  mkdir $HOME/.local/share/emojidb                                              
+  _createEmojiList                                                              
+fi                                                                              
+                                                                                
+##cut that removes first three and last four characters: cut -c3- #| cut -c 1-4 
+## cut with delimiter " and field 2 to grab emoji which is first quoted field   
+declare emoji=$(fzf < "$HOME/.local/share/emojidb/emojilist" | cut -d \" -f 2)  
+## print and copy emoji                                                         
+echo "$emoji"; echo "$emoji" | tr -d '\n' | xclip -sel clipboard 
+
+##older method 2: with https://git.io/JXXO7
+##if fetching fails use alternative:
+# if [ ! -d $HOME/.local/share/emojidb ]; then
+# mkdir $HOME/.local/share/emojidb
+# curl -sSL "$url" > $HOME/.local/share/emojidb/emojilist
+# fi
+# declare emoji=$(cat $HOME/.local/share/emojidb/emojilist | fzf | cut -c 1-1)
+# echo $emoji
+# echo $emoji | tr -d '\n' | xclip -sel clipboard
+#
+##another old method 3:
+#curl -sSL https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json | jq '.[] | .emoji + " " + ((.aliases + .tags) | join(" ")) ' | strip_quotes
+##alternative fetch this data:
+#strip_quotes() {
+#  while IFS= read -r line; do
+#    line="${line#\"}"
+#    line="${line%\"}"
+#    echo "$line"
+#  done
+#}

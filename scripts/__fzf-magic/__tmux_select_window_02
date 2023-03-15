@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##jump to window 02
+tmux select-window -t:2

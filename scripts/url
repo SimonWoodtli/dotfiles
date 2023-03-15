@@ -1,0 +1,12 @@
+#!/bin/sh
+## is.gd
+## -w "\n" => prints on new line, you can also add it to ~/.curlrc to make it default
+exec curl -s -w "\n" "https://is.gd/api.php?longurl=$1"
+## new line with ; echo (universal for any command). Downside: exit code 
+## from curl no longer available as echo is last command 
+#exec curl -s "https://is.gd/api.php?longurl=$1"; echo 
+
+## tinyurl.com
+#exec curl -s -w "\n" "http://tinyurl.com/api-create.php?url=$1"
+
+## bitly.com

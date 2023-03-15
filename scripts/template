@@ -1,0 +1,14 @@
+#!/bin/bash
+template() {
+  if [[ $# -eq 1 ]]; then
+    gh repo clone SimonWoodtli/www-template $1
+    cd $1
+    rm -rf .git
+  else
+    gh repo clone SimonWoodtli/www-template
+    cd www-template/
+    rm -rf .git
+  fi
+}
+
+template "$@"

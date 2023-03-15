@@ -1,0 +1,10 @@
+#!/usr/bin/sh
+##close current session
+filterSession="$(tmux ls | grep attached | awk '{print $1}')"
+#selectSession="$(tmux ls -F '#S')"
+if [ "$(tmux list-sessions | wc -l)" = 1 ]; then
+  tmux kill-server
+else
+  tmux switch-client -l
+  tmux kill-session -t "$filterSession"
+fi

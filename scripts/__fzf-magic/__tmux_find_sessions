@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##search all session and jump
+tmux switch-client -t "$(tmux list-sessions | fzf -e -i --prompt="Select a session: " --info=default --layout=reverse --tiebreak=index | cut -d ':' -f1)"

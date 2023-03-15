@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# Pulls down the external IP address used by this system or local area
+# network in a safe, reliable way. Consider avoiding alternatives using
+# curl that cannot be verified as legitimate organizations.
+#
+# Note this is a script instead of an exported function or alias so that
+# it can be called by any executable in any language using some form of
+# the exec() system call (man exec).
+
+## Lots of testing tools:https://bash.ws 
+
+curl -s https://myipv4.p1.opendns.com/get_my_ip | jq .ip
+
+#dig +short myip.opendns.com @resolver1.opendns.com || curl https://myipv4.p1.opendns.com/get_my_ip
+#if [ $? -gt 0 ]; then
+#  curl https://myipv4.p1.opendns.com/get_my_ip
+#fi
+#exit
+
+#curl https://myipv4.p1.opendns.com/get_my_ip ##from opendns
+#curl https://ipinfo.io ##informative, unknown
+
+## best way: not working with VPN
+#dig +short myip.opendns.com @resolver1.opendns.com ##currently not working
+#dig +short -6 myip.opendns.com aaaa @resolver1.ipv6-sandbox.opendns.com ##ipv6
+
+## unknown hosters
+#https://ifconfig.me
+#http://ipecho.net/plain
+#https://ipv4.bash.ws/
+#http://observebox.com/ip
+#http://icanhazip.com
+#https://ipv6.bash.ws/

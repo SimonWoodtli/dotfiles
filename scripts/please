@@ -1,0 +1,11 @@
+#!/bin/bash
+## if you forgot sudo you can just run `please` or just default: `sudo !!`
+please() {
+  if [ "$1" ]; then
+    sudo "$@"
+  else
+    sudo "$BASH" -c "$(history -p !!)"
+  fi
+} 
+
+please "$@"

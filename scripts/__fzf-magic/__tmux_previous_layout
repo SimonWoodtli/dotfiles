@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##change to previous layout (requires multiple panes)
+tmux previous-layout

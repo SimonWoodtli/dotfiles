@@ -1,0 +1,7 @@
+#!/bin/sh
+
+URL=$1
+#curl -sLJ $URL -O /tmp
+curl -sL "$URL" -o "/tmp/${URL##*/}"
+
+sxiv "/tmp/${URL##*/}"

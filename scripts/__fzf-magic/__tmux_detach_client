@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##detach the current client
+tmux detach-client

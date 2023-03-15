@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##close the server and clients and destroy all sessions
+tmux kill-server

@@ -1,0 +1,2 @@
+#!/bin/sh
+du -sh * | sort -hr | head -11

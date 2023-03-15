@@ -1,0 +1,10 @@
+#!/bin/bash
+
+## `htitle <FOO>` make centered titles:  ##### FOO #####
+str=$(argsorin $*)
+len=${#str}
+side=$(( ((HRULEWIDTH/2)-len/2)-1 ))
+left=$side
+right=$side
+[[ $[len%2] == 1 ]] && right=$[right-1]
+echo "$(echon '#' $left) $str $(echon '#' $right)"

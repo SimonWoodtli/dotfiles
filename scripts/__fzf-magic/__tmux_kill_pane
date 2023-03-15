@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##close current pane
+tmux kill-pane

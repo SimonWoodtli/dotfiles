@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##jump to last used session
+tmux switch-client -l

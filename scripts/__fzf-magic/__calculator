@@ -1,0 +1,13 @@
+#!/usr/bin/sh
+## python3 interactive console: calculator
+## C-d or exit() t quit
+if command -v python3 2>/dev/null; then
+  python3 -ic "from math import *; import cmath"
+elif command -v python2 2>/dev/null; then
+  python2 -ic "from __future__ import division; from math import *; from random import *"
+elif command -v bc 2>/dev/null; then
+  bc -q -l
+else
+  exit 1
+fi
+printf "%s\n" "desc: commandline calculator (ctrl+d to exit)"

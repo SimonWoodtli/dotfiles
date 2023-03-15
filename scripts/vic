@@ -1,0 +1,7 @@
+#!/bin/sh
+## open executable file wherever it is with `vic foo`
+cmd=$(command -v $1)
+test -n "$cmd" && exec vi "$cmd"
+#vic () {
+#  vi $(which $1);
+#} && export -f vic

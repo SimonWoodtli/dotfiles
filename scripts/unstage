@@ -1,0 +1,5 @@
+#!/bin/sh
+## make function so you can choose between reset all and just files that
+## you input
+#git reset HEAD -- "$@"
+git reset HEAD -- .

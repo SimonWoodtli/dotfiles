@@ -1,0 +1,26 @@
+#!/bin/sh
+
+## forgot what the idea of this project was 🥳
+## I think it was about creating notes for books, study papers with some 
+## additional useful information. However I never finished this.
+## idea: integrate this functionality with doi/bib/isbn into `zet` script
+current_time=$(date "+%Y%m%d%H%M%S")
+doi="$(pdf2doi ${1})"
+bib=$(curl -s "http://api.crossref.org/works/$doi/transform/application/x-bibtex")
+title=$(echo "$bib" | sed -n '1p' | cut -d{ -f2 | sed 's/,//')
+
+cd $HOME/Repos/github.com/SimonWoodtli/notes/papers
+echo 'Do you want to add some tags?'
+read tags
+echo "\`\`\`yml
+id: $current_time
+tag: $tags
+\`\`\`
+
+~~~.bib
+$bib
+~~~
+
+# Table of Contents
+
+* [example](example-20200809150057.md)" >> index-$title-$current_time.md

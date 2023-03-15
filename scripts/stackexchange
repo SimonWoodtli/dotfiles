@@ -1,0 +1,2 @@
+#!/bin/sh
+lynx "https://stackexchange.com/search?q=$*"

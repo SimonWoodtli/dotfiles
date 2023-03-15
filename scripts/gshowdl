@@ -1,0 +1,3 @@
+#!/bin/sh
+## find deleted files: use `gdl` to get path and then `gshowdl <path>` 
+exec git log --all -- "$1"

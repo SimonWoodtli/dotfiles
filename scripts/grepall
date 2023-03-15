@@ -1,0 +1,10 @@
+#!/bin/sh
+##TODO rewrite with rg and fd
+## make it use `git grep -i` if git repo, (test performance first)
+
+find .                          \
+  -name '.git'                  \
+  -prune -o                     \
+  -exec grep -n -i --color=always "$1" {} \
+  /dev/null                     \
+  2>/dev/null \;

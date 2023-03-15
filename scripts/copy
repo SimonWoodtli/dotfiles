@@ -1,0 +1,3 @@
+#!/bin/sh
+## make xclip copy into x11 keyboard buffer (default is mousebuffer)
+exec xclip -sel clip

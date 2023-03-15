@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##change to next layout (requires multiple panes)
+tmux next-layout

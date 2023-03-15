@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##list panes windows or sessions with preview
+tmux choose-tree -Z

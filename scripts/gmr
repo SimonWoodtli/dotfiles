@@ -1,0 +1,10 @@
+#!/bin/sh
+gmr() {
+  if [ "$#" -eq 1 ]; then
+    git merge $1 --no-ff
+  else
+    echo "Please provide a single argument: gmr \$1"
+  fi
+}
+
+gmr "$@"

@@ -1,0 +1,5 @@
+#!/bin/sh
+## this only creates symlinks into your global /bin
+## you also have to create keyboard shortcuts witht the command name
+## being the script name
+sudo ln -sf "$PWD"/__* /bin

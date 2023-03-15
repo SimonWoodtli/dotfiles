@@ -1,0 +1,27 @@
+#!/bin/bash
+startVM() {
+  ## Start Whonix-Gateway headless
+  vboxmanage startvm --type headless Whonix-Gateway-CLI
+  sleep 10
+  ## Start Whonix-Workstation
+  vboxmanage startvm Whonix-Workstation-XFCE
+}
+poweroffVM() {
+  ## Poweroff Whonix-Workstation
+  vboxmanage controlvm Whonix-Workstation-XFCE poweroff
+  sleep 2
+  ## Poweroff Whonix-Gateway
+  vboxmanage controlvm Whonix-Gateway-CLI poweroff
+}
+
+## TODO 
+## * fix error msg when multiple parameters given or `whonix 2 s`
+## * Make echo msg in different color 
+if [ -z "$@" ]; then
+  startVM
+elif [ "$1" == "off" ]; then
+  poweroffVM
+else
+  echo 'The only valid commands are: to start VMs: `whonix` to poweroff VMs: `whonix off`'
+  exit 1
+fi

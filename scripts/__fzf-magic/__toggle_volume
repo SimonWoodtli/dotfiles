@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+# toggle mute volume
+amixer set Master toggle

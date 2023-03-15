@@ -1,0 +1,41 @@
+#!/bin/bash
+## 0x0.st keeps small files 365days and large files 30days
+## 0x0.st has unlimited downloads
+declare URL="https://0x0.st"
+## 0x0.st
+if [ -z $1 ]; then
+  declare FILE="$(find $HOME -type f | fzf -i)"
+  declare response="$( curl -s -F "file=@${FILE}" "${URL}" 2>/dev/null )"
+else
+  declare response="$( curl -s -F "file=@$1" "${URL}" )"
+fi
+if [ ! -z $response ]; then
+  echo $response
+  echo -n $response | xclip -selection clipboard
+  notify-send "Copied 🔗 to Clipboard"
+  exit
+fi
+
+## Backup in case 0x0 isn't working
+## file.io
+## file.io deletes after 1 download => needs plan to have unlimited downloads :(
+declare DURATION="14d"
+if [[ -z $response && ! -z $1 ]]; then
+  declare URL="https://file.io"
+  declare response="$( curl -s -F "file=@$1" "${URL}" )"
+else
+  declare URL="https://file.io"
+  declare response="$( curl -s -F "file=@${FILE}" "${URL}/?expires=${DURATION}" 2>/dev/null )"
+fi
+
+declare RESPONSE=( $(jq -r --compact-output '.link,.name,.expires,.size' <<< "$response" ) )
+printf "Link: %s \nName: %s \nExpires: %s \nSize: %s \n" "${RESPONSE[@]}"
+echo -n $RESPONSE | xclip -selection clipboard
+notify-send "Copied 🔗 to Clipboard"
+
+## DONE make it so it either use $1 argument like `share foo` or `share` with fzf
+## DONE make it so it defaults to 0x0 and use file.io as backup
+## TODO make it so it works like ix: `ix < foo`
+#curl -F "file=@$(find $HOME -type f | fzf -i)" https://file.io | jq -r --compact-output '.link' | xclip -selection c
+#declare respone=$(curl -F "file=@$(find $HOME -type f | fzf -i)" https://file.io )
+#curl -F "file=@${FILE}" "${URL}" | xclip -selection clipboard ## no output

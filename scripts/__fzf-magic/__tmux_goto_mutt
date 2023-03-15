@@ -1,0 +1,6 @@
+#!/usr/bin/sh
+## jump to "neomutt" window in "communication" session
+declare window="neomutt"
+declare session="communication"
+declare filterSession="$(tmux list-windows -a -F "#S:#I-#W" | grep "$window" | grep "$session" | cut -d "-" -f 1)"
+tmux switch-client -t "$filterSession"

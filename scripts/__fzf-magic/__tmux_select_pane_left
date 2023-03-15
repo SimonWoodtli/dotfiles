@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##select pane left
+tmux select-pane -L

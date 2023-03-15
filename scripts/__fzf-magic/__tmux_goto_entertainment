@@ -1,0 +1,26 @@
+#!/usr/bin/sh
+##create 'entertainment' session and jump to first window
+##or if session exists just jump to first window
+declare session="entertainment"
+tmux has-session -t $session &> /dev/null
+## create tmux session if it doesn't already exist
+if [[ "$?" ]]; then
+  tmux new-session -d -s "$session" -c "$HOME"
+  ## create windows:
+  #tmux rename-window -t "$session":1 'music'
+  tmux send-keys -t "$session":1 'ncmpcpp' C-m
+  tmux new-window -t "$session":2 -n 'radio' -c "$HOME"
+  ## split 2nd window:
+  #tmux send-keys -t "$session":2 'pyradio' C-m
+  #tmux split-window -t "$session":2 -v -c "$HOME"
+  #tmux send-keys -t "$session":2 'pianobar'
+  #tmux split-window -t "$session":2 -fh -p 70 -c "$HOME"
+  #
+  tmux split-window -t "$session":2 -h -p 50
+  tmux select-pane -t "$session":2 -L
+  tmux send-keys -t "$session":2 "/usr/bin/w3m -N 'https://www.internet-radio.com/stations/90s/' 'https://www.internet-radio.com/stations/japanese/' 'https://www.internet-radio.com/stations/kpop/' 'https://www.internet-radio.com/stations/bollywood/' 'https://www.internet-radio.com/stations/bhangra/' 'https://dir.xiph.org/genres/DANCE'" C-m
+  #tmux new-window -t "$session":3 -n 'music' -c "$HOME"
+  #tmux send-keys -t "$session":3 'cmus' C-m
+fi
+## jump to first window in "entertainment" session
+tmux switch-client -t "$session":1

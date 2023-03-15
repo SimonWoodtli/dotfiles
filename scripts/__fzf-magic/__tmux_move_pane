@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##move pane using choose-tree
+tmux choose-tree -Zw "move-pane -t '%%'"

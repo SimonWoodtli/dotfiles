@@ -1,0 +1,39 @@
+#!/usr/bin/bash
+## added sp-tmux to display current song on tmux panel:
+## set -g status-right '#(sp-tmux)'
+## set -g status-interval 1 #seconds till statusbar gets updated
+if [ -z "$(pidof spotify)" ]; then
+	exit 1
+fi
+declare SP_DEST="org.mpris.MediaPlayer2.spotify"
+declare SP_PATH="/org/mpris/MediaPlayer2"
+declare SP_MEMB="org.mpris.MediaPlayer2.Player"
+
+function sp-metadata {
+  # Prints the currently playing track in a parseable format.
+
+  dbus-send                                                                   \
+  --print-reply                                  `# We need the reply.`       \
+  --dest=$SP_DEST                                                             \
+  $SP_PATH                                                                    \
+  org.freedesktop.DBus.Properties.Get                                         \
+  string:"$SP_MEMB" string:'Metadata'                                         \
+  | grep -Ev "^method"                           `# Ignore the first line.`   \
+  | grep -Eo '("(.*)")|(\b[0-9][a-zA-Z0-9.]*\b)' `# Filter interesting fiels.`\
+  | sed -E '2~2 a|'                              `# Mark odd fields.`         \
+  | tr -d '\n'                                   `# Remove all newlines.`     \
+  | sed -E 's/\|/\n/g'                           `# Restore newlines.`        \
+  | sed -E 's/(xesam:)|(mpris:)//'               `# Remove ns prefixes.`      \
+  | sed -E 's/^"//'                              `# Strip leading...`         \
+  | sed -E 's/"$//'                              `# ...and trailing quotes.`  \
+  | sed -E 's/"+/|/'                             `# Regard "" as seperator.`  \
+  | sed -E 's/ +/ /g'                            `# Merge consecutive spaces.`
+}
+
+function sp-tmux {
+  # Prints the currently playing track in a friendly format.
+  declare title=$(sp-metadata  | grep -E "title" | sed -E 's/title\|//g')
+  declare artist=$(sp-metadata  | grep -E "artist" | sed -E 's/artist\|//g')
+  echo $artist -- $title
+}
+sp-tmux

@@ -1,0 +1,83 @@
+#!/bin/bash
+## dependencies: rg
+__printSearchedTag() {
+  local keywords="$@"
+  local keywordRgLine
+  for keyword in $keywords; do
+    keywordRgLine+="rg -i --no-heading --color=always \#$keyword|"
+  done
+  eval "${keywordRgLine%|}"
+}
+__printSearchedTag "$@"
+
+################################## old #################################
+#declare -a arg=("$@") 
+#declare arg_num=${#arg[@]}
+#declare array_num=$(( "${#arg[@]}"-1 ))
+#declare rg_opt='--column --line-number --no-heading --color=always'
+#declare rg_opt='--no-heading --color=always'
+
+#declare rg_opt=''
+#declare cmd=()
+## need \# in front of element => hence loop
+#arg=()
+#for i in "$@"; do
+#  arg+=("\#$i")
+#done
+
+## append each cmd with argument to cmd array
+#for (( i=0; i<$arg_num; i++ )); do                                            
+#  cmd+=("rg $rg_opt "${arg[$i]}"")
+#done 
+
+#case "${#arg[@]}" in
+#  1) ${cmd[0]};;#already dealt with in if statement
+#  2) ${cmd[0]} | ${cmd[1]} ;;
+#  3) ${cmd[0]} | ${cmd[1]} | ${cmd[2]};;
+#  4) ${cmd[0]} | ${cmd[1]} | ${cmd[2]} | ${cmd[3]} ;;
+#  5) ${cmd[0]} | ${cmd[1]} | ${cmd[2]} | ${cmd[3]} | ${cmd[4]} ;;
+#  *) echo 'only 5 arguments accepted. If you need more `vic rgt`';;
+#esac
+
+################################## old #################################
+# if only one argument is given:
+# if [[ "${#arg[@]}" -eq 1 ]]; then
+# cmd="rg $rg_opt "${arg[$array_num]}""
+# exec $cmd
+# exit
+# fi
+
+## if more arguments loop over array and append to cmd variable
+# for (( i=0; i<$arg_num; i++ )); do
+# #echo "${arg[$i]}"
+# if [[ $i -eq "$array_num" ]]; then
+# cmd+="rg $rg_opt "${arg[$i]}""
+# break
+# fi
+# cmd+="rg $rg_opt "${arg[$i]}" | "
+# #echo $i
+# done
+
+##TODO new idea: this version does not work because the command I created
+## is tored in a variable. Hence I would need to use `eval $cmd` and not
+## `exec $cmd`
+## see: https://github.com/SimonWoodtli/zet/tree/main/20221013180831
+
+## old idea: I think cause of the | in the $cmd I cannot directly execute the
+## command from within a child process
+## solution create temp file:
+# temp=`mktemp /tmp/example.XXXXXXXXXX` || exit 1
+# echo "#!/usr/bin/bash" > $temp
+# chmod u+x $temp
+# echo $cmd >> $temp
+# exec $temp
+################################## old #################################
+
+#echo ${cmd[@]}
+#for i in "$cmd"; do
+ # echo ${i[@]}
+  #echo "${cmd[i]}"
+  #echo "${cmd[$i]}"
+#done
+#echo ${cmd[1]}
+

@@ -1,0 +1,14 @@
+#!/bin/sh
+search () {
+if [ -n "$1" ]; then
+        if [ -n "$2" ]; then
+                find $1 -iname *$2*
+        else
+                find / -iname *$1*
+        fi
+else
+        echo "Usage: search [dir] [partial_file_name]"
+fi
+}
+
+search "$@"

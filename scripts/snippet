@@ -1,0 +1,28 @@
+#!/bin/bash
+#TODO add all my languages as function templates here
+declare subcommand="$1"; shift
+
+
+bash() { printf '\n```bash\n```\n\nTags:\n\n    #q #snippet #bash'; }
+bashq() { printf '\n```bash\n```\n\nTags:\n\n    #q #bash'; }
+js() { printf '\n```js\n```\n\nTags:\n\n    #q #snippet #js'; }
+jsq() { printf '\n```js\n```\n\nTags:\n\n    #q #js'; }
+
+
+
+## function call from $1 argument
+declare -a commands=(bash bashq js jsq)
+for i in ${commands[@]}; do
+  if [[ $i == "$subcommand" ]]; then
+    "$subcommand" $*
+    exit 0
+  fi
+done
+
+# Tab completion - add to bashrc: complete -C snippet snippet
+if [ -n "$COMP_LINE" ]; then
+  for cmd in ${commands[@]}; do
+    [[ "${cmd:0:${#1}}" == "$1" ]] && echo $cmd
+  done
+  exit 0
+fi

@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##enter copy mode
+tmux copy-mode

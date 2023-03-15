@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##list clipboard history with preview
+tmux choose-buffer

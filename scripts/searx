@@ -1,0 +1,14 @@
+#!/bin/sh
+lynx "https://searx.gnu.style/search?q=$*"
+
+## working alternatives
+#lynx "https://search.mdosch.de/search?q=$*"
+#lynx "https://searx.gnous.eu/search?q=$*"
+#lynx "https://searx.tiekoetter.com/search?q=$*"
+#lynx "https://searx-private-search.de/search?q=$*"
+#lynx "searx.privatenet.cf/search?q=$*"
+
+## not working
+#lynx "https://searx.be/?q=$*"
+#lynx "https://paulgo.io/search?q=$*"
+#lynx "https://searx.mha.fi/search?q=$*"

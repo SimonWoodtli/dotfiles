@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+##swap pane using choose-tree
+tmux choose-tree -Zw "swap-pane -t '%%'"

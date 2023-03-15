@@ -1,0 +1,6 @@
+#!/usr/bin/sh
+## jump to "newsboat" window in "research" session
+declare window="newsboat"
+declare session="research"
+declare filterSession="$(tmux list-windows -a -F "#S:#I-#W" | grep "$window" | grep "$session" | cut -d "-" -f 1)"
+tmux switch-client -t "$filterSession"

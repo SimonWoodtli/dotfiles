@@ -1,0 +1,4 @@
+#!/usr/bin/sh
+##clear all clipboard
+while tmux delete-buffer; do :; done
+tmux display-message "cleared all tmux clipboard history"

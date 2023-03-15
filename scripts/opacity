@@ -1,0 +1,9 @@
+#!/bin/sh
+## check if alacritty.yml exists
+[ ! -f ~/.config/alacritty/alacritty.yml ] && \
+  echo "alacritty.yml does not exist" && exit 0
+## check if argument is given
+test -z "$1" && exit 1
+yml="$HOME/.config/alacritty/alacritty.yml"
+## perl command to edit .yml file
+perl -p -i -e 's/^  opacity:\s*\S+/  opacity: .'$1'/' $yml

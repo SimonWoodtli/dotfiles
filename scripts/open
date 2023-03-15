@@ -1,0 +1,55 @@
+#!/bin/bash
+## main purpose of script: open files that require GUI from CLI,
+## additional features: read markdown in w3m, open URLs
+## in browsers and open git repos README.md
+#
+## adjust to your browser of choice: 
+#export BROWSER='/usr/bin/brave-browser'
+declare dependencies=( "fzf" "fd" "xclip" "w3m" "git" "gh" "pandoc" )
+declare missingDependencies=""
+
+_check_dependencies() {
+  for dependency in ${dependencies[@]} ; do
+    [[ $(type "$dependency" 2>/dev/null) ]] || missingDependencies+=" $dependency"
+  done
+  if [ "${#missingDependencies}" -gt 0 ] ; then
+    echo "Missing dependencies:$missingDependencies."
+    exit 1
+  fi
+}
+_check_dependencies
+
+_open() {
+  ## no arguments given:
+  local FZF_DEFAULT_COMMAND='fd --max-depth 2 --type f --type l --hidden --follow --exclude .git'
+  if [[ -z "$1" ]]; then
+    ## if github repo open url in browser
+    echo "no parameters"
+    if [[ $(gh repo view 2>/dev/null) ]]; then
+      gh repo view #show readme in terminal
+      gh browse 2>/dev/null #open link in browser
+      gh browse -n | tr -d "\n" | xclip -sel clipboard #copy url
+      exit
+    else
+      ## if no git repo use fzf
+      xdg-open "$(fzf)"
+      exit
+    fi
+  fi
+  ## if url open browsers: w3m and default GUI
+  if [[ "$1" =~ ^http|^https:// ]]; then
+    #$BROWSER "$1" 2>/dev/null && w3m "$1" #opens both TUI and GUI browser simultaneously  
+    w3m "$1"
+  fi
+  ## if markdown file convert and open w3m
+  if [[ "$1" =~ \.md$ ]]; then
+    pandoc -s -o /tmp/index.html "$1" 2>/dev/null
+    w3m /tmp/index.html
+    echo "markdown file detected"
+  fi
+  ##  any other file opens with xdg-open
+  if [[ ! "$1" =~ ^http|^https://|\.md$ ]]; then
+    xdg-open "$1" &
+  fi
+}
+_open "$1"

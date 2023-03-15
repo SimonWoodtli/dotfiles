@@ -1,0 +1,52 @@
+#!/bin/bash
+declare subcommand="$1"; shift
+
+1() {
+  echo "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>"
+}
+2() {
+  echo "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus
+purus in massa tempor nec feugiat nisl pretium fusce.</p>"
+}
+3() {
+  echo "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Id nibh
+tortor id aliquet lectus proin. Metus aliquam eleifend mi in nulla
+posuere.</p>"
+}
+5() {
+  echo "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare
+aenean euismod elementum nisi. Fermentum posuere urna nec tincidunt
+praesent semper feugiat nibh sed. Mauris commodo quis imperdiet massa.
+Et netus et malesuada fames ac turpis.</p>"
+}
+10() {
+  echo "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget dolor
+morbi non arcu risus quis. Et pharetra pharetra massa massa ultricies
+mi quis hendrerit dolor. Libero enim sed faucibus turpis in. Sed cras
+ornare arcu dui. Pellentesque nec nam aliquam sem. Ut sem viverra
+aliquet eget sit amet. Sollicitudin ac orci phasellus egestas tellus
+rutrum tellus pellentesque. Eu ultrices vitae auctor eu augue ut.
+Aliquam nulla facilisi cras fermentum odio eu feugiat pretium.</p>"
+}
+
+## function call from $1 argument
+declare -a commands=(1 2 3 5 10)
+for i in ${commands[@]}; do
+  if [[ $i == "$subcommand" ]]; then
+    "$subcommand" $*
+    exit 0
+  fi
+done
+
+# Tab completion - add to bashrc: complete -C lorem lorem
+if [ -n "$COMP_LINE" ]; then
+  for cmd in ${commands[@]}; do
+    [[ "${cmd:0:${#1}}" == "$1" ]] && echo $cmd
+  done
+  exit 0
+fi

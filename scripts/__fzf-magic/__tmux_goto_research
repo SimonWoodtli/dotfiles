@@ -1,0 +1,20 @@
+#!/usr/bin/sh
+##create 'research' session and jump to first window                          
+##or if session exists just jump to first window                                   
+declare session="research"                                                 
+tmux has-session -t $session &> /dev/null
+                                                                                
+## create tmux session if it doesn't already exist                              
+if [[ "$?" ]]; then                                                         
+  tmux new-session -d -s "$session" -c "$HOME"                                  
+  ## create windows:
+  tmux send-keys -t "$session":1 'newsboat' C-m
+
+  tmux new-window -t "$session":2 -c "$HOME"
+  tmux split-window -t "$session":2 -h -p 50
+  tmux select-pane -t "$session":2 -L
+  tmux send-keys -t "$session":2 "/usr/bin/w3m -N 'https://lite.duckduckgo.com/lite'" C-m
+  tmux choose-tree -Zw "swap-window -t '%%'"
+fi
+## jump to first window in "research" session
+tmux switch-client -t "$session":1

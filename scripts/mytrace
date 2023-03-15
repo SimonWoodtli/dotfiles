@@ -1,0 +1,2 @@
+#!/bin/sh
+strace -f -vvv -s 4096 -o strace.out "$1"

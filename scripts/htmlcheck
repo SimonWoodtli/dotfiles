@@ -1,0 +1,3 @@
+#!/bin/bash
+## usage: `htmlcheck webdir/`
+exec html5validator --root $1 --show-warnings

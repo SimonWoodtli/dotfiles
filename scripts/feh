@@ -1,0 +1,12 @@
+#!/bin/sh
+## feh wrapper script
+declare fehpath=/usr/bin/feh
+[ ! -x $fehpath ] && fehpath=/usr/local/bin/feh
+
+if [ ! -x "$fehpath" ]; then
+  echo "Doesn't look like feh is installed."
+  exit 1
+fi
+
+## fullscreen, + Return or colon to activate thumbnail
+exec "$fehpath" --scale-down --auto-zoom -F --action ";$SCRIPTS/feh-keyhandler $PWD/%F" --start-at "$@"

@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+##TODO add servers in known_hosts too
+## to get the same effect you can also use fzf completion: ssh **<tab> 
+fssh() {
+  local host=$(awk '!/\*/ && /^Host /{print $2}' $HOME/.ssh/config | sort -u | fzf --prompt="Chose a HOST for ssh connection: ")
+  ssh $host
+}
+fssh
+
+#printf "%s\n" "${complete_ssh[@]}" | fzf --prompt="Chose a HOST for ssh connection: " | xargs -o ssh

@@ -1,0 +1,10 @@
+#!/bin/bash
+## Turn on/off on Gnome
+if [[ "$1" == "on" ]]; then
+  echo "Automatic Display turn off is enabled. Set timer to 15min"
+  gsettings set org.gnome.desktop.session idle-delay 900
+fi
+if [[ "$1" == "off" ]]; then
+  echo "Automatic Display turn off is disabled."
+  gsettings set org.gnome.desktop.session idle-delay 0
+fi
