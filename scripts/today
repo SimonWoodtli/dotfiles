@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+today="$(date +%Y\ %b\ %e)"
+echo "$today, "

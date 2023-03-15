@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+exec /usr/bin/cal -m -3
+#exec ncal -C -3 ubuntu
+## when:
+#exec when c | sed '1s|-| |g'
+## how to add year? :) with when
+#year="$(date +%Y)"
