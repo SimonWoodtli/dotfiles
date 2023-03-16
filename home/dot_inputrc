@@ -1,0 +1,43 @@
+#########################################################################
+# ___  ________   ________  ___  ___  _________  ________  ________
+#|\  \|\   ___  \|\   __  \|\  \|\  \|\___   ___\\   __  \|\   ____\
+#\ \  \ \  \\ \  \ \  \|\  \ \  \\\  \|___ \  \_\ \  \|\  \ \  \___|
+# \ \  \ \  \\ \  \ \   ____\ \  \\\  \   \ \  \ \ \   _  _\ \  \
+#  \ \  \ \  \\ \  \ \  \___|\ \  \\\  \   \ \  \ \ \  \\  \\ \  \____
+#   \ \__\ \__\\ \__\ \__\    \ \_______\   \ \__\ \ \__\\ _\\ \_______\
+#    \|__|\|__| \|__|\|__|     \|_______|    \|__|  \|__|\|__|\|_______|
+#
+##########################################################################
+## GNU READLINE config file
+#
+## Very useful for the tab completion
+set completion-ignore-case On
+## Another way to enable tab completion without case sensitive
+#bind "set completion-ignore-case on"
+## It treats hyphens and underscores equally during the completion
+set completion-map-case on
+## programs with GNU Readline command-line interface support VIM-mode (e.g in python REPL)
+## particularly useful for psql
+set editing-mode vi
+set keymap vi
+set keymap vi-insert
+
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+
+
+# No need for this!
+set bell-style none
+
+
+#$if mode=vi
+#"\C-a": beginning-of-line
+#"\C-e": end-of-line
+#"\C-l": clear-screen
+#"\C-n": next-history
+#"\C-p": previous-history
+#"\C-w": backward-kill-word
+#
+#"\e.": yank-last-arg
+#"\e_": yank-last-arg
+#$endif
