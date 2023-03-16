@@ -1,19 +1,35 @@
-{{- /* 
+{{- /*                                                                          
 * This file supports Go's text/template language, sprig functions and some custom functions from `chezmoi` itself.
-* Used to customize configuration when doing a `chezmoi init` 
+* Used to customize configuration when doing a `chezmoi init`                   
+                                                                                
+You have two choices for how to add your own data, and you can
+mix-and-match if you like. You can add data directly in your Chezmoi
+config file, or, into a stand-alone data  file. For now, it makes no
+difference where you define your data, but when you start to use Chezmoi
+across multiple computers you’ll find that it’s best to define data
+that’s universal in the stand-alone data file (.chezmoidata.yaml), and
+data that changes from computer to computer in the config file
+(.chezmoi.yaml.tmpl).
+                                                                                
+In my docker workspace auto build image I could include a env. variable
+"WORKSPACE". Same is true for a build by file VM "HEADLESS". Which if set
+would fail condition for interactive setup.
+                                                                                
+Important:                                                                         
+                                                                                   
+1. If you use variables inside of conditionals they need to be
+initialized with a default value at first, that gets reassigned in you
+condition                                                                          
+2. Minimise your use of the prompt functions in your config template —
+you don’t want to be overwhelmed each time you update the template and
+have to re-init!
+3. Distinguish between specific computers by hostname                              
+4. Use the config template to define useful boolean data fields, this
+will make the if actions in your templates much easier to read
+5. To test output of this template: `chezmoi execute-template --init
+--promptString email=xnasero@posteo.net < $(chezmoi
+source-path)/.chezmoi.yaml.tmpl` */ -}} 
 
-You have two choices for how to add your own data, and you can mix-and-match if you like. You can add data directly in your Chezmoi config file, or, into a stand-alone data file. For now, it makes no difference where you define your data, but when you start to use Chezmoi across multiple computers you’ll find that it’s best to define data that’s universal in the stand-alone data file, and data that changes from computer to computer in the config file.
-
-Important:
-
-1. If you use variables inside of conditionals they need to be initialized with a default value at first, that gets reassigned in you
-condition
-2. Minimise your use of the prompt functions in your config template — you don’t want to be overwhelmed each time you update the template and have to re-init!
-3. Distinguish between specific computers by hostname
-4. Use the config template to define useful boolean data fields, this will make the if actions in your templates much easier to read
-5. To test output of this template: `chezmoi execute-template --init --promptString email=xnasero@posteo.net < $(chezmoi source-path)/.chezmoi.yaml.tmpl` */ -}}
-
-{{- $path := .chezmoi.workingTree -}}
 
 {{- /* Default values for variable that are used in conditionals.
 They cannot be initialized and set directly in a conditional statement.*/ -}}
@@ -24,6 +40,7 @@ They cannot be initialized and set directly in a conditional statement.*/ -}}
 {{- $gitemail := "" -}}
 {{- $gituser := "" -}}
 {{- $configFileExist := output "bash" "-c" "$HOME/Repos/github.com/SimonWoodtli/dotfiles/template-scripts/file-exist.sh $HOME/.config/chezmoi/chezmoi.yaml" | trim -}}{{- /* exec external script*/ -}}
+{{- $interactive := not (any (env "WORKSPACE") (env "HEADLESS")) -}}{{- /* set true if it can't find $WORKSPACE or $HEADLESS */ -}}
 
 {{- /* Recognize OS: */ -}}
 {{ $isMac := eq .chezmoi.os "darwin" }}
@@ -32,24 +49,30 @@ They cannot be initialized and set directly in a conditional statement.*/ -}}
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 
+{{- /* Recognize Host: */ -}}
+
 {{- /* Prompt email question only once at first `chezmoi init`
 Chezmoi promptStringOnce variable reads from .config/chezmoi.yaml. But
 not only that it requires the file to exist or throws an error. It would be
 great if it would fall back to promptString function if the file is not
-there but ... Well that is what this hacked conditional code is for.
-No more `chezmoi execute-template --init --promptString ...` just
-`chezmoi execute-template ...`*/ -}}
-{{- if eq $configFileExist "true" -}}
-{{- $gitemail = promptStringOnce .git "email" "What is your email address" "xnasero@posteo.net" -}}
+there but ... Well that is what this hacked conditional code is for.  
+Chezmoi also needs to be set up interactively or else no prompt input is
+required. */ -}}
+{{- if (and (eq $configFileExist "true") ($interactive)) -}}
+{{- $gitemail = promptStringOnce .git "email" "What is your git email address" "xnasero@posteo.net" -}}
+{{- else if $interactive -}}
+{{- $gitemail = promptString "What is your git email address" "xnasero@posteo.net" -}}
 {{- else -}}
-{{- $gitemail = promptString "What is your email address" "xnasero@posteo.net" -}}
+{{- $gitemail = coalesce (env "GITEMAIL") "default@default.com" -}}
 {{- end -}}
 
 {{- /* Get gituser: */ -}}
-{{- if eq $configFileExist "true" -}}
-{{- $gituser = get .git "user" -}}
+{{- if (and (eq $configFileExist "true") ($interactive)) -}}
+{{- $gituser = promptStringOnce .git "user" "What is your git username?" "SimonWoodtli" -}}
+{{- else if $interactive -}}
+{{- $gituser = promptString "What is your git username" "SimonWoodtli" -}}
 {{- else }}
-{{- $gituser = output "bash" "-c" "$HOME/Repos/github.com/$TESTUSER/dotfiles/template-scripts/get-github-username.sh" | trim -}}{{/* exec external script*/}}
+{{- $gituser = coalesce (env "GITUSER") (env "USERNAME") (env "USER") .chezmoi.username -}}
 {{- end -}}
 
 {{- if eq $gituser "SimonWoodtli" -}}
@@ -59,6 +82,11 @@ No more `chezmoi execute-template --init --promptString ...` just
 {{- $secrets = true -}}
 {{- end -}}
 
+{{- /* WRITE TO CONFIG FILE:
+Here we write the created variables to the config file, so they can be used in other templates.
+With `chezmoi data` you see all the variables available
+This template (.chezmoy.yaml.tmpl) auto generates auto and writes to ~/.config/chezmoi/chezmoi.toml */ -}}
+
 {{- /* File encryption: */ -}}
 {{- if $secrets -}}
 encryption: age
@@ -66,10 +94,9 @@ age:
   recipient: {{ $key_recipient }}
   identity: {{ $key_identity }}
 {{ end -}}
-
-{{- /* Here we "export" the variables, so we can access them outside this file: `chezmoi data`
-exported variables get written to ~/.config/chezmoi/chezmoi.toml */ -}}
+{{/* Custom path and name for my dotfile repo, (default ~/.local/share/chezmoi): */ -}}
 sourceDir: {{ coalesce (env "CHEZMOI") (expandenv "$HOME/Repos/github.com/SimonWoodtli/dotfiles/home") }}
+{{/* Data: */ -}}
 data:
   osid: {{ $osid }}
   isMac: {{ $isMac }}
