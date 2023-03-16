@@ -1,0 +1,2 @@
+#!/bin/sh
+exec wget --hsts-file="$XDG_DATA_HOME/wget-hsts"
