@@ -1,0 +1,63 @@
+# feh key configuration.
+# Comments start with a # sign, do not use them mid-line.
+# Each line must be blank, a comment, or a key definition.
+#
+# key definition: <action name> <key1> [<key2> [<key3>]]
+#
+# Each <key> is an X11 keysym (as output by xev) with optional modifier.
+# For instance, C-x would be Ctrl+X, or 4-space Mod4+Space
+#
+# Hint: install `xev` push button to see name
+# Hint: to unbind key just don't define a key and list name only
+# Hint: Interfering keybindings get listed where at codeblocks where they
+# do interfere
+
+# --action to run scripts
+action_0    colon Return
+
+
+# menu / currently not working even when left on default keys
+menu_parent h Left
+menu_child  l Right
+menu_down   j Down
+menu_up     k Up
+menu_select space Return
+# image navigation
+next_img j Right space
+prev_img k Left BackSpace
+# image movement
+scroll_up    J C-Up
+scroll_down  K C-Down
+scroll_left  H C-Left
+scroll_right L C-Right
+# File deletion
+toggle_filenames
+remove
+delete
+remove    d
+delete    D
+toggle_filenames i
+# First/Last Pic
+jump_first
+jump_last
+jump_first  g
+jump_last   G
+# close/open Window
+toggle_pause
+close
+# render = open in togglemode
+render        l R
+close         h
+toggle_pause  p
+# zooming
+zoom_in
+zoom_out
+zoom_default
+zoom_fit
+zoom_in       z
+zoom_out      Z
+zoom_default  C-z
+zoom_fit      C-Z
+# I only hit these accidentally
+save_image
+save_filelist
