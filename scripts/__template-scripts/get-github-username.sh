@@ -16,7 +16,7 @@ echo "$githubUsername"
 # Also I tried on a fresh machine to initialize and apply `chezmoi -S
 # pathToDotRepo init --apply urlToRepo` but that still requires a `exec
 # bash -l` so reading env. variables set in the bashrc is impossible.
-#template code:{{- $gituser = output "bash" "-c" "$HOME/Repos/github.com/SimonWoodtli/dotfiles/template-scripts/get-github-username.sh" | trim -}}{{/* exec external script*/}}
+#template code:{{- $gituser = output "bash" "-c" "$HOME/Repos/github.com/SimonWoodtli/dotfiles/scripts/__template-scripts/get-github-username.sh" | trim -}}{{/* exec external script*/}}
 #
 # My current idea:
 # Have Interactive setups where promptString can be utilized

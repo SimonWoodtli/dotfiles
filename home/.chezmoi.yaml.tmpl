@@ -1,5 +1,6 @@
 {{- /*                                                                          
-* This file supports Go's text/template language, sprig functions and some custom functions from `chezmoi` itself.
+* This file supports Go's text/template language, sprig functions and
+  some custom functions from `chezmoi` itself.
 * Used to customize configuration when doing a `chezmoi init`                   
                                                                                 
 You have two choices for how to add your own data, and you can
@@ -39,7 +40,7 @@ They cannot be initialized and set directly in a conditional statement.*/ -}}
 {{- $key_identity := false -}}
 {{- $gitemail := "" -}}
 {{- $gituser := "" -}}
-{{- $configFileExist := output "bash" "-c" "$HOME/Repos/github.com/SimonWoodtli/dotfiles/template-scripts/file-exist.sh $HOME/.config/chezmoi/chezmoi.yaml" | trim -}}{{- /* exec external script*/ -}}
+{{- $configFileExist := output "bash" "-c" "$HOME/Repos/github.com/SimonWoodtli/dotfiles/scripts/__template-scripts/file-exist.sh $HOME/.config/chezmoi/chezmoi.yaml" | trim -}}{{- /* exec external script*/ -}}
 {{- $interactive := not (any (env "WORKSPACE") (env "HEADLESS")) -}}{{- /* set true if it can't find $WORKSPACE or $HEADLESS */ -}}
 
 {{- /* Recognize OS: */ -}}
@@ -48,8 +49,12 @@ They cannot be initialized and set directly in a conditional statement.*/ -}}
 {{- if hasKey .chezmoi.osRelease "id" -}}
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
+{{- /* Set different variables on different operating systems here. */ -}}
+
+
 
 {{- /* Recognize Host: */ -}}
+{{- /* Set different variables on differen Hosts here. */ -}}
 
 {{- /* Prompt email question only once at first `chezmoi init`
 Chezmoi promptStringOnce variable reads from .config/chezmoi.yaml. But
