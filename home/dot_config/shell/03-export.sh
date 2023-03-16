@@ -45,7 +45,20 @@ export XDG_SHARE_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CACHE_HOME="$HOME/.cache"
-# program specific:
+# program/lang/frame/lib specific:
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export PERL_CPANM_HOME="$XDG_CACHE_HOME/cpanm"
+export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+export MBSYNCRC="$XDG_CONFIG_HOME/isync/mbsyncrc"
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+export SDKMAN_DIR="$XDG_DATA_HOME/sdkman"
+export W3M_DIR="$XDG_DATA_HOME/w3m"
+export WAKATIME_HOME="$XDG_CONFIG_HOME/wakatime"
 
 ################################## fzf #################################
 #keybindingds: f2,f3,f4,.....
