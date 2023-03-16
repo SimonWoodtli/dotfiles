@@ -1,0 +1,41 @@
+[user]
+  name = SimonWoodtli
+  email = xnasero@posteo.net
+	signingkey = 975B17A3CE84D5C3622BFF421F450DE4AA1945D7
+
+[core]
+  editor = vim
+  excludesfile = ~/.gitignore_global
+
+[color]
+	ui = auto
+
+[alias]
+  hist = log --all --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  graph = log --all --graph --pretty=format:'%C(auto)%h%C(auto)%d %s %C(dim white)(%aN, %ar)'
+  graph2 = log --graph --full-history --all --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s%x20%x1b[33m(%an)%x1b[0m"
+  lol = log --graph --decorate --pretty=oneline --abbrev-commit
+  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+
+[init]
+  defaultBranch = main
+  templatedir = $HOME/.git-template/
+
+## Delta Config:
+[core]
+  pager = delta
+[interactive]
+  diffFilter = delta --color-only
+[add.interactive]
+  useBuiltin = false # required for git 2.37.0
+[delta]
+  navigate = true    # use n and N to move between diff sections
+  light = false      # set to true if you're in a terminal w/ a light background color 
+  line-numbers = true
+  #side-by-side = true
+[merge]
+  conflictstyle = diff3
+[diff]
+  colorMoved = default
+[commit]
+	gpgsign = true
