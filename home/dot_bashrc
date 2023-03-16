@@ -12,5 +12,3 @@
 for shell in $HOME/.config/shell/*.sh; do
   source $shell
 done
-##this must be at the end of bashrc for sdkman to work
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
