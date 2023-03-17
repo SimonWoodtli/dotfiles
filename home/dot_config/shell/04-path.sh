@@ -8,7 +8,7 @@ $SCRIPTS_PRIV:\
 /usr/lib/go-1.15/bin:\
 $HOME/.local/bin:\
 $HOME/.local/go/bin:\
-$HOME/.cargo/bin:\
+$XDG_DATA_HOME/cargo/bin:\
 $HOME/.node/bin:\
 $HOME/.deno/bin:\
 $HOME/.emacs.d/bin:\
