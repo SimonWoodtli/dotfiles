@@ -1,0 +1,350 @@
+#██╗    ██╗██████╗ ███╗   ███╗    ██╗  ██╗███████╗██╗   ██╗███╗   ███╗ █████╗ ██████╗ 
+#██║    ██║╚════██╗████╗ ████║    ██║ ██╔╝██╔════╝╚██╗ ██╔╝████╗ ████║██╔══██╗██╔══██╗
+#██║ █╗ ██║ █████╔╝██╔████╔██║    █████╔╝ █████╗   ╚████╔╝ ██╔████╔██║███████║██████╔╝
+#██║███╗██║ ╚═══██╗██║╚██╔╝██║    ██╔═██╗ ██╔══╝    ╚██╔╝  ██║╚██╔╝██║██╔══██║██╔═══╝ 
+#╚███╔███╔╝██████╔╝██║ ╚═╝ ██║    ██║  ██╗███████╗   ██║   ██║ ╚═╝ ██║██║  ██║██║     
+ #╚══╝╚══╝ ╚═════╝ ╚═╝     ╚═╝    ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝     
+
+## Comments on same line don't work in `keymap` hence the
+## `generate-keymap` script
+## if you keymap `ax` you can no longer use `a` keymapped
+############################# w3m shortcuts ############################
+# Ctrl  :       C-, ^
+# Escape:       ESC-, M-, ^[
+# Enter :       C-j
+# Space :       SPC, ' '
+# Tab   :       TAB, ^i, ^I, C-i
+# Delete:       DEL, ^?
+# Up    :       UP, ^[[A
+# Down  :       DOWN, ^[[B
+# Right :       RIGHT, ^[[C
+# Left  :       LEFT, ^[[D
+########################## invalidate defaults #########################
+keymap    K         NULL
+keymap    J         NULL
+keymap    SPC       NULL
+keymap    -         NULL
+keymap    +         NULL
+keymap    C-v       NULL
+keymap    ESC-v     NULL
+keymap    C-f       NULL
+keymap    C-b       NULL
+keymap    C-n       NULL
+keymap    C-p       NULL
+keymap    <         NULL
+keymap    >         NULL
+keymap    .         NULL
+keymap    ,         NULL
+keymap    ^         NULL
+keymap    C-a       NULL
+keymap    W         NULL
+keymap    ^[[6~     NULL
+keymap    ^[[5~     NULL
+keymap    g         NULL
+keymap    ^[[1~     NULL
+keymap    ^[[4~     NULL
+keymap    ESC-<     NULL
+keymap    ESC->     NULL
+keymap    [         NULL
+keymap    ]         NULL
+keymap    ^[[Z      NULL
+keymap    ESC-m     NULL
+keymap    (         NULL
+keymap    )         NULL
+keymap    C-j       NULL
+keymap    C-m       NULL
+keymap    ESC-C-j   NULL
+keymap    ESC-C-m   NULL
+keymap    ESC-w     NULL
+keymap    ESC-W     NULL
+keymap    C-s       NULL
+keymap    =         NULL
+keymap    ESC-l     NULL
+keymap    U         NULL
+keymap    V         NULL
+keymap    v         NULL
+keymap    R         NULL
+keymap    ESC-s     NULL
+keymap    :         NULL
+keymap    C-q       NULL
+keymap    T         NULL
+keymap    }         NULL
+keymap    {         NULL
+keymap    ESC-a     NULL
+keymap    ESC-b     NULL
+keymap    c         NULL
+keymap    ESC-:     NULL
+keymap    C-h       NULL
+keymap    q         NULL
+keymap    Q         NULL
+keymap    C-w       NULL
+keymap    C-d       NULL
+keymap    C-u       NULL
+keymap    RIGHT     NULL
+keymap    l         NULL
+keymap    LEFT      NULL
+keymap    h         NULL
+keymap    j         NULL
+keymap    DOWN      NULL
+keymap    k         NULL
+keymap    UP        NULL
+keymap    C-e       NULL
+keymap    C-y       NULL
+keymap    0         NULL
+keymap    $         NULL
+keymap    Z         NULL
+keymap    z         NULL
+keymap    ESC-g     NULL
+keymap    gg        NULL
+keymap    G         NULL
+keymap    w         NULL
+keymap    b         NULL
+keymap    C-n       NULL
+keymap    C-p       NULL
+keymap    ESC-TAB   NULL
+keymap    f         NULL
+keymap    C-o       NULL
+keymap    TAB       NULL
+keymap    C-j       NULL
+keymap    C-]       NULL
+keymap    I         NULL
+keymap    ESC-I     NULL
+keymap    ESC-C-j   NULL
+keymap    y         NULL
+keymap    u         NULL
+keymap    i         NULL
+keymap    gC-g      NULL
+keymap    C-g       NULL
+keymap    ";"       NULL
+keymap    M         NULL
+keymap    ESC-M     NULL
+keymap    F         NULL
+keymap    ESC-u     NULL
+keymap    t         NULL
+keymap    @         NULL
+#keymap   "#"       NULL
+keymap    |         NULL
+keymap    B         NULL
+keymap    L         NULL
+keymap    H         NULL
+keymap    s         NULL
+keymap    gf        NULL
+keymap    S         NULL
+keymap    E         NULL
+keymap    ESC-e     NULL
+keymap    C-r       NULL
+keymap    r         NULL
+keymap    C-l       NULL
+keymap    C-t       NULL
+keymap    d         NULL
+keymap    gt        NULL
+keymap    gT        NULL
+keymap    ESC-t     NULL
+keymap    C-wL      NULL
+keymap    C-wH      NULL
+keymap    a         NULL
+keymap    n         NULL
+keymap    N         NULL
+keymap    /         NULL
+keymap    ?         NULL
+keymap    C-@       NULL
+keymap    ESC-n     NULL
+keymap    ESC-p     NULL
+keymap    \"        NULL
+keymap    ^[[2~     NULL
+keymap    ^[[28~    NULL
+keymap    ^[[E      NULL
+keymap    ^[[L      NULL
+keymap    o         NULL
+keymap    C-k       NULL
+keymap    D         NULL
+keymap    m         NULL
+keymap    ESC-c     NULL
+keymap    ESC-o     NULL
+keymap    ESC-k     NULL
+keymap    \\        NULL
+keymap    !         NULL
+keymap    C-z       NULL
+keymap    ZZ        NULL
+keymap    ZQ        NULL
+########################## 1. default commands #########################
+################################ command ###############################
+keymap    ::        COMMAND         #exec w3m functions
+keymap    :?        HELP            #show overview key bindings
+keymap    :O        OPTIONS         #change settings that are saved in .w3m/config
+keymap    :D        DOWNLOAD_LIST   #show download menu
+########################## history navigation ##########################
+keymap    L         NEXT            #go forward to previous visited link
+keymap    H         PREV            #go back to last visited link
+keymap    :P        SELECT_MENU     #show visited links from current session
+keymap    :H        HISTORY         #show all visited links 
+############################### scrolling ##############################
+keymap    C-e       UP              #scroll down
+keymap    C-y       DOWN            #scroll up
+keymap    gg        BEGIN           #go to beginning of site
+keymap    G         END             #go to end of site
+keymap    C-d       NEXT_PAGE       #scroll down one page
+keymap    d         NEXT_PAGE       #scroll down one page
+keymap    C-u       PREV_PAGE       #scroll up one page
+keymap    u         PREV_PAGE       #scroll up one page
+keymap    zz        CENTER_V        #center around current cursor position
+################################ cursor ################################
+#keymap   l         MOVE_RIGHT      #move cursor to the right
+keymap    l         NEXT_TAB        #go to next tab
+#keymap   h         MOVE_LEFT       #move cursor to the left
+keymap    h         PREV_TAB        #go to previous tab
+#keymap   j         MOVE_DOWN1      #move cursor down
+keymap    j         UP              #scroll down
+#keymap   k         MOVE_UP1        #move cursor up
+keymap    k         DOWN            #scroll up
+keymap    RIGHT     MOVE_RIGHT
+keymap    LEFT      MOVE_LEFT
+keymap    DOWN      MOVE_DOWN1
+keymap    UP        MOVE_UP1
+keymap    0         LINE_BEGIN      #move cursor to start of line
+keymap    $         LINE_END        #move cursor to end of line
+keymap    w         NEXT_WORD       #move cursor to next word
+keymap    b         PREV_WORD       #move cursor to previous word
+############################ cursor history ############################
+#### don't need this
+#keymap    C-p       REDO           #move cursor back towards current position
+#keymap    C-n       UNDO           #move cursor to previous positions
+############################## navigation ##############################
+keymap    :f        MOVE_LIST_MENU  #select from all links on site and move cursor
+keymap    :F        LIST_MENU       #select from all links on current site and open
+keymap    J         NEXT_LINK       #move cursor to next link
+keymap    K         PREV_LINK       #move cursor to previous link
+keymap    :l        PEEK_LINK
+############################ save/load page ############################
+keymap    C-s       SAVE            #save HTML from current site ~/.w3m/foo
+keymap    C-p       PRINT           #print current site
+keymap    o         GOTO            #edit URL and open new URL
+keymap    C-o       LOAD            #open and view any file
+keymap    r         RELOAD          #reload current site
+keymap    C-r       RELOAD
+################################# jump #################################
+keymap    ESC-C-j   SUBMIT          #submit text from current form
+#keymap   ft        TAB_LINK        #open current link in new tab
+keymap    C-j       GOTO_LINK       #open current link in current tab
+################################# info #################################
+keymap    y         PEEK            #show url of current site
+keymap    C-i       INFO            #show current site info
+keymap    C-g       LINE_INFO       #show cursor position line num
+keymap    gf        VIEW            #show source code of current site
+################################ search ################################
+keymap    /         ISEARCH         #search keyword downwards
+keymap    ?         ISEARCH_BACK    #search keywords upwards
+keymap    n         SEARCH_NEXT     #goto next keyword
+keymap    N         SEARCH_PREV     #goto previous keyword
+############################### bookmarks ##############################
+#### use my own bookmark system with `bm`
+#keymap   a         ADD_BOOKMARK    #add bookark to ~/.w3m/bookmark.html
+#keymap   :b        VIEW_BOOKMARK   #show bookmarks and goto saved links 
+################################ images ################################
+## don't use this it downloads img into ~/.w3m
+#keymap    C-i      VIEW_IMAGE      #show current links image
+#keymap    C-I      DISPLAY_IMAGE   #show images on current page in terminal
+################################## tab #################################
+keymap    xx        CLOSE_TAB       #close current tab
+keymap    C-w       CLOSE_TAB
+#### use dictionary cmd `:d` instead of `GOTO URL`
+#keymap   gh        GOTO https://lite.duckduckgo.com/lite #open duckduck start
+#keymap   gH        TAB_GOTO https://lite.duckduckgo.com/lite #open new tab
+keymap    C-t       NEW_TAB         #create new tab
+keymap    gt        NEXT_TAB        #goto next tab
+keymap    gT        PREV_TAB        #goto previous tab
+keymap    C-wL      TAB_RIGHT       #move current tab one to the right
+keymap    C-wH      TAB_LEFT        #move current tab one to the left
+keymap    t         TAB_GOTO        #edit current link and goto in new tab
+keymap    T         TAB_MENU        #show menu to select from all tabs
+######################### Execute shell command ########################
+#### displays output of shell cmd
+keymap    @         READ_SHELL      #enter unix commands and display output
+#keymap   #         PIPE_SHELL      #enter unix commands and display output
+keymap    |         PIPE_BUF        #pipe current site through a unix command and display output
+################################# quit #################################
+keymap    :Q        EXIT            #quit browser without confirmation
+keymap    ZQ        QUIT            #quit browser with confirmation
+keymap    :q        QUIT            #confirmation turned off in config
+####################### 2. custom script commands ######################
+############################## navigation ##############################
+#### toggle hinting mode (vimium similar)
+keymap  f-SPC   COMMAND "SET_OPTION display_link_number=toggle ; RESHAPE"
+#### jump to link number (e.g press 3ff) and hide hinting mode (similar to gg in vim)
+keymap  ff      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN"
+#### open current cursor link in new tab and hide hinting mode
+keymap  ft      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; TAB_LINK"
+#### copy link to clipboard (e.g press f-SPC then 4fy to yank url)
+keymap  fy      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null'"
+#### jump to link number and open it (e.g 2fo)
+keymap  fo       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; GOTO_LINK"
+#### jump to link number and open it in new tab (e.g 2fn)
+keymap  fn       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; TAB_LINK"
+################## yank to x11 clipboard: requires x11 #################
+#keymap    yx        EXTERN_LINK   '(printf %s | xclip -sel clipboard)'    #yank link from cursor
+#keymap    YX        EXTERN        '(printf %s | xclip -sel clipboard)' #yank link from current site
+########################## yank to tmux buffer #########################
+#keymap    yy        EXTERN_LINK   'tmux set-buffer'     #if you ssh into server and have no x11
+#keymap    YY        EXTERN        'tmux set-buffer'
+####################### yank to multi clipboards #######################
+keymap  yy      EXTERN_LINK "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
+keymap  YY      EXTERN "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
+########################### open GUI browser ###########################
+#### requires exported env. variables: $BROWSER and $BROWSER_PRIVATE
+keymap    xb        EXTERN_LINK     '$BROWSER'    #open link on cursor in GUI
+keymap    XB        EXTERN          '$BROWSER'    #open current site link in GUI
+keymap    xl        EXTERN_LINK     '$BROWSER_PRIVATE'
+keymap    XL        EXTERN          '$BROWSER_PRIVATE'
+############################## open video ##############################
+keymap    xm        EXTERN_LINK   'TS_SOCKET=/tmp/w3m tsp mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+keymap    XM        EXTERN        'TS_SOCKET=/tmp/w3m tsp mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+############################## open image ##############################
+#### only works if img is direct link to it otherwise open link with gui browser `xb`
+keymap    xi        EXTERN_LINK   'feh' #can't use flags :(
+keymap    xI        EXTERN_LINK   'TS_SOCKET=/tmp/w3m tsp mpv --loop --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+############################## downloading #############################
+keymap    xd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp wget -c -P ~/Downloads'
+#keymap   xd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp curl -LJ --output-dir ~/Downloads' ##gotta test this
+keymap    yd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp youtube-dl -o "~/Downloads/%(title)s.%(ext)s"'
+####################### quit & save last session #######################
+keymap    ZZ        COMMAND     "EXTERN 'echo %s > ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; READ_SHELL ~/.w3m/cgi-bin/restore_session.cgi ; EXIT"
+################################## fzf #################################
+## magic wizzard cmd: search and exec w3m scripts, w3m commands and w3m macro commands
+keymap    !!        COMMAND "READ_SHELL ~/.w3m/cgi-bin/fzf_magic_wand.cgi ; BACK ; GOTO file:/cgi-bin/fzf_execute.cgi ; BACK"
+## bookmark cmd: search and open bookmarks
+keymap    :b        COMMAND "READ_SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; BACK ; GOTO file:/cgi-bin/fzf_execute.cgi ; BACK"
+############################## dictionary ##############################
+#### exec dictionary command:
+keymap    \\\d      COMMAND "SET_OPTION dictcommand=file:///cgi-bin/dictionary.cgi ; DICT_WORD"
+#### exec dictionary command for word at cursor
+keymap    \\\w      COMMAND "SET_OPTION dictcommand=file:///cgi-bin/dictionary.cgi ; DICT_WORD_AT"
+################################## cmd #################################
+#### cmd: exec scripts with keywords via dictionary built-in bar
+#### use search engine with user input
+keymap    :w        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_wikipedia.cgi ; DICT_WORD"
+keymap    :d        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_duckduckgo.cgi ; DICT_WORD"
+keymap    :g        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_google.cgi ; DICT_WORD"
+keymap    :i        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_geminispace.cgi ; DICT_WORD"
+keymap    :v        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_veronica2.cgi ; DICT_WORD"
+keymap    :a        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_aspell.cgi ; DICT_WORD"
+keymap    :r        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_subreddit.cgi ; DICT_WORD"
+keymap    :t        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_twitch.cgi ; DICT_WORD"
+keymap    :y        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_yewtube.cgi ; DICT_WORD"
+keymap    :p        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_piratebay.cgi ; DICT_WORD"
+keymap    :x        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_xdcceu.cgi ; DICT_WORD"
+keymap    :1        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_1337x.cgi ; DICT_WORD"
+keymap    :n        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_nyaasi.cgi ; DICT_WORD"
+#### use search engine with current word under cursor
+keymap    :W        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_wikipedia.cgi ; DICT_WORD_AT"
+keymap    :D        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_duckduckgo.cgi ; DICT_WORD_AT"
+keymap    :G        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_google.cgi ; DICT_WORD_AT"
+keymap    :I        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_geminispace.cgi ; DICT_WORD_AT"
+keymap    :V        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_veronica2.cgi ; DICT_WORD_AT"
+keymap    :A        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_aspell.cgi ; DICT_WORD_AT"
+keymap    :R        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_subreddit.cgi ; DICT_WORD_AT"
+keymap    :T        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_twitch.cgi ; DICT_WORD_AT"
+keymap    :Y        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_yewtube.cgi ; DICT_WORD_AT"
+keymap    :P        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_piratebay.cgi ; DICT_WORD_AT"
+keymap    :X        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_xdcceu.cgi ; DICT_WORD_AT"
+keymap    :2        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_1337x.cgi ; DICT_WORD_AT"
+keymap    :N        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_nyaasi.cgi ; DICT_WORD_AT"

@@ -1,0 +1,259 @@
+keymap    K         NULL
+keymap    J         NULL
+keymap    SPC       NULL
+keymap    -         NULL
+keymap    +         NULL
+keymap    C-v       NULL
+keymap    ESC-v     NULL
+keymap    C-f       NULL
+keymap    C-b       NULL
+keymap    C-n       NULL
+keymap    C-p       NULL
+keymap    <         NULL
+keymap    >         NULL
+keymap    .         NULL
+keymap    ,         NULL
+keymap    ^         NULL
+keymap    C-a       NULL
+keymap    W         NULL
+keymap    ^[[6~     NULL
+keymap    ^[[5~     NULL
+keymap    g         NULL
+keymap    ^[[1~     NULL
+keymap    ^[[4~     NULL
+keymap    ESC-<     NULL
+keymap    ESC->     NULL
+keymap    [         NULL
+keymap    ]         NULL
+keymap    ^[[Z      NULL
+keymap    ESC-m     NULL
+keymap    (         NULL
+keymap    )         NULL
+keymap    C-j       NULL
+keymap    C-m       NULL
+keymap    ESC-C-j   NULL
+keymap    ESC-C-m   NULL
+keymap    ESC-w     NULL
+keymap    ESC-W     NULL
+keymap    C-s       NULL
+keymap    =         NULL
+keymap    ESC-l     NULL
+keymap    U         NULL
+keymap    V         NULL
+keymap    v         NULL
+keymap    R         NULL
+keymap    ESC-s     NULL
+keymap    :         NULL
+keymap    C-q       NULL
+keymap    T         NULL
+keymap    }         NULL
+keymap    {         NULL
+keymap    ESC-a     NULL
+keymap    ESC-b     NULL
+keymap    c         NULL
+keymap    ESC-:     NULL
+keymap    C-h       NULL
+keymap    q         NULL
+keymap    Q         NULL
+keymap    C-w       NULL
+keymap    C-d       NULL
+keymap    C-u       NULL
+keymap    RIGHT     NULL
+keymap    l         NULL
+keymap    LEFT      NULL
+keymap    h         NULL
+keymap    j         NULL
+keymap    DOWN      NULL
+keymap    k         NULL
+keymap    UP        NULL
+keymap    C-e       NULL
+keymap    C-y       NULL
+keymap    0         NULL
+keymap    $         NULL
+keymap    Z         NULL
+keymap    z         NULL
+keymap    ESC-g     NULL
+keymap    gg        NULL
+keymap    G         NULL
+keymap    w         NULL
+keymap    b         NULL
+keymap    C-n       NULL
+keymap    C-p       NULL
+keymap    ESC-TAB   NULL
+keymap    f         NULL
+keymap    C-o       NULL
+keymap    TAB       NULL
+keymap    C-j       NULL
+keymap    C-]       NULL
+keymap    I         NULL
+keymap    ESC-I     NULL
+keymap    ESC-C-j   NULL
+keymap    y         NULL
+keymap    u         NULL
+keymap    i         NULL
+keymap    gC-g      NULL
+keymap    C-g       NULL
+keymap    ";"       NULL
+keymap    M         NULL
+keymap    ESC-M     NULL
+keymap    F         NULL
+keymap    ESC-u     NULL
+keymap    t         NULL
+keymap    @         NULL
+keymap    |         NULL
+keymap    B         NULL
+keymap    L         NULL
+keymap    H         NULL
+keymap    s         NULL
+keymap    gf        NULL
+keymap    S         NULL
+keymap    E         NULL
+keymap    ESC-e     NULL
+keymap    C-r       NULL
+keymap    r         NULL
+keymap    C-l       NULL
+keymap    C-t       NULL
+keymap    d         NULL
+keymap    gt        NULL
+keymap    gT        NULL
+keymap    ESC-t     NULL
+keymap    C-wL      NULL
+keymap    C-wH      NULL
+keymap    a         NULL
+keymap    n         NULL
+keymap    N         NULL
+keymap    /         NULL
+keymap    ?         NULL
+keymap    C-@       NULL
+keymap    ESC-n     NULL
+keymap    ESC-p     NULL
+keymap    \"        NULL
+keymap    ^[[2~     NULL
+keymap    ^[[28~    NULL
+keymap    ^[[E      NULL
+keymap    ^[[L      NULL
+keymap    o         NULL
+keymap    C-k       NULL
+keymap    D         NULL
+keymap    m         NULL
+keymap    ESC-c     NULL
+keymap    ESC-o     NULL
+keymap    ESC-k     NULL
+keymap    \\        NULL
+keymap    !         NULL
+keymap    C-z       NULL
+keymap    ZZ        NULL
+keymap    ZQ        NULL
+keymap    ::        COMMAND
+keymap    :?        HELP
+keymap    :O        OPTIONS
+keymap    :D        DOWNLOAD_LIST
+keymap    L         NEXT
+keymap    H         PREV
+keymap    :P        SELECT_MENU
+keymap    :H        HISTORY
+keymap    C-e       UP
+keymap    C-y       DOWN
+keymap    gg        BEGIN
+keymap    G         END
+keymap    C-d       NEXT_PAGE
+keymap    d         NEXT_PAGE
+keymap    C-u       PREV_PAGE
+keymap    u         PREV_PAGE
+keymap    zz        CENTER_V
+keymap    l         NEXT_TAB
+keymap    h         PREV_TAB
+keymap    j         UP
+keymap    k         DOWN
+keymap    RIGHT     MOVE_RIGHT
+keymap    LEFT      MOVE_LEFT
+keymap    DOWN      MOVE_DOWN1
+keymap    UP        MOVE_UP1
+keymap    0         LINE_BEGIN
+keymap    $         LINE_END
+keymap    w         NEXT_WORD
+keymap    b         PREV_WORD
+keymap    :f        MOVE_LIST_MENU
+keymap    :F        LIST_MENU
+keymap    J         NEXT_LINK
+keymap    K         PREV_LINK
+keymap    :l        PEEK_LINK
+keymap    C-s       SAVE
+keymap    C-p       PRINT
+keymap    o         GOTO
+keymap    C-o       LOAD
+keymap    r         RELOAD
+keymap    C-r       RELOAD
+keymap    ESC-C-j   SUBMIT
+keymap    C-j       GOTO_LINK
+keymap    y         PEEK
+keymap    C-i       INFO
+keymap    C-g       LINE_INFO
+keymap    gf        VIEW
+keymap    /         ISEARCH
+keymap    ?         ISEARCH_BACK
+keymap    n         SEARCH_NEXT
+keymap    N         SEARCH_PREV
+keymap    xx        CLOSE_TAB
+keymap    C-w       CLOSE_TAB
+keymap    C-t       NEW_TAB
+keymap    gt        NEXT_TAB
+keymap    gT        PREV_TAB
+keymap    C-wL      TAB_RIGHT
+keymap    C-wH      TAB_LEFT
+keymap    t         TAB_GOTO
+keymap    T         TAB_MENU
+keymap    @         READ_SHELL
+keymap    |         PIPE_BUF
+keymap    :Q        EXIT
+keymap    ZQ        QUIT
+keymap    :q        QUIT
+keymap  f-SPC   COMMAND "SET_OPTION display_link_number=toggle ; RESHAPE"
+keymap  ff      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN"
+keymap  ft      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; TAB_LINK"
+keymap  fy      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null'"
+keymap  fo       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; GOTO_LINK"
+keymap  fn       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; TAB_LINK"
+keymap  yy      EXTERN_LINK "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
+keymap  YY      EXTERN "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
+keymap    xb        EXTERN_LINK     '$BROWSER'
+keymap    XB        EXTERN          '$BROWSER'
+keymap    xl        EXTERN_LINK     '$BROWSER_PRIVATE'
+keymap    XL        EXTERN          '$BROWSER_PRIVATE'
+keymap    xm        EXTERN_LINK   'TS_SOCKET=/tmp/w3m tsp mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+keymap    XM        EXTERN        'TS_SOCKET=/tmp/w3m tsp mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+keymap    xi        EXTERN_LINK   'feh'
+keymap    xI        EXTERN_LINK   'TS_SOCKET=/tmp/w3m tsp mpv --loop --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+keymap    xd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp wget -c -P ~/Downloads'
+keymap    yd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp youtube-dl -o "~/Downloads/%(title)s.%(ext)s"'
+keymap    ZZ        COMMAND     "EXTERN 'echo %s > ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> ~/.w3m/RestoreSession.txt' ; READ_SHELL ~/.w3m/cgi-bin/restore_session.cgi ; EXIT"
+keymap    !!        COMMAND "READ_SHELL ~/.w3m/cgi-bin/fzf_magic_wand.cgi ; BACK ; GOTO file:/cgi-bin/fzf_execute.cgi ; BACK"
+keymap    :b        COMMAND "READ_SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; BACK ; GOTO file:/cgi-bin/fzf_execute.cgi ; BACK"
+keymap    \\\d      COMMAND "SET_OPTION dictcommand=file:///cgi-bin/dictionary.cgi ; DICT_WORD"
+keymap    \\\w      COMMAND "SET_OPTION dictcommand=file:///cgi-bin/dictionary.cgi ; DICT_WORD_AT"
+keymap    :w        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_wikipedia.cgi ; DICT_WORD"
+keymap    :d        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_duckduckgo.cgi ; DICT_WORD"
+keymap    :g        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_google.cgi ; DICT_WORD"
+keymap    :i        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_geminispace.cgi ; DICT_WORD"
+keymap    :v        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_veronica2.cgi ; DICT_WORD"
+keymap    :a        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_aspell.cgi ; DICT_WORD"
+keymap    :r        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_subreddit.cgi ; DICT_WORD"
+keymap    :t        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_twitch.cgi ; DICT_WORD"
+keymap    :y        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_yewtube.cgi ; DICT_WORD"
+keymap    :p        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_piratebay.cgi ; DICT_WORD"
+keymap    :x        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_xdcceu.cgi ; DICT_WORD"
+keymap    :1        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_1337x.cgi ; DICT_WORD"
+keymap    :n        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_nyaasi.cgi ; DICT_WORD"
+keymap    :W        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_wikipedia.cgi ; DICT_WORD_AT"
+keymap    :D        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_duckduckgo.cgi ; DICT_WORD_AT"
+keymap    :G        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_google.cgi ; DICT_WORD_AT"
+keymap    :I        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_geminispace.cgi ; DICT_WORD_AT"
+keymap    :V        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_veronica2.cgi ; DICT_WORD_AT"
+keymap    :A        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_aspell.cgi ; DICT_WORD_AT"
+keymap    :R        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_subreddit.cgi ; DICT_WORD_AT"
+keymap    :T        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_twitch.cgi ; DICT_WORD_AT"
+keymap    :Y        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_yewtube.cgi ; DICT_WORD_AT"
+keymap    :P        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_piratebay.cgi ; DICT_WORD_AT"
+keymap    :X        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_xdcceu.cgi ; DICT_WORD_AT"
+keymap    :2        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_1337x.cgi ; DICT_WORD_AT"
+keymap    :N        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_nyaasi.cgi ; DICT_WORD_AT"
