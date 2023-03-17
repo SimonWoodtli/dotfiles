@@ -1,0 +1,62 @@
+#show-read-feeds no
+## always loads rss when newsboat opened (deactivate if cronjob is activated)
+#auto-reload yes
+
+## urlscan: program to get links out of file or input => install on your distro
+## linkhandler: script to open the scanned urls in an application. Depending on file type different programs get executed.
+external-url-viewer "urlscan -dc -r 'linkhandler {}'"
+
+# vim bindings
+bind-key j down
+bind-key k up
+bind-key j next articlelist
+bind-key k prev articlelist
+bind-key J next-feed articlelist
+bind-key K prev-feed articlelist
+bind-key G end
+bind-key g home
+bind-key d pagedown
+bind-key u pageup
+bind-key l open
+bind-key h quit
+bind-key a toggle-article-read
+bind-key n next-unread
+bind-key N prev-unread
+bind-key D pb-download
+bind-key U show-urls # important: key to open urlscan
+bind-key x pb-delete
+
+# colortheme
+color background         default   default
+color listnormal         default   default
+color listnormal_unread  default   default
+color listfocus          black     cyan
+color listfocus_unread   black     cyan
+color info               cyan      black
+color article            default   default
+
+# important: open main links (blue) in another program use: ",w" for lynx etc.
+browser linkhandler
+macro , open-in-browser # important key: leader key set to ","
+macro m set browser "setsid -f mpv" ; open-in-browser ; set browser linkhandler #open link with mpv
+macro w set browser "lynx" ; open-in-browser ; set browser linkhandler #open link with terminal browser
+##TODO use xclip instead of xsel
+macro c set browser "xsel -b <<<" ; open-in-browser ; set browser linkhandler #copy link to clipboard
+##TODO fix download
+macro d set browser "yt-dlp -o ~/Downloads/%(title)s.%(ext)s" ; open-in-browser ; set browser linkhandler #download YT video
+
+# hightlighting when reading article
+highlight article "^Feed:.*" color5 color234
+highlight article "^Title:.*" color3 color234 bold
+highlight article "^Author:.*" color2 color234
+highlight article "^Date:.*" color223 color234
+highlight article "^Link:.*" color32 color234
+highlight article "^Flags:.*" color9 color234
+highlight article "\\[[0-9][0-9]*\\]" color66 default bold
+highlight article "\\[image [0-9][0-9]*\\]" color109 default bold
+highlight article "\\[embedded flash: [0-9][0-9]*\\]" color66 default bold
+
+# Podboat items
+download-path "~/Downloads/%h/%n"
+max-downloads 3
+player "mpd"
