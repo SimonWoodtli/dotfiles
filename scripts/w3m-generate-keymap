@@ -1,0 +1,9 @@
+#!/usr/bin/sh
+## Comments on same line don't work in `keymap` hence the
+## `generate-keymap` script
+## first sed:
+## \s* removes all trailing whitespace
+## #.* removes any appearence of a # comment
+## second sed:
+## /^$/ d deletes all empty lines
+sed 's|\s*#.*||g; /^$/ d' "$CHEZMOI/dot_config/w3m/keymap-comments" > "$CHEZMOI/dot_config/w3m/keymap"
