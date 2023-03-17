@@ -12,11 +12,10 @@ for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
 
 ## autocomplete for tldr
 complete -W "$(tldr 2>/dev/null --list)" tldr
-## autocomplete for chezmoi
-source "$DOTFILES/completion/chezmoi.sh"
 
 ## if gh-cli auto complete should not work:
 ## deactivate gh completion
+_have chezmoi && _source_if "$DOTFILES/completion/chezmoi.sh"
 _have gh && . <(gh completion -s bash)
 _have pandoc && . <(pandoc --bash-completion)
 #_have spotify && . <(spotify completion bash 2>/dev/null)
