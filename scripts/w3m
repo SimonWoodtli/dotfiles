@@ -1,5 +1,8 @@
 #!/bin/bash
 declare w3mpath=/usr/bin/w3m
+#alias w3m='w3m -config ~/.config/w3m/config'
+#maybe requires this config flag to get w3m be xdg compliant but w3m_dir
+#env var should be sufficient
 
 [[ ! -x "$w3mpath" ]] && w3mpath=/usr/local/bin/w3m
 
