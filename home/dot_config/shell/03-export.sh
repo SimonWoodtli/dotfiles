@@ -57,7 +57,7 @@ export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export SDKMAN_DIR="$XDG_DATA_HOME/sdkman"
-export W3M_DIR="$XDG_DATA_HOME/w3m"
+export W3M_DIR="$XDG_CONFIG_HOME/w3m"
 export WAKATIME_HOME="$XDG_CONFIG_HOME/wakatime"
 
 ################################## fzf #################################
