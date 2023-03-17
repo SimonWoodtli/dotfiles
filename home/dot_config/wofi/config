@@ -1,0 +1,8 @@
+# https://hg.sr.ht/~scoopta/wofi
+width=97% #my second screen doesnt start wofi on the left edge so yea..
+matching=multi-contains
+normal_window=true #seems fedora doesn't support wlroots so yea
+#location=top 2
+gtk_dark=true
+global_coords=true
+xoffset=90000 # I guess that xoffset only works with wlr-layer-shell protocol
