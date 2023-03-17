@@ -5,7 +5,7 @@
 
 [core]
   editor = vim
-  excludesfile = ~/.gitignore_global
+  excludesfile = $HOME/.config/git/gitignore_global
 
 [color]
 	ui = auto
@@ -19,7 +19,7 @@
 
 [init]
   defaultBranch = main
-  templatedir = $HOME/.git-template/
+  templatedir = $HOME/.config/git/git-template/
 
 ## Delta Config:
 [core]
