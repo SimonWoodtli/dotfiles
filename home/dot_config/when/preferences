@@ -1,0 +1,8 @@
+calendar = /home/sero/.config/when/calendar
+editor = vim
+future = 30
+past = -10
+monday_first = true
+calendar_today_style="fgyellow,bold"
+items_today_style="fgyellow,bold"
+header = 1
