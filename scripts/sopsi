@@ -1,0 +1,76 @@
+#!/bin/bash
+declare subcommand="$1"; shift
+
+declare projectPath="$(git rev-parse --show-toplevel)"
+declare projectName="${projectPath##*/}"
+## create a key for every project you wanna use and name it `age-keygen -o "key-nameOfGitRepo"`
+export SOPS_AGE_KEY_FILE="$PRIVATE/bin/age/key-$projectName"
+## FIXME If no subcommand given just edit the encrypted file directly
+## I need to be able to get this to work editing encrypted files is the
+#best
+[[ -z "$2" ]] && sops "$1"
+## create a command with autocompletion
+echo $1
+echo $2
+echo $0
+echo $subcommand
+decrypt() {
+  # TODO: decrypt the file and create a new decrypted file
+  echo hello world
+}
+
+cat() {
+  ## TODO: make it so it accepts all file types
+  sops --decrypt --input-type yaml --output-type yaml "$1" 
+}
+
+partial-encrypt() {
+  echo no
+  ##TODO: create command for partial encryption of file, (just password) with regex
+  echo "key1: value1" >  test_regex.yaml
+  echo "key2: value2" >> test_regex.yaml
+  echo "key3: value3" >> test_regex.yaml
+  
+  encrypt ?how to pass file --encrypted-regex='^(key1|key3)$'
+}
+
+encrypt() {
+  keyPath="$PRIVATE/bin/age/key-$projectName"
+  publicKey="$(\grep -oP "public key: \K(.*)" $keyPath)"
+  filename=$(basename -- "$1")
+  extension="${filename##*.}"
+  filename="${filename%.*}"
+  sops --encrypt --age "$publicKey" "$1" > "$filename.enc.$extension"
+
+  #sops --encrypt --age $(cat "$keyPath" |grep -oP "public key: \K(.*)") --input-type "$extension" --output-type "$extension" "$1" > "$filename.enc.$extension"
+  #sops --encrypt --age $(cat "$keyPath" | \grep -oP "public key: \K(.*)") $2 $3 $1 > "$filename.enc.$extension"
+  #sops --encrypt --age age1a2cmrn2f8jfcfx7mwgycnxcsgtwvu73sck2ak03h3na0r753e5dshvknrf secret.yaml
+  ## rm regular file after encrypting it
+  #rm "$1"
+}
+
+encrypt-itself() {
+  keyPath="$PRIVATE/bin/age/key-$projectName"
+  publicKey="$(\grep -oP "public key: \K(.*)" $keyPath)"
+  filename=$(basename -- "$1")
+  extension="${filename##*.}"
+  filename="${filename%.*}"
+  sops --encrypt --in-place --age "$publicKey" "$1"
+}
+
+## function call from $1 argument
+declare -a commands=(decrypt cat partial-encrypt encrypt encrypt-itself)
+for i in ${commands[@]}; do
+  if [[ $i == "$subcommand" ]]; then
+    "$subcommand" $*
+    exit 0
+  fi
+done
+
+# Tab completion - add to bashrc: complete -C sopsi sopsi
+if [ -n "$COMP_LINE" ]; then
+  for cmd in ${commands[@]}; do
+    [[ "${cmd:0:${#1}}" == "$1" ]] && echo $cmd
+  done
+  exit 0
+fi
