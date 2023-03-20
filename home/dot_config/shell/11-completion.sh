@@ -7,7 +7,7 @@ if [ -r /usr/share/bash-completion/bash_completion ]; then
   source /usr/share/bash-completion/bash_completion
 fi
 
-owncomp=( pdf yt zet sshkey gm lorem tidder snippet )
+owncomp=( cry pdf yt zet sshkey gm lorem tidder snippet )
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
 
 ## autocomplete for tldr
