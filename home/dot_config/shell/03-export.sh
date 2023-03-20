@@ -38,6 +38,10 @@ export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock
 _have bat && export BAT_PAGER="less -R"
 _have deno && export DENO_INSTALL_ROOT="$HOME/.deno/bin"
 _have sdk && export SDKMAN_DIR="$HOME/.sdkman"
+# I like the approach with a central config.yaml file better
+#_have sops && export SOPS_AGE_KEY_FILE="$HOME/.config/sops/key.txt"
+#_have sops && export SOPS_AGE_KEY="?" # another env. var
+#_have sops && export SOPS_AGE_RECIPIENTS="You can encrypt a file for one or more age recipients (comma separated)"
 ################### XDG Base Directory Specification ###################
 #https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 export XDG_DATA_HOME="$HOME/.local/share"
