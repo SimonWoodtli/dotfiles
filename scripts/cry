@@ -1,84 +1,118 @@
 #!/bin/bash
-#declare file="${!#}"
+################################# About ################################
+## Author: Simon D. Woodtli                                                        
+## Project: https://github.com/SimonWoodtli/dotfiles/scripts/
+## Script Name: cry
+## License:  Apache-2.0
+## Dependencies: sops, age, fzf
+################################# Setup ################################
+## 1. Copy script into your $PATH
+## 2. Tab completion, add to your bashrc: complete -C cry cry
+########################### Global Variables ###########################
 declare subcommand="$1"; shift
-#declare subCmd=false
 git status &>/dev/null || { echo "Warning: This script only works within a git repo"; exit 1; }
-
-## FIXME find a way to only use this git cmd that i need anf if it fails
-#exit program instead of using git status
-#if git rev-parse --show-toplevel
-
-
+## TODO find a way to only use this git cmd that i need anf if it fails
+## exit program instead of using git status
+## if git rev-parse --show-toplevel
 declare projectPath="$(git rev-parse --show-toplevel)"
 declare projectName="${projectPath##*/}"
 ## create a key for every project you wanna use and name it `age-keygen -o "key-nameOfGitRepo"`
 export SOPS_AGE_KEY_FILE="$PRIVATE/bin/age/key-$projectName"
-#[[ -z "$2" ]] && sops "$file"
-## FIXME currently the `fzf` file select works only if files from PWD are
-#selected make all cmds work even for files that are not just in PWD but
-#from root git dir throughout whole repo.
 decrypt() {
-  ##FIXME only add an extension if the filename has a dot
+  ## get filename with path if nested selection
   local file="$(fzf)"
+  ## rm path for regex test
+  local filename="${file##*/}"
+  local fileNoSuffix="${file%%.*}"
   local extension="${file##*.}"
-  local filename="${file%%.*}"
-  local dot="."
-  sops --decrypt "$file" > "${filename}${dot}$extension"
-  #sops --decrypt "$file" > "fasdi"
+  ## IMPORTANT: if you use bash regex never quote the regex variable!
+  ## e.g. [[ "$filename" =~ $regexp ]]
+  ## files with name.enc.extension
+  if [[ "$filename" =~ ^.+\.enc\..+$ ]]; then
+    sops --decrypt "$file" > "${fileNoSuffix}.$extension"
+  ## files only with name.enc
+  elif [[ "$filename" =~ ^.+\.enc$ ]]; then
+    sops --decrypt "$file" > "${fileNoSuffix}"
+  else
+    ## files  with just name, no enc and no extension, directly decrypt file
+    sops --decrypt --in-place "$file"
+  fi
 }
-
 cat() {
   local file="$(fzf)"
   sops --decrypt "$file"
 }
-
-partial-encrypt() {
-  local file="$(fzf)"
-  echo no
-  ##TODO: create command for partial encryption of file, (just password) with regex
-  echo "key1: value1" >  test_regex.yaml
-  echo "key2: value2" >> test_regex.yaml
-  echo "key3: value3" >> test_regex.yaml
-  
-  encrypt ?how to pass file --encrypted-regex='^(key1|key3)$'
+__regexData() {
+  cat  <<EOF
+hello
+no
+freddy
+EOF
 }
-
+partial-encrypt() {
+  #local file="$(fzf)"
+  #echo $file
+  #encrypt --encrypted-regex='^(key1|key3)$'
+  ## First Option use regex database for convenience
+  #export FZF_DEFAULT_COMMAND=''
+  #export FZF_DEFAULT_OPTS="--no-preview --no-mouse --height 80% -i -e --prompt='select regex: ' --info=default --layout=reverse --tiebreak=index"
+  #export FZF_DEFAULT_OPTS=''
+  #local foo="$( __regexData | fzf-tmux --no-preview -p -w 80% -h 70% -i -e --prompt='select regex: ' --info=default --layout=reverse --tiebreak=index )"
+  ##FIXME why is __regexData launching fzf? I should just cat out the data funny :)
+  __regexData
+  echo $foo
+  ## Second Option Use direct user input
+  #encrypt --encrypted-regex="$1"
+}
 encrypt() {
+  ## encrypt file and create new file name.enc or name.enc.extension
+  local selectiveEncrypt="$1"
+  [[ -z "$selectiveEncrypt" ]] && local file="$(fzf)"
+  local keyPath="$PRIVATE/bin/age/key-$projectName"
+  ## for encrypting you need to explicitly feed the pub. key to sops
+  local publicKey="$(\grep -oP "public key: \K(.*)" $keyPath)"
+  local filename="${file##*/}" #rm path
+  local regexp='^.+\.+.+$'
+
+  if [[ "$filename" =~ $regexp ]]; then
+    local extension="${file##*.}"
+    local fileNoSuffix="${file%%.*}" #rm extensions
+    ## test if partial encrypt
+    [[ -z "$selectiveEncrypt" ]] || { sops --encrypt --age "$publicKey" "$selectiveEncrypt" "$file" > "$fileNoSuffix.enc.$extension"; return; }
+    ## if extension name.enc.extension
+    sops --encrypt --age "$publicKey" "$file" > "$fileNoSuffix.enc.$extension"
+  else
+    ## test if partial encrypt, (need to test this but i think it's only
+    ## a useful feature for structured data like yaml etc.
+    [[ -z "$selectiveEncrypt" ]] && { sops --encrypt --age "$publicKey" "$selectiveEncrypt" "$file" > "$file.enc"; return; }
+    ## if no extension name.enc
+    sops --encrypt --age "$publicKey" "$file" > "$file.enc"
+  fi
+}
+encryptInplace() {
+  ## TODO it'd be great if having this func as a sub subcommand of encrypt.
+  ## But I need to figure out how to add those sub subcommands to show up
+  ## in tab completion. For now this is good enough.
+  #
+  ## encrypt the same file, don't create new file, keep same name
   local file="$(fzf)"
   local keyPath="$PRIVATE/bin/age/key-$projectName"
   local publicKey="$(\grep -oP "public key: \K(.*)" $keyPath)"
-  ##FIXME only add an extension if the filename has a dot
-  local extension="${file##*.}"
-  local filename="${file%.*}"
-  ## FIXME current does not show up in tab complete, I would need a multi
-  #layer tab completion. Works for now
-  echo $1
-  if [[ "$1" == "current" ]]; then
-    ## If you want to encrypted the given file without creating a new
-    #file
-    sops --encrypt --in-place --age "$publicKey" "$file"
-  else
-    sops --encrypt --age "$publicKey" "$file" > "$filename.enc.$extension"
-  fi
+  sops --encrypt --in-place --age "$publicKey" "$file"
 }
 edit() {
   ## directly edit encrypted file, my fav. sops feature!
   local file="$(fzf)"
   sops "$file"
 }
-
-
-## function call from $1 argument
-declare -a commands=(decrypt cat partial-encrypt encrypt edit )
+############################ Function calls ############################
+declare -a commands=(decrypt cat partial-encrypt encrypt encryptInplace edit )
 for i in ${commands[@]}; do
   if [[ "$i" == "$subcommand" ]]; then
-    #subCmd=true
     "$subcommand" $*
   fi
 done
-#[[ "$subCmd" = false ]] && __edit
-
-# Tab completion - add to bashrc: complete -C sopsi sopsi
+############################ Tab Completion ############################
 if [ -n "$COMP_LINE" ]; then
   for cmd in ${commands[@]}; do
     [[ "${cmd:0:${#1}}" == "$1" ]] && echo $cmd
