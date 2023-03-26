@@ -1,13 +1,22 @@
 #!/bin/bash
 ################################# About ################################
 ## Author: Simon D. Woodtli                                                        
-## Project: https://github.com/SimonWoodtli/dotfiles/scripts/
+## Project: https://github.com/SimonWoodtli/dotfiles/scripts/cry
 ## Script Name: cry
 ## License:  Apache-2.0
-## Dependencies: sops, age, fzf
+## Dependencies: sops, age, fzf, tmux, bat
 ################################# Setup ################################
+## TODO create  a config file in ~/.config/cry/config and put crucial
+#info in their (age key path etc), and add an `init` func for it
+## TODO maybe also add the age keys that cry uses into ~/.config/cry/
 ## 1. Copy script into your $PATH
-## 2. Tab completion, add to your bashrc: complete -C cry cry
+## 2. Tab completion, add to your bashrc: 
+##    complete -C cry cry
+## 3. Adjust path of SOPS_AGE_KEY_FILE to where you want to store your keys
+## 4. Adjust path of $keyPath var. to where you want to store your keys
+## 5. Custom fzf options, add to your bashrc:
+##    export FZF_DEFAULT_OPTS="--no-mouse --height 80% --layout=reverse --multi --info=inline --preview='$HOME/.vimplugins/fzf.vim/bin/preview.sh {}' --preview-window='right:60%:wrap' --bind='f2:toggle-preview,f3:execute(bat --style=numbers {} || less -f {}),f4:execute($EDITOR {}),alt-w:toggle-preview-wrap,ctrl-d:half-page-down, ctrl-u:half-page-up,ctrl-y:execute-silent(echo {+} | pbcopy),ctrl-x:execute(rm -i {+})+abort,ctrl-l:clear-query'"
+## 6. add custom regex to your hearts content to __printRegex()
 ########################### Global Variables ###########################
 declare subcommand="$1"; shift
 git status &>/dev/null || { echo "Warning: This script only works within a git repo"; exit 1; }
@@ -16,11 +25,19 @@ git status &>/dev/null || { echo "Warning: This script only works within a git r
 ## if git rev-parse --show-toplevel
 declare projectPath="$(git rev-parse --show-toplevel)"
 declare projectName="${projectPath##*/}"
+declare fzfOptions="-w 80% -h 70% --tiebreak=index"
 ## create a key for every project you wanna use and name it `age-keygen -o "key-nameOfGitRepo"`
 export SOPS_AGE_KEY_FILE="$PRIVATE/bin/age/key-$projectName"
+## TODO make the script multi user, encryption that allows for multiple
+## recipients
+## TODO if it is not in a git repo open up your age keydir with fzf and
+## select the key you want to use
+## TODO create alternative fzf cmds if not in a tmux session
+############################ Main Functions ############################
 decrypt() {
   ## get filename with path if nested selection
-  local file="$(fzf)"
+  #local file="$(fzf)"
+  local file="$(fzf-tmux $fzfOptions --prompt='select file: ')"
   ## rm path for regex test
   local filename="${file##*/}"
   local fileNoSuffix="${file%%.*}"
@@ -38,36 +55,25 @@ decrypt() {
     sops --decrypt --in-place "$file"
   fi
 }
-cat() {
-  local file="$(fzf)"
+printFile() {
+  #local file="$(fzf)"
+  local file="$(fzf-tmux $fzfOptions --prompt='select file: ')"
   sops --decrypt "$file"
 }
-__regexData() {
-  cat  <<EOF
-hello
-no
-freddy
-EOF
-}
-partial-encrypt() {
-  #local file="$(fzf)"
-  #echo $file
-  #encrypt --encrypted-regex='^(key1|key3)$'
-  ## First Option use regex database for convenience
-  #export FZF_DEFAULT_COMMAND=''
-  #export FZF_DEFAULT_OPTS="--no-preview --no-mouse --height 80% -i -e --prompt='select regex: ' --info=default --layout=reverse --tiebreak=index"
-  #export FZF_DEFAULT_OPTS=''
-  #local foo="$( __regexData | fzf-tmux --no-preview -p -w 80% -h 70% -i -e --prompt='select regex: ' --info=default --layout=reverse --tiebreak=index )"
-  ##FIXME why is __regexData launching fzf? I should just cat out the data funny :)
-  __regexData
-  echo $foo
-  ## Second Option Use direct user input
-  #encrypt --encrypted-regex="$1"
+partialEncrypt() {
+  local file="$(fzf-tmux $fzfOptions --prompt='select file: ')"
+  local choice="$(printf "%s\n" "custom" "database" | fzf-tmux $fzfOptions --no-preview --prompt='Do you want to use a custom regex or select one from database? ')"
+  if [[ $choice == "custom" ]]; then
+    local getRegex="$( echo "" | fzf-tmux $fzfOptions --no-preview --prompt='enter custom regex: ' --print-query )"
+  else
+    local getRegex="$( __printRegex | fzf-tmux $fzfOptions --no-preview --prompt='select regex: ' )"
+  fi
+  encrypt --encrypted-regex="$getRegex"
 }
 encrypt() {
   ## encrypt file and create new file name.enc or name.enc.extension
   local selectiveEncrypt="$1"
-  [[ -z "$selectiveEncrypt" ]] && local file="$(fzf)"
+  [[ -z "$selectiveEncrypt" ]] && local file="$(fzf-tmux $fzfOptions --prompt='select file: ')" #local file="$(fzf)"
   local keyPath="$PRIVATE/bin/age/key-$projectName"
   ## for encrypting you need to explicitly feed the pub. key to sops
   local publicKey="$(\grep -oP "public key: \K(.*)" $keyPath)"
@@ -84,7 +90,7 @@ encrypt() {
   else
     ## test if partial encrypt, (need to test this but i think it's only
     ## a useful feature for structured data like yaml etc.
-    [[ -z "$selectiveEncrypt" ]] && { sops --encrypt --age "$publicKey" "$selectiveEncrypt" "$file" > "$file.enc"; return; }
+    [[ -z "$selectiveEncrypt" ]] || { sops --encrypt --age "$publicKey" "$selectiveEncrypt" "$file" > "$file.enc"; return; }
     ## if no extension name.enc
     sops --encrypt --age "$publicKey" "$file" > "$file.enc"
   fi
@@ -95,18 +101,39 @@ encryptInplace() {
   ## in tab completion. For now this is good enough.
   #
   ## encrypt the same file, don't create new file, keep same name
-  local file="$(fzf)"
+  #local file="$(fzf)"
+  local file="$(fzf-tmux $fzfOptions --prompt='select file: ')"
   local keyPath="$PRIVATE/bin/age/key-$projectName"
   local publicKey="$(\grep -oP "public key: \K(.*)" $keyPath)"
   sops --encrypt --in-place --age "$publicKey" "$file"
 }
 edit() {
   ## directly edit encrypted file, my fav. sops feature!
-  local file="$(fzf)"
+  #local file="$(fzf)"
+  ##FIXME editing partial encrypted file and adding more content does not
+  ## encrypt it because the regex is set for only the entries you had
+  #before, figure out how to let the user choose between encrypting new
+  #entry or not
+  local file="$(fzf-tmux $fzfOptions --prompt='select file: ')"
   sops "$file"
 }
-############################ Function calls ############################
-declare -a commands=(decrypt cat partial-encrypt encrypt encryptInplace edit )
+############################# Sub Functions ############################
+__printRegex() {
+  ## TODO allow comments within regex database
+  ## TODO add some common regex you might want need
+  ## TODO Test if a regular file can also do partial encryption with a
+  ## probably bit more complex regex
+  cat  <<EOF
+^(user|password)$
+key1|key2
+name
+password
+user
+username
+EOF
+}
+######################## Dynamic Function calls ########################
+declare -a commands=( decrypt printFile partialEncrypt encrypt encryptInplace edit )
 for i in ${commands[@]}; do
   if [[ "$i" == "$subcommand" ]]; then
     "$subcommand" $*
