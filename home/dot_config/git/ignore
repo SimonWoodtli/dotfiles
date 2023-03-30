@@ -1,0 +1,7 @@
+# global git ignore file
+*.pyc
+.envrc
+tmp/
+.vscode/
+.DS_Store
+__MACOSX/
