@@ -21,10 +21,12 @@ alias tree='broot'
 alias cp='cp -v'
 alias ip='ip -c'
 alias cm='chezmoi'
+alias ce='chezmoi edit --apply'
 alias dot="cd $HOME/.local/share/chezmoi/home"
 
 #_have pcregrep && alias grep='pcregrep' || alias grep='grep -i --colour=auto'
 _have dnf && alias dnf="dnf -C"
+_have abook && alias abook="abook -C $XDG_CONFIG_HOME/abook/abookrc --datafile $XDG_CONFIG_HOME/abook/addressbook"
 _have youtube-dl && alias yt-dl='youtube-dl'
 _have duf && alias df='duf'
 _have bat && alias bat='bat --theme gruvbox-dark'
@@ -48,9 +50,9 @@ _have spotify && alias spotify="env LD_PRELOAD=/usr/local/lib/spotify-adblock.so
 _have speedtest-cli && alias speedtest='speedtest-cli --secure'
 alias app="env APPIMAGELAUNCHER_DISABLE=1 $HOME/Applications/app"
 
-alias s=searx
-alias ?=duck
-alias ??=stackexchange
+alias ?=google
+alias ??=searx
+alias ???=duck
 alias ipinfo="curl ipinfo.io"
 alias rec='asciinema rec'
 
