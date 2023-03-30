@@ -1,10 +1,10 @@
 [user]
-  name = SimonWoodtli
-  email = xnasero@posteo.net
-	signingkey = 975B17A3CE84D5C3622BFF421F450DE4AA1945D7
+  name = {{ .git.user }}
+  email = {{ .git.email }}
+	signingkey = {{ .gpgFingerprint }}
 
 [core]
-  editor = vim
+  editor = {{ .editor }}
   excludesfile = $HOME/.config/git/gitignore_global
 
 [color]
