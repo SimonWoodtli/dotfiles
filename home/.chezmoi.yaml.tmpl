@@ -1,3 +1,7 @@
+{{- /* The following comment line will be inserted in ~/.config/chezmoi/chezmoi.yaml */ -}}
+{{ "# Don't edit this file it will be overwritten on next `chezmoi init`." }}
+{{ printf "# Edit `%s/.chezmoi.yaml.tmpl` instead" .chezmoi.sourceDir -}}
+
 {{- /*                                                                          
 * This file supports Go's text/template language, sprig functions and
   some custom functions from `chezmoi` itself.
@@ -26,31 +30,49 @@ you don’t want to be overwhelmed each time you update the template and
 have to re-init!
 3. Distinguish between specific computers by hostname                              
 4. Use the config template to define useful boolean data fields, this
-will make the if actions in your templates much easier to read
-5. To test output of this template: `chezmoi execute-template --init
---promptString email=xnasero@posteo.net < $(chezmoi
-source-path)/.chezmoi.yaml.tmpl` */ -}} 
-
+will make the if actions in your templates much easier to read */ -}}
 
 {{- /* Default values for variable that are used in conditionals.
 They cannot be initialized and set directly in a conditional statement.*/ -}}
 {{- $personal := false -}}
 {{- $secrets := false -}}
-{{- $key_recipient := false -}}
-{{- $key_identity := false -}}
+{{- $keyRecipient := false -}}
+{{- $keyIdentity := false -}}
 {{- $gitemail := "" -}}
 {{- $gituser := "" -}}
-{{- $configFileExist := output "bash" "-c" "$HOME/Repos/github.com/SimonWoodtli/dotfiles/scripts/__template-scripts/file-exist.sh $HOME/.config/chezmoi/chezmoi.yaml" | trim -}}{{- /* exec external script*/ -}}
+{{- $templateScripts := (joinPath .chezmoi.workingTree "scripts/__template-scripts") -}}
+{{- $scriptFileExist := (joinPath $templateScripts "file-exist.sh") -}}
+{{- $configFileExist := (output "bash" "-c" (printf "%s %s" $scriptFileExist .chezmoi.configFile)) | trim -}}{{- /* exec external script*/ -}}
+
 {{- $interactive := not (any (env "WORKSPACE") (env "HEADLESS")) -}}{{- /* set true if it can't find $WORKSPACE or $HEADLESS */ -}}
 
 {{- /* Recognize OS: */ -}}
 {{ $isMac := eq .chezmoi.os "darwin" }}
 {{- $osid := .chezmoi.os -}}
 {{- if hasKey .chezmoi.osRelease "id" -}}
-{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+  {{- $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 {{- /* Set different variables on different operating systems here. */ -}}
 
+
+{{- /* Works the same as getting git user/email, but without running external shell script: */ -}}
+{{ $usage := get . "usage" }}
+{{- if not $usage -}}
+  {{- if $interactive -}}
+    {{ $usage = promptString "Usage (work|home)" "home" }}
+  {{- else -}}
+    {{ $usage = coalesce (env "LOCATION") "home" }}
+  {{- end -}}
+{{- end -}}
+{{- /* Works the same as getting git user/email, but without running external shell script: */ -}}
+{{ $gpgFingerprint := get . "gpgFingerprint" }}
+{{- if not $gpgFingerprint -}}
+  {{- if $interactive -}}
+    {{ $gpgFingerprint = promptString "What is your github public gpg fingerprint" "975B17A3CE84D5C3622BFF421F450DE4AA1945D7" }}
+  {{- else -}}
+    {{ $gpgFingerprint = coalesce (env "GPGFINGERPRINT") "975B17A3CE84D5C3622BFF421F450DE4AA1945D7" }}
+  {{ end }}
+{{ end }}
 
 
 {{- /* Recognize Host: */ -}}
@@ -63,28 +85,31 @@ great if it would fall back to promptString function if the file is not
 there but ... Well that is what this hacked conditional code is for.  
 Chezmoi also needs to be set up interactively or else no prompt input is
 required. */ -}}
+{{- /* Can be achieved without script, see $usage. At this point I just
+keep the configFileExit template-script code , if I ever need to run a
+custom shell script within the golang template*/ -}}
 {{- if (and (eq $configFileExist "true") ($interactive)) -}}
-{{- $gitemail = promptStringOnce .git "email" "What is your git email address" "xnasero@posteo.net" -}}
+  {{- $gitemail = promptStringOnce .git "email" "What is your git email address" "xnasero@posteo.net" -}}
 {{- else if $interactive -}}
-{{- $gitemail = promptString "What is your git email address" "xnasero@posteo.net" -}}
+  {{- $gitemail = promptString "What is your git email address" "xnasero@posteo.net" -}}
 {{- else -}}
-{{- $gitemail = coalesce (env "GITEMAIL") "default@default.com" -}}
+  {{- $gitemail = coalesce (env "GITEMAIL") "default@default.com" -}}
 {{- end -}}
 
 {{- /* Get gituser: */ -}}
 {{- if (and (eq $configFileExist "true") ($interactive)) -}}
-{{- $gituser = promptStringOnce .git "user" "What is your git username?" "SimonWoodtli" -}}
+  {{- $gituser = promptStringOnce .git "user" "What is your git username?" "SimonWoodtli" -}} {{- else if $interactive -}}
 {{- else if $interactive -}}
-{{- $gituser = promptString "What is your git username" "SimonWoodtli" -}}
+  {{- $gituser = promptString "What is your git username" "SimonWoodtli" -}}
 {{- else }}
-{{- $gituser = coalesce (env "GITUSER") (env "USERNAME") (env "USER") .chezmoi.username -}}
+  {{- $gituser = coalesce (env "GITUSER") (env "USERNAME") (env "USER") .chezmoi.username -}}
 {{- end -}}
 
 {{- if eq $gituser "SimonWoodtli" -}}
-{{- $key_recipient = "age1kuank5mmsy2yt5gz30rrygqnptuqkunyrxa34ugyn2k3prrtggzs8uksws" -}}
-{{- $key_identity = (expandenv "$HOME/Private/bin/age/key-chezmoi") -}}
-{{- $personal = true -}}
-{{- $secrets = true -}}
+  {{- $keyRecipient = "age1kuank5mmsy2yt5gz30rrygqnptuqkunyrxa34ugyn2k3prrtggzs8uksws" -}}
+  {{- $keyIdentity = (expandenv "$HOME/Private/bin/age/key-chezmoi") -}}
+  {{- $personal = true -}}
+  {{- $secrets = true -}}
 {{- end -}}
 
 {{- /* WRITE TO CONFIG FILE:
@@ -93,16 +118,18 @@ With `chezmoi data` you see all the variables available
 This template (.chezmoy.yaml.tmpl) auto generates auto and writes to ~/.config/chezmoi/chezmoi.toml */ -}}
 
 {{- /* File encryption: */ -}}
-{{- if $secrets -}}
+{{- if $secrets }}
 encryption: age
 age:
-  recipient: {{ $key_recipient }}
-  identity: {{ $key_identity }}
+  recipient: {{ $keyRecipient }}
+  identity: {{ $keyIdentity }}
 {{ end -}}
 {{/* Custom path and name for my dotfile repo, (default ~/.local/share/chezmoi): */ -}}
 sourceDir: {{ coalesce (env "CHEZMOI") (expandenv "$HOME/Repos/github.com/SimonWoodtli/dotfiles/home") }}
 {{/* Data: */ -}}
 data:
+  templateScripts: {{ $templateScripts }}
+  usage: {{ $usage }}
   osid: {{ $osid }}
   isMac: {{ $isMac }}
   {{/* coalesce is like default, but it allows for multiple default
@@ -113,6 +140,7 @@ data:
   editor: {{ coalesce (env "VISUAL") (env "EDITOR") "/usr/bin/vim" }}
   personal: {{ $personal }}
   secrets: {{ $secrets }}
+  gpgFingerprint: {{ $gpgFingerprint }}
   git:
     user: {{ $gituser }}
     email: {{ $gitemail }}
