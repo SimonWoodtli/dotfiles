@@ -1,8 +1,15 @@
 #!/bin/sh
-
-wiki () {
-  url=$(urlencode "$*")
-  lynx "https://en.wikipedia.org/wiki/Special:Search/$url"
+encode() {
+  local args="$*"
+  local encodeArgs="${args// /+}"
+  echo "$encodeArgs"
 }
-
+wiki () {
+  if [[ ${#*} -eq 1 ]]; then
+    w3m "https://en.wikipedia.org/wiki/$1"
+  else
+    search=$(encode "$*")
+    w3m "https://en.wikipedia.org/wiki/Special:Search/$search"
+  fi
+}
 wiki $*

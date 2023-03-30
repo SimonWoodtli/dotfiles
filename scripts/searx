@@ -1,7 +1,8 @@
 #!/bin/sh
-lynx "https://searx.gnu.style/search?q=$*"
+exec w3m "https://searx.work/search?q=$*"
 
 ## working alternatives
+#lynx "https://searx.gnu.style/search?q=$*"
 #lynx "https://search.mdosch.de/search?q=$*"
 #lynx "https://searx.gnous.eu/search?q=$*"
 #lynx "https://searx.tiekoetter.com/search?q=$*"

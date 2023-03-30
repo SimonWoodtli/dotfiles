@@ -1,2 +1,2 @@
 #!/bin/sh
-lynx "https://bing.com/search?q=$*"
+exec w3m "https://bing.com/search?q=$*"

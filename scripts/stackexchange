@@ -1,2 +1,2 @@
 #!/bin/sh
-lynx "https://stackexchange.com/search?q=$*"
+exec w3m "https://stackexchange.com/search?q=$*"
