@@ -22,3 +22,9 @@ Important:
 {{- else }}
 # using Zsh, so not ignoring Zsh environment
 {{- end }}
+
+{{ if ne .chezmoi.os "windows" }}
+# List all files that are windows specific here, but not used on any other platform
+{{- else }}
+# List all the files that you want to ignore on a windows host
+{{- end }}
