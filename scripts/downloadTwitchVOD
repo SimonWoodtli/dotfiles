@@ -1,0 +1,71 @@
+#!/usr/bin/bash
+################################# About ################################
+## Author: Simon D. Woodtli
+## Project: https://github.com/SimonWoodtli/dotfiles/scripts/downloadTwitchVOD
+## Script Name: cry
+## License:  Apache-2.0
+## Dependencies: streamlink, ffmpeg
+################################# Setup ################################
+# Run the comannd `downloadTwitchVOD filename-p0.mp4 urlToTwitchVod quality totalTimeofVod`
+# e.g. `downloadTwitch theprimeagen_toplang-p0.mp4 https://www.twitch.tv/videos/1779904938 best 01:13:51`
+########################### Global Variables ###########################
+declare filename="$1" #input only name no extension
+## only accept filename input as xxx-p0.mp4 format
+[[ "$filename" =~ -p0\.mp4$ ]] || { echo "ERROR: Wrong filename, needs suffix -p0.mp4 like: filename-p0.mp4"; exit 1; }
+declare -a files=( "$filename" )
+declare -a filesWithPipe=( "$filename" )
+declare url="$2"
+declare quality="$3"
+declare durationTotal="$4" #format 00:00:00
+##TODO make test to have correct format for durationTotal
+[[ -n "$quality" ]] || quality="best" #default value
+########################### utility functions ##########################
+convertSecToHour() {
+  local seconds=$1
+  local hours=$((seconds / 3600))
+  local minutes=$(( (seconds % 3600) / 60 ))
+  local seconds=$(( seconds % 60 ))
+  printf "%02d:%02d:%02d\n" $hours $minutes $seconds
+}
+convertHourToSec() {
+  IFS=: read hours minutes seconds <<< "$1"
+  #10# prefix to avoid 08 error, 08 gets interpreted as octal and 10# uses base 10
+  echo $(( 10#${hours}*3600 + 10#${minutes}*60 + 10#${seconds} ))
+}
+getDuration() {
+  durationSec="$(ffprobe -v error -show_entries format=duration "$filename" | grep --invert-match "FORMAT" | cut -d'.' -f1 | cut -d'=' -f2)"
+  echo "$(convertSecToHour $durationSec)"
+}
+addDuration() {
+  duration=$(convertHourToSec "$1")
+  durationCurrent=$(( duration + $(convertHourToSec "$durationCurrent") ))
+  durationCurrent=$(convertSecToHour $durationCurrent)
+  echo "$durationCurrent"
+}
+################################# main #################################
+## 1. Try to download VOD as one part:
+streamlink --output "$filename" "$url" "$quality"
+durationCurrent="$(getDuration)"
+echo "first part: current time = ${durationCurrent}, total time = $durationTotal"
+## if no partfile created, rename filename xxx-p0.mp4 to xxx.mp4
+[[ "$durationTotal" == "$durationCurrent" ]] && mv "$PWD/${filename%%-*}-p0.mp4" "$PWD/${filename%%-*}.mp4" && exit
+
+## 2. If one part download fails, download VOD with multi part:
+declare -i i=1
+while [[ "$durationTotal" != "$durationCurrent" ]]; do
+  ##TODO check if internet is up, otherwise wait till internet is up
+  name="${filename%%-*}-p$i.mp4"
+  files+=( "$name" )
+  filesWithPipe+=( "| $name" )
+  streamlink --hls-start-offset "$durationCurrent" --output "$filename" "$url" "$quality"
+  sleep 5
+  duration="$(getDuration)"
+  durationCurrent=$(addDuration $duration)
+  echo "partial download: ${name}, current time (added up) = ${durationCurrent}, total time = $durationTotal"
+  i+=1
+  sleep 20
+  [[ $i -eq 15 ]] && break ## just if something goes wrong I don't wanna fill whole disk :)
+done
+
+## 2.1 Merge parts together:
+ffmpeg -i "concat:${filesWithPipe[*]}" -c copy "$PWD/${filename%%-*}.mp4" && sleep 20 && rm -f "$PWD/${files[*]}"
