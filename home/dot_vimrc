@@ -94,13 +94,29 @@ endif
 " Vmap for maintain Visual Mode after shifting > and <
 vmap < <gv
 vmap > >gv
+
+" Currently I am using function below, mainly cause i wan 10j to center
+" screen too, not just Ctrl-d and searches
 " Search mappings: These will make it so that going to the next one in
 " a search will center on the line it's found in.
-nnoremap n nzzzv
-nnoremap N Nzzzv
+"nnoremap n nzzzv
+"nnoremap N Nzzzv
 " Going half page up and down also auto centers screen in middle
-nnoremap <C-u> <C-u>zz
-nnoremap <C-d> <C-d>zz
+"nnoremap <C-u> <C-u>zz
+"nnoremap <C-d> <C-d>zz
+
+" experimental gotta try this, center the screen always
+" this works for all cases including in insert or visual mode, also works
+" for search and C-d case making the above absolete. However it its
+" resource intense gotta check if my vim gets laggy from using this
+autocmd CursorMoved,CursorMovedI * call Center_cursor()
+
+function! Center_cursor()
+    let pos = getpos(".")
+    normal! zz
+    call setpos(".", pos)
+endfunction
+" experimental gotta try this
 
 " vertically center document when entering insert mode
 autocmd InsertEnter * norm zz
@@ -248,10 +264,16 @@ au bufnewfile,bufRead *ssh/config set filetype=sshconfig
 au bufnewfile,bufRead *gitconfig set filetype=gitconfig
 au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.muttrc set filetype=muttrc
+au bufnewfile,bufRead *.tmpl set filetype=go
+au bufnewfile,bufRead /tmp/calcurse*,~/.local/share/calcurse/notes/* set filetype=markdown
+" auto apply changes in source files to target files when using chezmoi.  No more `chezmoi apply`
+autocmd BufWritePost ~/Repos/github.com/SimonWoodtli/dotfiles/home* ! chezmoi apply --source-path %; or for f in (rg -l 'template "%:t"'); chezmoi apply --source-path $f; end
+
 "" start at last place you were editing
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 "normal! g'\"" | endif "remember where you were and puts you back to it
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe
+
 
 " might be needed for C-x/C-o autocomplete
 "set omnifunc=javascriptcomplete#CompleteJS
