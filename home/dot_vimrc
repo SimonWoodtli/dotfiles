@@ -266,8 +266,6 @@ au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.muttrc set filetype=muttrc
 au bufnewfile,bufRead *.tmpl set filetype=go
 au bufnewfile,bufRead /tmp/calcurse*,~/.local/share/calcurse/notes/* set filetype=markdown
-" auto apply changes in source files to target files when using chezmoi.  No more `chezmoi apply`
-autocmd BufWritePost ~/Repos/github.com/SimonWoodtli/dotfiles/home* ! chezmoi apply --source-path %; or for f in (rg -l 'template "%:t"'); chezmoi apply --source-path $f; end
 
 "" start at last place you were editing
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
