@@ -35,11 +35,14 @@ color listfocus_unread   black     cyan
 color info               cyan      black
 color article            default   default
 
-# important: open main links (blue) in another program use: ",w" for lynx etc.
+# configs
+max-items        100
+
+# important: open main links (blue) in another program use: ",w" for w3m etc.
 browser linkhandler
 macro , open-in-browser # important key: leader key set to ","
 macro m set browser "setsid -f mpv" ; open-in-browser ; set browser linkhandler #open link with mpv
-macro w set browser "lynx" ; open-in-browser ; set browser linkhandler #open link with terminal browser
+macro w set browser "w3m" ; open-in-browser ; set browser linkhandler #open link with terminal browser
 ##TODO use xclip instead of xsel
 macro c set browser "xsel -b <<<" ; open-in-browser ; set browser linkhandler #copy link to clipboard
 ##TODO fix download
