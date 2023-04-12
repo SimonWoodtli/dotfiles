@@ -13,3 +13,10 @@ wee "$url" 2>/dev/null
 echo "$url"
 which xclip >/dev/null || exit 0
 echo "$url" | xclip 
+
+# netcat `nc` with IP of receiver
+# 0x0.st
+# bashupload.com
+# transfer.sh
+# chunk.io
+# gitlab.com/timvisee/send-instances
