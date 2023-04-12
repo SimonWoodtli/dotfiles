@@ -1,27 +1,16 @@
 #!/bin/bash
 declare w3mpath=/usr/bin/w3m
-#alias w3m='w3m -config ~/.config/w3m/config'
-#maybe requires this config flag to get w3m be xdg compliant but w3m_dir
-#env var should be sufficient
-
 [[ ! -x "$w3mpath" ]] && w3mpath=/usr/local/bin/w3m
 
 if [ ! -x "$w3mpath" ]; then
   echo "Doesn't look like w3m is installed."
   exit 1
 fi
+
+# create three panes and run w3m in middle
 if [[ $(tmux list-panes | wc -l) -lt 2 ]]; then
-  ## create two panes, w3m has no border and text uses whole screen -> not
-  ## very readable
-  tmux split-window -h -p 50
-  ## solution: use swap-pane and select-pane to get same result, `?` works
-  #tmux swap-pane -D; tmux select-pane -R #starts w3m on right pane
-  tmux select-pane -L
+  tmux split-window -h -p 80
+  tmux split-window -h -p 25
+  tmux swap-pane -s 1 -t 2; tmux select-pane -t 2 #starts w3m in middle pane
 fi
-exec "$w3mpath" "$@" &
-## after w3m gets closed also kill the created pane
-wait
-tmux kill-pane
-#declare pid=$!
-## problem this won't let me exec key words with spaces when duck script `?` used
-#tmux send-keys -t"$session_uuid:" ""$w3mpath" "$@"" Enter
+exec "$w3mpath" "$@"
