@@ -1,2 +1,2 @@
 #!/bin/sh
-sudo exec systemctl --failed
+exec sudo systemctl --failed

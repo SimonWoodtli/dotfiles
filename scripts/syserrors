@@ -1,2 +1,2 @@
 #!/bin/sh
-sudo exec journalctl -p 3 -xb
+exec sudo journalctl -p 3 -xb
