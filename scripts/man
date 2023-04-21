@@ -1,0 +1,16 @@
+#!/bin/sh
+## needs to be script, as bashrc function it won't work with 'K' in vim
+################################# About ################################
+## Author: Simon D. Woodtli
+## Project: https://github.com/SimonWoodtli/dotfiles/scripts/man
+## Script Name: man
+## License:  Apache-2.0
+################################# Setup ################################
+##1. add script to $PATH
+##2. add line to vimrc: autocmd FileType sh nnoremap <silent><buffer> K <Esc>:silent! call system("tmux split-window man " .  expand('<cword>'))<CR>
+##3. put cursor on any word in bash script, "K" to get definition (requires tmux session)
+case "$(type -t -- "$1")" in
+  builtin) help -m "$1" | less ;;
+  keyword) command /usr/bin/man bash | less -p "^       $1 " ;;
+  *) command /usr/bin/man "$@" ;;
+esac
