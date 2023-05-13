@@ -43,6 +43,8 @@ set timeoutlen=200
 " to download german dictonary run within vim:
 ":setl spell spelllang=de
 set spelllang=en_us,de_de
+" vertical pane no border |
+set fillchars+=vert:\ 
 
 " no backups
 set nobackup
@@ -95,6 +97,8 @@ endif
 vmap < <gv
 vmap > >gv
 
+
+
 " Currently I am using function below, mainly cause i wan 10j to center
 " screen too, not just Ctrl-d and searches
 " Search mappings: These will make it so that going to the next one in
@@ -111,13 +115,15 @@ vmap > >gv
 " resource intense gotta check if my vim gets laggy from using this
 autocmd CursorMoved,CursorMovedI * call Center_cursor()
 
+" experimental gotta try this:
 function! Center_cursor()
     let pos = getpos(".")
     normal! zz
     call setpos(".", pos)
 endfunction
-" experimental gotta try this
 
+" make Y consitent with D and C (yank til end)
+map Y y$ 
 " vertically center document when entering insert mode
 autocmd InsertEnter * norm zz
 " search and replace [foo] to [foo1] globally
@@ -155,63 +161,63 @@ endif
 if filereadable(expand("~/.vim/autoload/plug.vim"))
   call plug#begin('~/.vimplugins')
 "######################### plugins essentials ##########################
-  Plug 'vim-pandoc/vim-pandoc'
-  Plug 'https://gitlab.com/rwxrob/vim-pandoc-syntax-simple'
   Plug 'itchyny/lightline.vim' "info footer
   Plug 'mengelbrecht/lightline-bufferline' "info footer with buffer tabs
-  Plug 'preservim/nerdtree'
-  Plug 'Xuyuanp/nerdtree-git-plugin'
   Plug 'tpope/vim-surround' "change single to double quotes: cs'\"
-  Plug 'sheerun/vim-polyglot' " better syntax highlighting for many lang
-  Plug 'preservim/nerdcommenter' " Comment your code quickly
-  Plug 'puremourning/vimspector' " Debugger
-  Plug 'KabbAmine/zeavim.vim' " zeal documentation
+  Plug 'PProvost/vim-ps1' "windows powershell vim support
   Plug 'tpope/vim-fugitive' "git integration
-  Plug 'wakatime/vim-wakatime' "keep track of time spent where
-  " fzf
+  Plug 'puremourning/vimspector' " Debugger
+  Plug 'preservim/nerdcommenter' " Comment your code quickly
+  Plug 'https://gitlab.com/ivan-cukic/zeal-lynx-cli' "CLI zeal docs
+  Plug 'KabbAmine/zeavim.vim' "GUI zeal docs
+  Plug 'wakatime/vim-wakatime' "keep track of where time spent
+"################################# fzf #################################
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
   Plug 'airblade/vim-rooter' "helps fzf to look at git repos
-  "Plug 'vim-scripts/YankRing.vim'  don't use it's still version 19
-  "newest version: https://www.vim.org/scripts/script.php?script_id=1234
-  "extract manually to ~/.vimplugins/yankring
-  Plug '~/.vimplugins/yankring'
   Plug 'majutsushi/tagbar' "tags in memory
-  " colorschemes
-  Plug 'morhetz/gruvbox' "color scheme
-  Plug 'HerringtonDarkholme/yats.vim' " correct syntax hightlight for gruvbox
-  Plug 'justinmk/vim-sneak' "move cursor quickly, need to test if I like
-"############################ plugins stuff ############################
-  "Plug 'elzr/vim-json' better syntax for json
-  "Plug 'cespare/vim-toml'
-  "Plug 'fatih/vim-go'
-  "Plug 'PProvost/vim-ps1'
-  "autocomplete
-  "Plug 'neoclide/coc.nvim', {'branch': 'release'} "powerful autocomplete
-  " tags
-  "Plug 'xolox/vim-easytags' "Ctag automater
-  "
 "########################## plugins languages ##########################
+  Plug 'vim-pandoc/vim-pandoc'
+  Plug 'https://gitlab.com/rwxrob/vim-pandoc-syntax-simple'
+  Plug 'cespare/vim-toml'
+  Plug 'sheerun/vim-polyglot' " better syntax highlighting for many lang
+  " Go
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+  "Plug 'vim-go/vim-go'
   " Javascript
   "Plug '/MaxMEllon/vim-jsx-pretty' "react syntax highlighting
   "Plug 'dense-analysis/ale' "JS linter :ALEToggle
   Plug 'moll/vim-node' " Node.js
   Plug 'godlygeek/tabular' " make quick tables, clean json data
+  Plug 'pangloss/vim-javascript'
   " C
   "Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp']}
   "Plug 'ludwig/split-manpage.vim'
-  " python
-  " Python Bundle
+  " Python
   "Plug 'davidhalter/jedi-vim'
   "Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
   "Plug 'plytophogy/vim-virtualenv'
   " Plug 'python-mode/python-mode'
-  " html/css
+  " HTML/CSS
   "Plug 'mattn/emmet-vim'
   "Plug 'hail2u/vim-css3-syntax'
   Plug 'ap/vim-css-color' "css color preview
   "Plug 'tpope/vim-haml'
   "Plug 'mattn/emmet-vim'
+"############################ colorschemes #############################
+  Plug 'morhetz/gruvbox' "color scheme
+  Plug 'HerringtonDarkholme/yats.vim' " correct syntax hightlight for gruvbox
+"############################ plugins stuff ############################
+  "Plug 'justinmk/vim-sneak' "move cursor quickly, need to test if I like
+  "Plug '~/.vimplugins/yankring'
+  "Plug 'preservim/nerdtree'
+  "Plug 'Xuyuanp/nerdtree-git-plugin'
+  "Plug 'elzr/vim-json' better syntax for json
+  "Plug 'romainl/vim-devdocs' "devdocs.io in vim
+  "autocomplete
+  "Plug 'neoclide/coc.nvim', {'branch': 'release'} "powerful autocomplete
+  " tags
+  "Plug 'xolox/vim-easytags' "Ctag automater
   call plug#end()
 "########################### plugins configs ###########################
   " set foldcolumn=0 does not work however disable the folding module from 
@@ -220,9 +226,45 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   set nocompatible "needed for vim-polygot
   colorscheme gruvbox
   set background=dark
+  
+  " KabbAmine/zeavim.vim
+  nmap <Leader>z <Plug>Zeavim
+  vmap <Leader>z <Plug>ZVVisSelection
+  nmap gz <Plug>ZVOperator
+  nmap <Leader><Leader>z <Plug>ZVKeyDocset
+
+  " pandoc
+  let g:pandoc#formatting#mode = 'h' " A'
+  let g:pandoc#formatting#textwidth = 72
+  " golang:
   let g:go_fmt_fail_silently = 0 " let me out even with errors
   let g:go_fmt_command = 'goimports' " autoupdate import
   let g:go_fmt_autosave = 1
+  let g:go_gopls_enabled = 1
+  let g:go_highlight_types = 1
+  let g:go_highlight_fields = 1
+  let g:go_highlight_functions = 1
+  let g:go_highlight_function_calls = 1
+  let g:go_highlight_operators = 1
+  let g:go_highlight_extra_types = 1
+  let g:go_highlight_variable_declarations = 1
+  let g:go_highlight_variable_assignments = 1
+  let g:go_highlight_build_constraints = 1
+  let g:go_highlight_diagnostic_errors = 1
+  let g:go_highlight_diagnostic_warnings = 1
+  "let g:go_auto_type_info = 1 " forces press Enter too much
+  let g:go_auto_sameids = 0
+  "let g:go_metalinter_command='golangci-lint'
+  "let g:go_metalinter_command='golint'
+  "let g:go_metalinter_autosave=1
+  set updatetime=100
+  "let g:go_gopls_analyses = { 'composites' : v:false }
+  au FileType go nmap <leader>t :GoTest!<CR>
+  au FileType go nmap <leader>v :GoVet!<CR>
+  au FileType go nmap <leader>b :GoBuild!<CR>
+  au FileType go nmap <leader>c :GoCoverageToggle<CR>
+  au FileType go nmap <leader>i :GoInfo<CR>
+  au FileType go nmap <leader>l :GoMetaLinter!<CR>
 
   "" lightline config:
   let g:lightline = {
@@ -253,8 +295,20 @@ else
   autocmd vimleavepre *.go !gofmt -w % " backup if fatih fails
 endif
 
+" fill in empty markdown links with duck.com search
+" [some thing]() -> [some thing](https://duck.com/lite?kae=t&q=some thing)
 autocmd vimleavepre *.md !perl -p -i -e 's,\[([^\]]+?)\]\(\),[\1](https://duck.com/lite?q=\1),g' %
-
+""TODO get :GoDoc to open in vertical split like :help ~/.vim/after/ftplugin/help.vim, or tmux popup
+" these settings are in aftter/ftplugin:
+"autocmd FileType python nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E pydoc " . expand('<cword>'))<CR>
+"autocmd FileType perl noremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E perldoc -f " . expand('<cword>'))<CR>
+"autocmd FileType sh nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E man " . expand('<cword>'))<CR>
+autocmd FileType go nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E go doc " . expand('<cword>'))<CR>
+"FIXME it's `go doc fmt.Printf` and not `go doc Printf`, hence K with the "cursor on Printf won't work, needs to include pkgname
+"TODO JS documentation wanted badly
+"autocmd FileType javascript noremap <silent><buffer> K <Esc>:silent! call system("tmux split-window docs " . expand('<cword>'))<CR>
+"autocmd FileType javascript setlocal keywordprg=open\ https://developer.mozilla.org/search?topic=api\\&topic=js\\&q=\
+"TODO this plugin but with w3m 'ivan-cukic/zeal-lynx-cli'
 "############################### buffer ################################
 "" help you to detect filetypes that are not automatically detected
 au bufnewfile,bufRead bashconfig set filetype=sh
@@ -324,11 +378,6 @@ let g:tagbar_autofocus = 1
 
 nnoremap <Leader><Leader>s :%s//g <Left><Left><Left>
 
-" zeal documentation plugin
-nmap <Leader>z <Plug>Zeavim
-vmap <Leader>z <Plug>ZVVisSelection
-nmap gz <Plug>ZVOperator
-nmap <Leader><Leader>z <Plug>ZVKeyDocset
 
 " vim vanilla commands:
 "switch buffers with :buffer tab tab (Tried to keybind did not work)
@@ -418,3 +467,4 @@ set shiftwidth=2 "if you want lines to move in like with tabs `3>>` will move 3 
 " read personal/private vim configuration (keep last to override)
 "set rtp^=~/.vimpersonal
 "set rtp^=~/.vimprivate
+
