@@ -15,55 +15,47 @@ done
 export TESTUSER="SimonWoodtli"
 export USER="${USER:-$(whoami)}"
 export BROWSER=/usr/bin/brave-browser
-export WWW_HOME=https://lite.duckduckgo.com/lite # ~ for w3m
 export VIRTUALMACHINES="$HOME/VirtualMachines"
 export TERM=xterm-256color
 _have git && export GITUSER="$(git config --global user.name)"
 export GHREPOS="$REPOS/github.com/$GITUSER"
 export DOTFILES="$GHREPOS/dotfiles"
-export CHEZMOI="$DOTFILES/home"
 export SCRIPTS="$DOTFILES/scripts"
 export SCRIPTS_PRIV="$PRIVATE/scripts"
-## used for `pdf` script
-export PDFDIR="$HOME/Documents/books/importantBooks"
-## used for `zet-old` script
-#export KN=$HOME/Repos/github.com/$GITUSER
-## IBUS config for chinese pinyin input
-export GTK_IM_MODULE=IBUS
-export XMODIFIERS=@im=IBUS
-export QT_IM_MODULE=IBUS
-export ANSIBLE_INVENTORY="$HOME/.config/ansible/ansible_hosts"
-export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock
+export PDFDIR="$HOME/Documents/books/importantBooks" # used for `pdf` script
 
-_have bat && export BAT_PAGER="less -R"
-_have deno && export DENO_INSTALL_ROOT="$HOME/.deno/bin"
-_have sdk && export SDKMAN_DIR="$HOME/.sdkman"
-# I like the approach with a central config.yaml file better
-#_have sops && export SOPS_AGE_KEY_FILE="$HOME/.config/sops/key.txt"
-#_have sops && export SOPS_AGE_KEY="?" # another env. var
-#_have sops && export SOPS_AGE_RECIPIENTS="You can encrypt a file for one or more age recipients (comma separated)"
-################### XDG Base Directory Specification ###################
-#https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+######################### XDG Dir Specification ########################
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_SHARE_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CACHE_HOME="$HOME/.cache"
-# program/lang/frame/lib specific:
-export CARGO_HOME="$XDG_DATA_HOME/cargo"
-export PERL_CPANM_HOME="$XDG_CACHE_HOME/cpanm"
-export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
-export MBSYNCRC="$XDG_CONFIG_HOME/isync/mbsyncrc"
+######################## program|lang|frame|lib ########################
 export LESSHISTFILE="$XDG_STATE_HOME/less/history"
-export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
-export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
-export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
-export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
-export SDKMAN_DIR="$XDG_DATA_HOME/sdkman"
-export W3M_DIR="$XDG_CONFIG_HOME/w3m"
 export WAKATIME_HOME="$XDG_CONFIG_HOME/wakatime"
-
+_have chezmoi export CHEZMOI="$DOTFILES/home"
+_have cargo && export CARGO_HOME="$XDG_DATA_HOME/cargo"
+_have perl && export PERL_CPANM_HOME="$XDG_CACHE_HOME/cpanm"
+_have docker && export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+_have docker && export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock
+_have mbsync && export MBSYNCRC="$XDG_CONFIG_HOME/isync/mbsyncrc"
+_have npm && export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+_have python && export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+_have rustup && export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+_have pass export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
+_have w3m && export W3M_DIR="$XDG_CONFIG_HOME/w3m"
+_have w3m && export WWW_HOME=https://lite.duckduckgo.com/lite
+_have sdk && export SDKMAN_DIR="$XDG_DATA_HOME/sdkman"
+_have proxychains && export PROXYCHAINS_CONF_FILE="$XDG_CONFIG_HOME/proxychains/proxychains.conf"
+_have cookiecutter && export COOKIECUTTER_CONFIG="$XDG_CONFIG_HOME/cookiecutter/??"
+export ANSIBLE_INVENTORY="$XDG_CONFIG_HOME/ansible/ansible_hosts"
+_have bat && export BAT_PAGER="less -R"
+_have deno && export DENO_INSTALL_ROOT="$HOME/.local/deno/bin"
+## IBUS config for chinese pinyin input
+export GTK_IM_MODULE=IBUS
+export XMODIFIERS=@im=IBUS
+export QT_IM_MODULE=IBUS
 ################################## fzf #################################
 #keybindingds: f2,f3,f4,.....
 ##TODO add f5 key binding to open with xdg-open
