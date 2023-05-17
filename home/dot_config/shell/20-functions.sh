@@ -1,29 +1,24 @@
 
 ############################### FUNCTIONS ##############################
-
+cat() { [[ $(wc -l < "$1") -gt 25 ]] && bat "$1" || /usr/bin/cat "$1";  }
+temp() { cd "$(mktemp -d)"; }
+kill9() { ps -ef | sed 1d | fzf -m | awk '{print $2}' | xargs kill -${1:-9}; }
+cpr() { rsync --progress -auv "$1" "$2"; }
+##TODO make a case so you can select what kind of comment you want to
+##remove
+rmc() { sed 's|\s*#.*||g; /^$/ d' "$1" > "$2"; } #rm hashtag comment and empty line
 ############################# zet commands #############################
-cdz () { cd "$(zet get "$@")"; }
-zb() {
-  cd "$GHREPOS/zet"
-  #local file="$(git log | fzf | sed 's/^ *//')"
-  vi "$(rg -l "$(git log | fzf | sed 's/^ *//')")"
-
-  #vi "$(rg -l "$(git log | fzf | sed 's/^ *//')")"
-}
-
-kill9() {
-  ps -ef | sed 1d | fzf -m | awk '{print $2}' | xargs kill -${1:-9}
-}
-
-ze() {
-  zet edit "$1"
-}
-zc() {
-  zet create "$1"
-}
-zu() {
-  zet use "$1"
-}
+zc() { cd "$(zet get "$@")"; }
+ze() { zet edit "$1"; }
+zc() { zet create "$1"; }
+zu() { zet use "$1"; }
+#man () {
+#  case "$(type -t -- "$1")" in
+#    builtin) help -m "$1" | less ;;
+#    keyword) man bash | less -p "^       $1 " ;;
+#    *) command man "$@" ;;
+#  esac
+#}
 ########################## fzf ctrl-r history ##########################
 __fzfcmd() {                                                                    
   [[ -n "$TMUX_PANE" ]] && { [[ "${FZF_TMUX:-0}" != 0 ]] || [[ -n "$FZF_TMUX_OPTS" ]]; } &&
@@ -182,13 +177,6 @@ gprck() {
     gh pr checkout "$pr_number"
   fi
 }
-
-################################# stuff ################################
-temp() { cd "$(mktemp -d)"; }
-cpr() { rsync --progress -auv "$1" "$2"; }
-##TODO make a case so you can select what kind of comment you want to
-##remove
-rmc() { sed 's|\s*#.*||g; /^$/ d' "$1" > "$2"; } #rm hashtag comment and empty line
 ################################ prompt ################################
 miniprompt() {
   unset PROMPT_COMMAND
@@ -239,4 +227,3 @@ envx() {
   done < "$envfile"
 } && export -f envx
 [[ -e "$HOME/.env" ]] && envx "$HOME/.env"
-
