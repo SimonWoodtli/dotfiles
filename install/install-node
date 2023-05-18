@@ -1,0 +1,77 @@
+#!/bin/sh
+
+## WARNING: Do *not* use Node unless you absolutely must.
+## alternative:
+## 1. $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | bash
+## 2. put the path displayed at end of script in your bashrc
+## 3. $ nvm install node (for the latest) or LTS-version: $ nvm install --lts
+
+read -p 'Run this script only for Fedora or Debian. Arch installs via
+AUR. 
+
+Did you check the latest LTS on nodejs.org and adjust $rel if need be?
+Ready to install? [y/n]' input
+case $input in
+  y|Y) echo "Preparing now" ;;
+  n|N) exit 1 ;;
+  *) echo 'wrong input only "y n" accepted.' ;;
+esac
+
+## CHECK for latest LTS and change $rel if needed
+rel=v18.16.0
+
+download () {
+  echo -n "Downloading..."
+  curl -O https://nodejs.org/dist/$rel/node-$rel-linux-x64.tar.xz
+  result=$?
+  if [ $result -eq 0 ]; then
+    echo DOWNLOADED
+  else
+    echo FAILED
+  fi
+  return $result
+}
+
+verify () {
+  echo -n "Verifying..."
+  curl -O https://nodejs.org/dist/$rel/SHASUMS256.txt
+  curl -LJO https://nodejs.org/dist/$rel/SHASUMS256.txt.sig
+  grep node-$rel-linux-x64.tar.xz SHASUMS256.txt | sha256sum -c -
+  gpg --keyserver keyserver.ubuntu.com --recv-keys 4ED778F539E3634C779C87C6D7062848A1AB005C
+  gpg --keyserver keyserver.ubuntu.com --recv-keys 94AE36675C464D64BAFA68DD7434390BDBE9B9C5
+  gpg --keyserver keyserver.ubuntu.com --recv-keys 74F12602B6F1C4E913FAA37AD3A89613643B6201
+  gpg --keyserver keyserver.ubuntu.com --recv-keys 71DCFD284A79C3B38668286BC97EC7A07EDE3FC1
+  gpg --keyserver keyserver.ubuntu.com --recv-keys 8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600
+  gpg --keyserver keyserver.ubuntu.com --recv-keys C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8
+  gpg --keyserver keyserver.ubuntu.com --recv-keys C82FA3AE1CBEDC6BE46B9360C43CEC45C17AB93C
+  gpg --keyserver keyserver.ubuntu.com --recv-keys DD8F2338BAE7501E3DD5AC78C273792F7D83545D
+  gpg --keyserver keyserver.ubuntu.com --recv-keys A48C2BEE680E841632CD4E44F07496B3EB3C1762
+  gpg --keyserver keyserver.ubuntu.com --recv-keys 108F52B48DB57BB0CC439B2997B01419BD92F80A
+  gpg --keyserver keyserver.ubuntu.com --recv-keys B9E2F5981AA6E0CD28160D9FF13993A75599653C
+  gpg --verify SHASUMS256.txt.sig SHASUMS256.txt
+  result=$?
+  if [ $result -eq 0 ]; then
+    echo VERIFIED
+  else
+    echo FAILED
+  fi
+  return $result
+}
+
+install () {
+  echo -n "Installing..."
+  unxz node-$rel-linux-x64.tar.xz
+  tar -xvf node-$rel-linux-x64.tar
+  rm -rf $HOME/.node
+  mv node-$rel-linux-x64 $HOME/.node
+  echo "INSTALLED"
+  echo 'Add $HOME/.node/bin to your $PATH'
+}
+
+clean () {
+  rm node-$rel-linux-x64* 2>/dev/null
+  rm SHASUMS256* 2>/dev/null
+}
+
+download && verify && install
+clean

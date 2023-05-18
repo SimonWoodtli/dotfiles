@@ -1,0 +1,10 @@
+#!/bin/sh
+## Make sure to export docker host path in bashrc
+git clone https://github.com/docker/docker-install /tmp/docker
+cd /tmp/docker
+./install.sh
+dockerd-rootless-setuptool.sh install
+
+## 2nd Method:
+## Use old install-docker script in unwanted/
+## Uninstall rootless: https://github.com/docker/docker-install/issues/166

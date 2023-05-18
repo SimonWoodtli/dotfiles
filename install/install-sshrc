@@ -1,0 +1,5 @@
+#!/bin/sh
+## setup instructions: https://github.com/cdown/sshrc
+## get your bashrc, vimrc, fav. scripts etc. on each server you login with ssh
+curl -LJ https://raw.githubusercontent.com/cdown/sshrc/master/sshrc -o $HOME/.local/bin/sshrc
+chmod u+x $HOME/.local/bin/sshrc

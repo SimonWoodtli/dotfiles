@@ -1,0 +1,5 @@
+#!/bin/sh
+#get new version: https://www.vmware.com/go/getworkstation-linux
+curl -LJ https://download3.vmware.com/software/WKST-1700-LX/VMware-Workstation-Full-17.0.0-20800274.x86_64.bundle -o /tmp/workstation.bundle
+chmod 755 /tmp/workstation.bundle                                               
+sudo /tmp/workstation.bundle 

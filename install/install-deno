@@ -1,0 +1,6 @@
+#!/bin/sh
+#curl -fsSL https://deno.land/install.sh | sh
+#deno --version
+
+${havecmd} deno && deno completions bash > deno.bash
+sudo mv deno.bash /usr/local/etc/bash_completion.d/deno.bash

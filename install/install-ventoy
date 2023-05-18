@@ -1,0 +1,48 @@
+#!/bin/sh
+## create variable for your system
+declare spruce_type=linux
+declare OS=$(uname)
+## get correct link with jq
+declare URL=$(curl -s https://api.github.com/repos/ventoy/Ventoy/releases/latest | jq -r ".assets[] | select(.name | test(\"${spruce_type}\")) | .browser_download_url")
+declare TARBALL=${URL##*/}
+declare NAME=${TARBALL%-*}
+## colors
+declare red=$'\033[31m'
+declare black=$'\033[30m'
+declare green=$'\033[32m'
+declare yellow=$'\033[33m'
+declare blue=$'\033[34m'
+declare magenta=$'\033[35m'
+declare cyan=$'\033[36m'
+declare white=$'\033[37m'
+declare reset=$'\033[0m'
+declare bold=$'\033[1m'
+
+if [ $OS != 'Linux' ] ; then
+  echo "${red}Error:$reset ${bold}Sorry designed to be installed on Linux only.$reset"
+  exit 1
+fi
+
+echo "$cyan
+██╗   ██╗███████╗███╗   ██╗████████╗ ██████╗ ██╗   ██╗
+██║   ██║██╔════╝████╗  ██║╚══██╔══╝██╔═══██╗╚██╗ ██╔╝
+██║   ██║█████╗  ██╔██╗ ██║   ██║   ██║   ██║ ╚████╔╝
+╚██╗ ██╔╝██╔══╝  ██║╚██╗██║   ██║   ██║   ██║  ╚██╔╝
+ ╚████╔╝ ███████╗██║ ╚████║   ██║   ╚██████╔╝   ██║
+  ╚═══╝  ╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝    ╚═╝
+$reset"
+
+## download tarball
+curl -LJ -o /tmp/$TARBALL $URL
+
+## extract tarball
+tar -xvzf /tmp/$TARBALL -C /tmp
+echo ${green}Done:$reset Extracted Ventoy successfully.
+echo "${blue}Hint 1:$reset cd into ${bold}/tmp/${NAME}$reset"
+echo "${blue}Hint 2:$reset Figure out which device to format with Ventoy.  Run ${bold}\`lsblk\`$reset"
+echo "${blue}Hint 3:$reset Install Ventoy on your device with
+${bold}\`sudo sh Ventoy2Disk.sh [-i | -I | -u] /dev/XXX\`$reset
+
+    -i   install ventoy to sdX (fail if disk already installed with ventoy)
+    -I   force install ventoy to sdX (no matter installed or not)
+    -u   update ventoy in sdX"
