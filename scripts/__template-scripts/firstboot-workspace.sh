@@ -9,13 +9,14 @@ curl -LJ https://raw.githubusercontent.com/SimonWoodtli/workspace-toolbox/main/r
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
 sudo chown -R $(whoami):$(whoami) /nix
 sudo usermod -a -G input "$(whoami)" #use dotool without root
+source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
 # bash completion for nix requires some manual intervention or this code
 # to copy it to the right path. Why they cannot do this when nix gets
 # installed is a bit ... annoying but whatever. It's better than fetching
 # chezmoi first and initalize my dotfiles prior to installing all
 # packages.
-echo "if _have nix && shopt -q progcomp &>/dev/null; then                             
+echo "if shopt -q progcomp &>/dev/null; then                             
   . "/nix/store/bcjj9j8xqbwqx4fcsxydya671pgl5nzq-bash-completion-2.11/etc/profile.d/bash_completion.sh"
   nullglobStatus=$(shopt -p nullglob)                                           
   shopt -s nullglob                                                             
@@ -28,6 +29,7 @@ echo "if _have nix && shopt -q progcomp &>/dev/null; then
   unset nullglobStatus p m                                                      
 fi" >> $HOME/.bashrc
 export SDKMAN_DIR="$HOME/.config/sdkman" && curl -s "https://get.sdkman.io?rcupdate=false" | bash
+source $HOME/.config/sdkman/bin/sdkman-init.sh
 source $HOME/.bashrc
 
 sdkCount=$(yq '.sd[]' < /tmp/recipe.yml | wc -l)
@@ -36,6 +38,7 @@ for pkg in "${sdkPackages[@]}"; do
   sdk install "$pkg"
 done
 
+export NIXPKGS_ALLOW_UNFREE=1
 nixCount=$(yq '.nix[]' < /tmp/recipe.yml | wc -l)
 nixPackages=($(yq '.nix[]' < /tmp/recipe.yml))
 for pkg in "${nixPackages[@]}"; do
@@ -61,11 +64,15 @@ read a0
 while [[ $a0 != "y" ]]; do
   echo "${yw}Warning:$re Prompt requires a 'y'. "; read a0
 done
-aptCount=$(yq '.apt-interactive[]' < /tmp/recipe.yml | wc -l)
-aptPackages=($(yq '.apt-interactive[]' < /tmp/recipe.yml))
+aptCount=$(yq '.apt[]' < /tmp/recipe.yml | wc -l)
+aptPackages=($(yq '.apt[]' < /tmp/recipe.yml))
 for pkg in "${aptPackages[@]}"; do
   sudo apt-get install "$pkg"
 done
+
+#TODO maybe private repo is required in order to avoid the "encryption"
+#error, gotta test
+chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
 
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-node
 npmCount=$(yq '.npm[]' < /tmp/recipe.yml | wc -l)
@@ -77,4 +84,3 @@ done
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-rust
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
 
-chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
