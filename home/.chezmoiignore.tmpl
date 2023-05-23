@@ -8,6 +8,19 @@ Important:
 2. Chezmoi ignore files are processed as templates
 3. Test which files are ignored on current machine: `chezmoi execute-template < $(chezmoi source-path)/.chezmoiignore.tmpl`
 */ -}}
+{{- $templateScripts := (joinPath .chezmoi.workingTree "scripts/__template-scripts") -}}
+{{- $scriptFileExist := (joinPath $templateScripts "file-exist.sh") -}}
+{{- $ageKey := (expandenv "$HOME/Private/bin/age/key-chezmoi") -}}
+{{- $ageKeyExist := (output "bash" "-c" (printf "%s %s" $scriptFileExist $ageKey)) | trim -}}{{- /* exec external script*/ -}}
+
+
+{{ if ne $ageKeyExist "true" }}
+# no private key, so dont serve encrypted files
+dot_config/newsboat/encrypted_urls.age
+dot_config/tmux/encrypted_tmux_personal.conf.age
+dot_config/wakatime/encrypted_wakatime.cfg.age
+encrypted_dot_bash_private.age
+{{- end }}
 
 {{- if ( env "SHELL" | ne "/bin/bash" ) }}
 # not running Bash, so ignore Bash profile
