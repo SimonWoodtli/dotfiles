@@ -16,6 +16,7 @@ source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 # installed is a bit ... annoying but whatever. It's better than fetching
 # chezmoi first and initalize my dotfiles prior to installing all
 # packages.
+nix profile install nixpkgs\#bash-completion
 echo "if shopt -q progcomp &>/dev/null; then                             
   . "/nix/store/bcjj9j8xqbwqx4fcsxydya671pgl5nzq-bash-completion-2.11/etc/profile.d/bash_completion.sh"
   nullglobStatus=$(shopt -p nullglob)                                           
@@ -32,7 +33,7 @@ export SDKMAN_DIR="$HOME/.config/sdkman" && curl -s "https://get.sdkman.io?rcupd
 source $HOME/.config/sdkman/bin/sdkman-init.sh
 source $HOME/.bashrc
 
-sdkCount=$(yq '.sd[]' < /tmp/recipe.yml | wc -l)
+sdkCount=$(yq '.sdk[]' < /tmp/recipe.yml | wc -l)
 sdkPackages=($(yq '.sdk[]' < /tmp/recipe.yml))
 for pkg in "${sdkPackages[@]}"; do
   sdk install "$pkg"
@@ -42,22 +43,35 @@ export NIXPKGS_ALLOW_UNFREE=1
 nixCount=$(yq '.nix[]' < /tmp/recipe.yml | wc -l)
 nixPackages=($(yq '.nix[]' < /tmp/recipe.yml))
 for pkg in "${nixPackages[@]}"; do
-  nix profile install nixpkgs\#$pkg
+  nix profile install --impure nixpkgs\#$pkg
   #nix profile upgrade 0
 done
 
 python3 -m pip install --user pipx
 pipxCount=$(yq '.pipx[]' < /tmp/recipe.yml | wc -l)
 pipxPackages=($(yq '.pipx[]' < /tmp/recipe.yml))
-for pkg in "${nixPackages[@]}"; do
+for pkg in "${pipxPackages[@]}"; do
   pipx install "$pkg"
 done
 
 goCount=$(yq '.go[]' < /tmp/recipe.yml | wc -l)
 goPackages=($(yq '.go[]' < /tmp/recipe.yml))
 for pkg in "${goPackages[@]}"; do
-  go install "$pkg"
+  #FIXME issue with go package name not parsed
+  go install $pkg
 done
+
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-node
+source $HOME/.bashrc
+exec bash -l
+npmCount=$(yq '.npm[]' < /tmp/recipe.yml | wc -l)
+npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
+for pkg in "${npmPackages[@]}"; do
+  npm install -g "$pkg"
+done
+
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-rust
+exec bash -l
 ############################## interactive #############################
 echo "The rest of the installation process requires user input to configure, please be present. To proceed please press <y>."
 read a0
@@ -74,13 +88,4 @@ done
 #error, gotta test
 chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
 
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-node
-npmCount=$(yq '.npm[]' < /tmp/recipe.yml | wc -l)
-npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
-for pkg in "${npmPackages[@]}"; do
-  npm install -g "$pkg"
-done
-
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-rust
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
-
