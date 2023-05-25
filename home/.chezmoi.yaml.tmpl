@@ -1,6 +1,6 @@
 {{- /* The following comment line will be inserted in ~/.config/chezmoi/chezmoi.yaml */ -}}
 {{ "# Don't edit this file it will be overwritten on next `chezmoi init`." }}
-{{ printf "# Edit `%s/.chezmoi.yaml.tmpl` instead" .chezmoi.sourceDir -}}
+{{ printf "# Edit `%s/.chezmoi.yaml.tmpl` instead of" .chezmoi.sourceDir -}}
 
 {{- /*                                                                          
 * This file supports Go's text/template language, sprig functions and
@@ -35,16 +35,11 @@ will make the if actions in your templates much easier to read */ -}}
 {{- /* Default values for variable that are used in conditionals.
 They cannot be initialized and set directly in a conditional statement.*/ -}}
 {{- $personal := false -}}
-{{- $secrets := false -}}
-{{- $keyRecipient := false -}}
-{{- $keyIdentity := false -}}
 {{- $gitemail := "" -}}
 {{- $gituser := "" -}}
 {{- $templateScripts := (joinPath .chezmoi.workingTree "scripts/__template-scripts") -}}
-{{- $scriptFileExist := (joinPath $templateScripts "file-exist.sh") -}}
-{{- $ageKey := (expandenv "$HOME/Private/bin/age/key-chezmoi") -}}
-{{- $configFileExist := (output "bash" "-c" (printf "%s %s" $scriptFileExist .chezmoi.configFile)) | trim -}}{{- /* exec external script*/ -}}
-{{- $ageKeyExist := (output "bash" "-c" (printf "%s %s" $scriptFileExist $ageKey)) | trim -}}{{- /* exec external script*/ -}}
+{{- $fileExist := (joinPath $templateScripts "file-exist.sh") -}}
+{{- $configFileExist := (output "bash" "-c" (printf "%s %s" $fileExist .chezmoi.configFile)) | trim -}}{{- /* exec external script*/ -}}
 
 {{- $interactive := not (any (env "WORKSPACE") (env "HEADLESS")) -}}{{- /* set true if it can't find $WORKSPACE or $HEADLESS */ -}}
 
@@ -84,8 +79,6 @@ They cannot be initialized and set directly in a conditional statement.*/ -}}
 Chezmoi promptStringOnce variable reads from .config/chezmoi.yaml. But
 not only that it requires the file to exist or throws an error. It would be
 great if it would fall back to promptString function if the file is not
-there but ... Well that is what this hacked conditional code is for.  
-Chezmoi also needs to be set up interactively or else no prompt input is
 required. */ -}}
 {{- /* Can be achieved without script, see $usage. At this point I just
 keep the configFileExit template-script code , if I ever need to run a
@@ -108,10 +101,7 @@ custom shell script within the golang template*/ -}}
 {{- end -}}
 
 {{- if eq $gituser "SimonWoodtli" -}}
-  {{- $keyRecipient = "age1kuank5mmsy2yt5gz30rrygqnptuqkunyrxa34ugyn2k3prrtggzs8uksws" -}}
-  {{- $keyIdentity = $ageKey -}}
   {{- $personal = true -}}
-  {{- $secrets = true -}}
 {{- end -}}
 
 {{- /* WRITE TO CONFIG FILE:
@@ -119,13 +109,6 @@ Here we write the created variables to the config file, so they can be used in o
 With `chezmoi data` you see all the variables available
 This template (.chezmoy.yaml.tmpl) auto generates and writes to ~/.config/chezmoi/chezmoi.toml */ -}}
 
-{{- /* File encryption: */ -}}
-{{- if (and (eq $ageKeyExist "true") ($secrets)) }}
-encryption: age
-age:
-  recipient: {{ $keyRecipient }}
-  identity: {{ $keyIdentity }}
-{{ end -}}
 {{/* Custom path and name for my dotfile repo, (default ~/.local/share/chezmoi): */ -}}
 sourceDir: {{ coalesce (env "CHEZMOI") (expandenv "$HOME/Repos/github.com/SimonWoodtli/dotfiles/home") }}
 {{/* Data: */ -}}
@@ -141,8 +124,6 @@ data:
   Note the use of brackets to nest the function calls.*/ -}}
   editor: {{ coalesce (env "VISUAL") (env "EDITOR") "/usr/bin/vim" }}
   personal: {{ $personal }}
-  secrets: {{ $secrets }}
-  ageKeyExist: {{ $ageKeyExist }}
   interactive: {{ $interactive }}
   gpgFingerprint: {{ $gpgFingerprint }}
   git:
