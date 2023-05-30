@@ -17,25 +17,15 @@ source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 # chezmoi first and initalize my dotfiles prior to installing all
 # packages.
 nix profile install "nixpkgs#bash-completion"
-bashCompletionPath="$(nix profile list | grep "bash-completion" | head -n 1 | awk '{print $4}')"
-echo "if shopt -q progcomp &>/dev/null; then                             
-  source "$bashCompletionPath/etc/profile.d/bash_completion.sh"
-  nullglobStatus=$(shopt -p nullglob)                                           
-  shopt -s nullglob                                                             
-  for p in $NIX_PROFILES; do                                                    
-    for m in "$p/etc/bash_completion.d/"*; do                                   
-      . "$m"                                                                    
-    done                                                                        
-  done                                                                          
-  eval "$nullglobStatus"                                                        
-  unset nullglobStatus p m                                                      
-fi" >> $HOME/.bashrc
+curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/02-utility-functions.sh /tmp/02-utility-functions.sh
+curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/11-completion.sh -o /tmp/11-completion.sh
+source /tmp/02-utility-functions.sh
+source /tmp/11-completion.sh
 #FIXME the bash-completion path also needs to be in dotfiles, however
 #every system will need its own version, chezmoi template should be able
 #to deal with that.
 export SDKMAN_DIR="$HOME/.config/sdkman" && curl -s "https://get.sdkman.io?rcupdate=false" | bash
 source $HOME/.config/sdkman/bin/sdkman-init.sh
-source $HOME/.bashrc
 
 sdkCount=$(yq '.sdk[]' < /tmp/recipe.yml | wc -l)
 sdkPackages=($(yq '.sdk[]' < /tmp/recipe.yml))
@@ -52,17 +42,12 @@ for pkg in "${nixPackages[@]}"; do
 done
 
 python3 -m pip install --user pipx
+python3 -m pipx ensurepath
 pipxCount=$(yq '.pipx[]' < /tmp/recipe.yml | wc -l)
 pipxPackages=($(yq '.pipx[]' < /tmp/recipe.yml))
 for pkg in "${pipxPackages[@]}"; do
+  #FIXME issue with pipx package name not parsed
   pipx install "$pkg"
-done
-
-goCount=$(yq '.go[]' < /tmp/recipe.yml | wc -l)
-goPackages=($(yq '.go[]' < /tmp/recipe.yml))
-for pkg in "${goPackages[@]}"; do
-  #FIXME issue with go package name not parsed
-  go install $pkg
 done
 
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-node
@@ -72,18 +57,6 @@ read a0
 while [[ $a0 != "y" ]]; do
   echo "${yw}Warning:$re Prompt requires a 'y'. "; read a0
 done
-#TODO maybe private repo is required in order to avoid the "encryption"
-#error, gotta test
-#FIXME chezmoi cmd does not work because I guess the interactive prompt
-#cannot be accessed via this scriptk
-chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
-
-source $HOME/.bashrc
-npmCount=$(yq '.npm[]' < /tmp/recipe.yml | wc -l)
-npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
-for pkg in "${npmPackages[@]}"; do
-  npm install -g "$pkg"
-done
 
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-rust
 source $HOME/.bashrc
@@ -92,5 +65,21 @@ aptPackages=($(yq '.apt[]' < /tmp/recipe.yml))
 for pkg in "${aptPackages[@]}"; do
   sudo apt-get install "$pkg"
 done
-
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
+
+chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
+source $HOME/.bashrc
+
+npmCount=$(yq '.npm[]' < /tmp/recipe.yml | wc -l)
+npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
+npm install -g npm@latest
+for pkg in "${npmPackages[@]}"; do
+  npm install -g "$pkg"
+done
+
+goCount=$(yq '.go[]' < /tmp/recipe.yml | wc -l)
+goPackages=($(yq '.go[]' < /tmp/recipe.yml))
+for pkg in "${goPackages[@]}"; do
+  #FIXME issue with go package name not parsed
+  go install $pkg
+done
