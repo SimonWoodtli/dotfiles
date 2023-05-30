@@ -16,9 +16,10 @@ source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 # installed is a bit ... annoying but whatever. It's better than fetching
 # chezmoi first and initalize my dotfiles prior to installing all
 # packages.
-nix profile install nixpkgs\#bash-completion
+nix profile install "nixpkgs#bash-completion"
+bashCompletionPath="$(nix profile list | grep "bash-completion" | head -n 1 | awk '{print $4}')"
 echo "if shopt -q progcomp &>/dev/null; then                             
-  . "/nix/store/bcjj9j8xqbwqx4fcsxydya671pgl5nzq-bash-completion-2.11/etc/profile.d/bash_completion.sh"
+  . "$bashCompletionPath/etc/profile.d/bash_completion.sh"
   nullglobStatus=$(shopt -p nullglob)                                           
   shopt -s nullglob                                                             
   for p in $NIX_PROFILES; do                                                    
@@ -29,6 +30,9 @@ echo "if shopt -q progcomp &>/dev/null; then
   eval "$nullglobStatus"                                                        
   unset nullglobStatus p m                                                      
 fi" >> $HOME/.bashrc
+#FIXME the bash-completion path also needs to be in dotfiles, however
+#every system will need its own version, chezmoi template should be able
+#to deal with that.
 export SDKMAN_DIR="$HOME/.config/sdkman" && curl -s "https://get.sdkman.io?rcupdate=false" | bash
 source $HOME/.config/sdkman/bin/sdkman-init.sh
 source $HOME/.bashrc
@@ -36,7 +40,7 @@ source $HOME/.bashrc
 sdkCount=$(yq '.sdk[]' < /tmp/recipe.yml | wc -l)
 sdkPackages=($(yq '.sdk[]' < /tmp/recipe.yml))
 for pkg in "${sdkPackages[@]}"; do
-  sdk install "$pkg"
+  sdk install java "$pkg"
 done
 
 export NIXPKGS_ALLOW_UNFREE=1
