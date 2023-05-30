@@ -19,7 +19,7 @@ source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 nix profile install "nixpkgs#bash-completion"
 bashCompletionPath="$(nix profile list | grep "bash-completion" | head -n 1 | awk '{print $4}')"
 echo "if shopt -q progcomp &>/dev/null; then                             
-  . "$bashCompletionPath/etc/profile.d/bash_completion.sh"
+  source "$bashCompletionPath/etc/profile.d/bash_completion.sh"
   nullglobStatus=$(shopt -p nullglob)                                           
   shopt -s nullglob                                                             
   for p in $NIX_PROFILES; do                                                    
@@ -66,8 +66,19 @@ for pkg in "${goPackages[@]}"; do
 done
 
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-node
+############################## interactive #############################
+echo "The rest of the installation process requires user input to configure, please be present. To proceed please press <y>."
+read a0
+while [[ $a0 != "y" ]]; do
+  echo "${yw}Warning:$re Prompt requires a 'y'. "; read a0
+done
+#TODO maybe private repo is required in order to avoid the "encryption"
+#error, gotta test
+#FIXME chezmoi cmd does not work because I guess the interactive prompt
+#cannot be accessed via this scriptk
+chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
+
 source $HOME/.bashrc
-exec bash -l
 npmCount=$(yq '.npm[]' < /tmp/recipe.yml | wc -l)
 npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
 for pkg in "${npmPackages[@]}"; do
@@ -75,21 +86,11 @@ for pkg in "${npmPackages[@]}"; do
 done
 
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-rust
-exec bash -l
-############################## interactive #############################
-echo "The rest of the installation process requires user input to configure, please be present. To proceed please press <y>."
-read a0
-while [[ $a0 != "y" ]]; do
-  echo "${yw}Warning:$re Prompt requires a 'y'. "; read a0
-done
+source $HOME/.bashrc
 aptCount=$(yq '.apt[]' < /tmp/recipe.yml | wc -l)
 aptPackages=($(yq '.apt[]' < /tmp/recipe.yml))
 for pkg in "${aptPackages[@]}"; do
   sudo apt-get install "$pkg"
 done
-
-#TODO maybe private repo is required in order to avoid the "encryption"
-#error, gotta test
-chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
 
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
