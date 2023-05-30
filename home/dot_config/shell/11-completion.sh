@@ -31,7 +31,8 @@ _have deno && source /usr/local/etc/bash_completion.d/deno.bash
 # $XDG_DATA_DIRS/bash-completion/completions/
 # on demand, so they do not need to be sourced here.
 if _have nix && shopt -q progcomp &>/dev/null; then
-  . "/nix/store/bcjj9j8xqbwqx4fcsxydya671pgl5nzq-bash-completion-2.11/etc/profile.d/bash_completion.sh"
+  bashCompletionPath="$(nix profile list | grep "bash-completion" | head -n 1 | awk '{print $4}')"
+  source "$bashCompletionPath/etc/profile.d/bash_completion.sh"
   nullglobStatus=$(shopt -p nullglob)
   shopt -s nullglob
   for p in $NIX_PROFILES; do
