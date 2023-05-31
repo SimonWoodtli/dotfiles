@@ -18,8 +18,10 @@ source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 # packages.
 nix profile install "nixpkgs#bash-completion"
 curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/02-utility-functions.sh /tmp/02-utility-functions.sh
+curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/03-export.sh /tmp/03-export.sh
 curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/11-completion.sh -o /tmp/11-completion.sh
 source /tmp/02-utility-functions.sh
+source /tmp/03-export.sh
 source /tmp/11-completion.sh
 #FIXME the bash-completion path also needs to be in dotfiles, however
 #every system will need its own version, chezmoi template should be able
