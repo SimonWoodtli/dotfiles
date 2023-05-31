@@ -2,7 +2,7 @@
 ############################ non-interactive ###########################
 #check if in container or abort 
 [[ $(hostname) == workspace.fedora ]] || exit 1
-sudo apt-get update && sudo apt-get upgrade
+sudo apt-get update && sudo apt-get upgrade -y
 curl -LJ https://raw.githubusercontent.com/SimonWoodtli/workspace-toolbox/main/recipe.yml -o /tmp/recipe.yml
 
 #install nix pkg manager:
@@ -17,12 +17,14 @@ source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 # chezmoi first and initalize my dotfiles prior to installing all
 # packages.
 nix profile install "nixpkgs#bash-completion"
-curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/02-utility-functions.sh /tmp/02-utility-functions.sh
-curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/03-export.sh /tmp/03-export.sh
-curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/11-completion.sh -o /tmp/11-completion.sh
-source /tmp/02-utility-functions.sh
-source /tmp/03-export.sh
-source /tmp/11-completion.sh
+#curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/02-utility-functions.sh /tmp/02-utility-functions.sh
+#curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/03-export.sh /tmp/03-export.sh
+#curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/home/dot_config/shell/11-completion.sh -o /tmp/11-completion.sh
+#source /tmp/02-utility-functions.sh
+#source /tmp/03-export.sh
+#source /tmp/11-completion.sh
+chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
+source $HOME/.bashrc
 #FIXME the bash-completion path also needs to be in dotfiles, however
 #every system will need its own version, chezmoi template should be able
 #to deal with that.
@@ -69,8 +71,6 @@ for pkg in "${aptPackages[@]}"; do
 done
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
 
-chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
-source $HOME/.bashrc
 
 npmCount=$(yq '.npm[]' < /tmp/recipe.yml | wc -l)
 npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
