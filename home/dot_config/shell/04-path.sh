@@ -1,6 +1,10 @@
 
 ############################## Export PATH #############################
 
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+
 # be sure NOT to add ./ cuz it's unsafe
 export PATH=\
 $SCRIPTS:\
