@@ -1,15 +1,11 @@
 
 ############################## Export PATH #############################
 
-if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-fi
-
 # be sure NOT to add ./ cuz it's unsafe
 export PATH=\
 $SCRIPTS:\
 $SCRIPTS_PRIV:\
-/usr/lib/go-1.15/bin:\
+/usr/lib/go-1.18/bin:\
 $HOME/.local/bin:\
 $HOME/.local/go/bin:\
 $XDG_DATA_HOME/cargo/bin:\
@@ -17,6 +13,8 @@ $HOME/.cargo/bin:\
 $HOME/.node/bin:\
 $HOME/.deno/bin:\
 $HOME/.emacs.d/bin:\
+$HOME/.nix-profile/bin:\
+/nix/var/nix/profiles/default/bin:\
 /usr/local/opt/coreutils/libexec/gnubin:\
 /usr/local/go/bin:\
 /usr/local/tinygo/bin:\

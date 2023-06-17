@@ -11,15 +11,9 @@
 ## source bashrc
 [ -f "$HOME/.bashrc" ] && source "$HOME/.bashrc"
 
-## set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-  PATH="$HOME/.local/bin:$PATH"
-fi
-## set go PATH if exists
-if [ -d "$HOME/.local/go/bin" ]; then
-  PATH="$HOME/.local/go/bin:$PATH"
-fi
 export QT_STYLE_OVERRIDE=kvantum
 export EDITOR=vim
 
-if [ -e "/home/$USER/.nix-profile/etc/profile.d/nix.sh" ]; then source "/home/$USER/.nix-profile/etc/profile.d/nix.sh"; fi # added by Nix installer
+if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix.sh" ]; then 
+  source "/nix/var/nix/profiles/default/etc/profile.d/nix.sh"
+fi
