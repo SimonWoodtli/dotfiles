@@ -3,7 +3,7 @@
 #check if in container or abort 
 [[ $(hostname) == workspace.fedora ]] || exit 1
 sudo apt-get update && sudo apt-get upgrade -y
-curl -LJ https://raw.githubusercontent.com/SimonWoodtli/workspace-toolbox/main/recipe.yml -o /tmp/recipe.yml
+curl -LJ https://raw.githubusercontent.com/SimonWoodtli/workspace-ubuntu/main/recipe.yml -o /tmp/recipe.yml
 
 #install nix pkg manager:
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
