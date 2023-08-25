@@ -16,6 +16,7 @@ alias chmox="chmod u+x"
 alias ip='ip -c'
 alias dot="cd $DOTFILES"
 alias scripts="cd $SCRIPTS"
+alias deepl="proxychains deepl"
 alias ?=google
 alias ??=duck
 alias ???=searx
