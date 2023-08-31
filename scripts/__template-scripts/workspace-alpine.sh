@@ -35,10 +35,8 @@ for pkg in "${pipxPackages[@]}"; do
   pipx install "$pkg"
 done
 
-## Install node and npm:
-##FIXME node gets installed but cant find -> i guess cause chezmoi not
-#updated path so should be fine later
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-node
+## Don't use install-node script it is compiled with glibc and Alpine uses musl
+## Install npm packages: 
 npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
 npm install -g npm@latest
 for pkg in "${npmPackages[@]}"; do
