@@ -6,6 +6,9 @@
 ## 2. put the path displayed at end of script in your bashrc
 ## 3. $ nvm install node (for the latest) or LTS-version: $ nvm install --lts
 
+## Does only work on distros that have glibc instead of musl. Alpine
+## ships with musl so this pre-compiled binary does not work there
+
 ## CHECK for latest LTS and change $rel if needed
 ## TODO manually update $rel
 rel=v18.16.0
