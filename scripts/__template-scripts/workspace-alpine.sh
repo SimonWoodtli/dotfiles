@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 ############################ non-interactive ###########################
 ## check if in container or abort 
 [[ $(hostname) == workspace.fedora ]] || exit 1
