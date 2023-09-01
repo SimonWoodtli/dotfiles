@@ -1,0 +1,39 @@
+#!/bin/sh
+## Currently rustdesk is not on flathub. Until then use this script.
+## create variable for your system
+declare spruce_type=flatpak
+declare os=$(uname)
+## get correct link with jq
+declare url=$(curl -s https://api.github.com/repos/rustdesk/rustdesk/releases/latest | jq -r ".assets[] | select(.name | test(\"${spruce_type}\")) | .browser_download_url")
+declare package=${url##*/}
+## colors
+declare red=$'\033[31m'
+declare black=$'\033[30m'
+declare green=$'\033[32m'
+declare yellow=$'\033[33m'
+declare blue=$'\033[34m'
+declare magenta=$'\033[35m'
+declare cyan=$'\033[36m'
+declare white=$'\033[37m'
+declare reset=$'\033[0m'
+declare bold=$'\033[1m'
+
+if [ $os != 'Linux' ] ; then
+  echo "${red}Error:$reset ${bold}Sorry designed to be installed on Linux only.$reset"
+  exit 1
+fi
+
+echo "$cyan
+██████╗ ██╗   ██╗███████╗████████╗██████╗ ███████╗███████╗██╗  ██╗
+██╔══██╗██║   ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔════╝██║ ██╔╝
+██████╔╝██║   ██║███████╗   ██║   ██║  ██║█████╗  ███████╗█████╔╝
+██╔══██╗██║   ██║╚════██║   ██║   ██║  ██║██╔══╝  ╚════██║██╔═██╗
+██║  ██║╚██████╔╝███████║   ██║   ██████╔╝███████╗███████║██║  ██╗
+╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝
+$reset"
+
+## download flatpak
+curl -LJ -o "/tmp/$package" "$url"
+
+## install flatpak package
+/usr/bin/flatpak install --user --noninteractive "/tmp/$package"
