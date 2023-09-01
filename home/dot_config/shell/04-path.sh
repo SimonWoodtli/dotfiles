@@ -10,7 +10,7 @@ $HOME/.local/bin:\
 $HOME/.local/go/bin:\
 $XDG_DATA_HOME/cargo/bin:\
 $HOME/.cargo/bin:\
-$HOME/.node/bin:\
+$HOME/.local/npm/bin:\
 $HOME/.deno/bin:\
 $HOME/.emacs.d/bin:\
 $HOME/.nix-profile/bin:\
