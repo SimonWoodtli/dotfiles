@@ -1,0 +1,7 @@
+#!/bin/sh
+## autocomplete: complete -W "$(tldr 2>/dev/null --list)" tldr
+if [ -f $HOME/.local/bin/tldr ]; then
+  rm $HOME/.local/bin/tldr
+fi
+curl -LJ -o $HOME/.local/bin/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr
+chmod u+x $HOME/.local/bin/tldr
