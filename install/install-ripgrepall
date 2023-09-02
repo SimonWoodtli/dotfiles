@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ## create variable for your system
 declare spruce_type=linux-musl
 declare os=$(uname)
@@ -40,4 +40,4 @@ curl -LJ -o /tmp/$tarball $url
 tar -xvzf /tmp/$tarball -C /tmp
 
 ## mv binary
-mv /tmp/$name/rga /usr/local/bin/rga
+mv -v /tmp/$name/rga $HOME/.local/bin/rga
