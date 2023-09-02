@@ -1,0 +1,43 @@
+#!/bin/sh
+## create variable for your system
+declare spruce_type=linux-musl
+declare os=$(uname)
+## get correct link with jq
+declare url=$(curl -s https://api.github.com/repos/phiresky/ripgrep-all/releases/latest | jq -r ".assets[] | select(.name | test(\"${spruce_type}\")) | .browser_download_url")
+declare tarball=${url##*/}
+declare name=${tarball%.*}
+name=${name%.*}
+## colors
+declare red=$'\033[31m'
+declare black=$'\033[30m'
+declare green=$'\033[32m'
+declare yellow=$'\033[33m'
+declare blue=$'\033[34m'
+declare magenta=$'\033[35m'
+declare cyan=$'\033[36m'
+declare white=$'\033[37m'
+declare reset=$'\033[0m'
+declare bold=$'\033[1m'
+
+if [ $os != 'Linux' ] ; then
+  echo "${red}Error:$reset ${bold}Sorry designed to be installed on Linux only.$reset"
+  exit 1
+fi
+
+echo "$cyan
+██████╗ ██╗██████╗  ██████╗ ██████╗ ███████╗██████╗        █████╗ ██╗     ██╗
+██╔══██╗██║██╔══██╗██╔════╝ ██╔══██╗██╔════╝██╔══██╗      ██╔══██╗██║     ██║
+██████╔╝██║██████╔╝██║  ███╗██████╔╝█████╗  ██████╔╝█████╗███████║██║     ██║
+██╔══██╗██║██╔═══╝ ██║   ██║██╔══██╗██╔══╝  ██╔═══╝ ╚════╝██╔══██║██║     ██║
+██║  ██║██║██║     ╚██████╔╝██║  ██║███████╗██║           ██║  ██║███████╗███████╗
+╚═╝  ╚═╝╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝           ╚═╝  ╚═╝╚══════╝╚══════╝
+$reset"
+
+## download tarball
+curl -LJ -o /tmp/$tarball $url
+
+## extract tarball
+tar -xvzf /tmp/$tarball -C /tmp
+
+## mv binary
+mv /tmp/$name/rga /usr/local/bin/rga
