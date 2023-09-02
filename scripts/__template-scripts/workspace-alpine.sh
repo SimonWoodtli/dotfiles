@@ -1,24 +1,30 @@
 #!/bin/bash
-############################ non-interactive ###########################
-## check if in container or abort 
+## Check if script runs within container or abort 
 [[ $(hostname) == workspace.fedora ]] || exit 1
 sudo apk --force-refresh update && sudo apk --no-cache upgrade
-## make sure bash is default shell for current user
+## Make sure bash is default shell for current user
 usermod --shell /bin/bash $USER
 
-##Get dotfiles if not already on system:
-if [[ ! -d "$HOME/Repos/github.com/SimonWoodtli" ]]; then
+## Check if dotfiles are present:
+if [[ ! -d "$HOME/Repos/github.com/SimonWoodtli/dotfiles" ]]; then
   folder="$HOME/Repos/github.com/SimonWoodtli/"
+  mkdir -p "$folder"
   git -C "$folder" clone https://github.com/SimonWoodtli/dotfiles.git
   git -C "$folder" clone https://github.com/SimonWoodtli/zet.git
+  echo "Couldn't find SimonWoodtli/dotfiles so cloned it for you. 
+Next Steps:
+  1. chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
+  2. exec bash -l
+  3. just -f $HOME/Repos/github.com/SimonWoodtli/dotfiles/.justfile firstboot-workspace"
+  exit 1
 fi
+## Install Rust: (interactive)
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-rust
 
 ## Get recipe with packages to be installed
 curl -LJ https://raw.githubusercontent.com/SimonWoodtli/workspace-alpine/main/recipe.yml -o /tmp/recipe.yml
 
 ## Install sdkman and java8:
-##FIXME installs correct but cant find 'java' cmd maybe cause of path/chezmoi
-#issue too
 export SDKMAN_DIR="$HOME/.config/sdkman" && curl -s "https://get.sdkman.io?rcupdate=false" | bash
 source $HOME/.config/sdkman/bin/sdkman-init.sh
 sdkPackages=($(yq '.sdk[]' < /tmp/recipe.yml))
@@ -27,7 +33,6 @@ for pkg in "${sdkPackages[@]}"; do
 done
 
 ## Install pipx and pips:
-##FIXME command "java" cant be found so html5vali does not run
 python3 -m pip install --user pipx
 python3 -m pipx ensurepath
 pipxPackages=($(yq '.pipx[]' < /tmp/recipe.yml))
@@ -35,7 +40,7 @@ for pkg in "${pipxPackages[@]}"; do
   pipx install "$pkg"
 done
 
-## Don't use install-node script it is compiled with glibc and Alpine uses musl
+## Don't use install-node script, cause node is compiled with glibc and Alpine uses musl
 ## Install npm packages: 
 npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
 npm install -g npm@latest
@@ -50,13 +55,8 @@ for pkg in "${goPackages[@]}"; do
   go install "$pkg"
 done
 
-############################## interactive #############################
-echo "The rest of the installation process requires user input to configure, please be present. To proceed please press <y>."
-read a0
-while [[ $a0 != "y" ]]; do
-  echo "${yw}Warning:$re Prompt requires a 'y'. "; read a0
-done
-
+## Install scripts:
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-rust
-#source $HOME/.bashrc
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-tldr
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-ripgrepall
+
