@@ -1,6 +1,4 @@
 #!/bin/bash
-## Check if script runs within container or abort 
-[[ $(hostname) == workspace.fedora ]] || exit 1
 sudo apk --force-refresh update && sudo apk --no-cache upgrade
 ## Make sure bash is default shell for current user
 usermod --shell /bin/bash $USER
