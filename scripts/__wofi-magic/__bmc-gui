@@ -1,11 +1,27 @@
 #!/bin/sh
-## dependencies: dotool, wofi, xclip
-## 1. run setup script or copy the scripts you want to : /bin
+## Method 1 dependencies: ydotool, xinput, wofi, xclip                             
+## Method 2 dependencies: dotool, wofi, xclip
+################################# setup ################################
+## 1. run setup script or copy the scripts you want to : /usr/local/bin
 ## 2. create a custom keyboard shortcut: use __bmw-gui as the command
-## TODO use dotool to create a Enter keystroke after filling out the url
+################################ script ################################
+## list all bookmarks
 declare selectBookmark="$(sed '/^#.*#$/d' "$HOME/Private/bookmarks/bookmarksCrypto" | grep -v '^#' | wofi -d 2>/dev/null | cut -d' ' -f1 )"
 ## copy selected bookmark to your x11 clipboard
 echo "$selectBookmark" | tr -d '\n' | xclip -sel clipboard
-## write out the selected bookmark into the currently active window
-## useful in a GUI Browser to write into your address bar
-echo "type "$selectBookmark"" | dotool
+
+## Method 1: ydotool - https://github.com/ReimuNotMoe/ydotool                   
+## move cursor into address bar (requires the browser window to be active)         
+ydotool key 29:1 38:1 38:0 29:0                                                 
+## select url and print it in to addresss bar                                   
+ydotool -d 1 type "$selectBookmark"                                        
+## go to url                                                                    
+ydotool key -d 1 28:1 28:0                                                 
+                                                                                
+## Method 2: dotool - https://git.sr.ht/~geb/dotool                             
+## move cursor into address bar (requires the browser window to be active)         
+#echo "key Ctrl+l" | dotool                                                     
+## select url and print it in to addresss bar                                   
+#echo "type "$selectBookmark"" | dotool                                         
+## go to url                                                                    
+#echo "key Enter" | dotool    

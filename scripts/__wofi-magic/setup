@@ -1,5 +1,5 @@
 #!/bin/sh
-## this only creates symlinks into your global /bin
+## this only creates symlinks into your global /usr/local/bin
 ## you also have to create keyboard shortcuts witht the command name
 ## being the script name
-sudo ln -sf "$PWD"/__* /bin
+sudo ln -sf "$PWD"/__* /usr/local/bin
