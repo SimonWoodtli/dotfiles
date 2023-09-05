@@ -36,6 +36,7 @@ export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 export WAKATIME_HOME="$XDG_CONFIG_HOME/wakatime"
 export SDKMAN_DIR="$XDG_CONFIG_HOME/sdkman"
 _have gpg && export GPG_TTY=$(tty)
+_have ydotool && export YDOTOOL_SOCKET=/tmp/.ydotool_socket #no sudo/pw to use tool
 _have nix && export NIX_BASH_COMPLETION="$(nix profile list | grep "bash-completion" | head -n 1 | awk '{print $4}')"
 _have chezmoi export CHEZMOI="$DOTFILES/home"
 _have cargo && export CARGO_HOME="$XDG_DATA_HOME/cargo"
