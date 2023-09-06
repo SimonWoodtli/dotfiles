@@ -17,10 +17,15 @@ alias ip='ip -c'
 alias dot="cd $DOTFILES"
 alias scripts="cd $SCRIPTS"
 alias deepl="proxychains deepl"
+alias keepassxc='flatpak run --branch=stable --arch=x86_64 --command=keepassxc-cli org.keepassxc.KeePassXC'
 alias ?=google
 alias ??=duck
 alias ???=searx
 
+##hotfix for chezmoi sourcedir issue, need to figure out how to apply sourceDir from within container
+alias cm='chezmoi -S /var/home/xnasero/Repos/github.com/SimonWoodtli/dotfiles init --apply'
+#_have chezmoi && alias cm='chezmoi' && alias ce='chezmoi edit --apply'
+#
 #_have reddio && alias ra='reddio | boxes -d dog | less'
 #_have spotify && alias spotify="env LD_PRELOAD=/usr/local/lib/spotify-adblock.so spotify %U &"
 #alias ipinfo="curl ipinfo.io"
@@ -45,7 +50,6 @@ _have browser-sync && alias browsersync='browser-sync start --server --files "*.
   css/*.css"'
 _have speedtest-cli && alias speedtest='speedtest-cli --secure'
 _have asciinema && alias rec='asciinema rec'
-_have chezmoi && alias cm='chezmoi' && alias ce='chezmoi edit --apply'
 ############################ ALIAS GIT ########################################
 ## if $git rm -r is not enough:
 alias gri='git ls-files --ignored --exclude-standard | xargs -0 git rm -r'
