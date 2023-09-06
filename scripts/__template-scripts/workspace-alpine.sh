@@ -1,4 +1,6 @@
 #!/bin/bash
+##TODO make a check if insider container with hostname should start with
+#workspace.xxx
 sudo apk --force-refresh update && sudo apk --no-cache upgrade
 ## Make sure bash is default shell for current user
 usermod --shell /bin/bash $USER
@@ -21,6 +23,10 @@ $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-rust
 
 ## Get recipe with packages to be installed
 curl -LJ https://raw.githubusercontent.com/SimonWoodtli/workspace-alpine/main/recipe.yml -o /tmp/recipe.yml
+
+## Get zet cmd
+curl -LJ -o $HOME/.local/bin/zet https://raw.githubusercontent.com/SimonWoodtli/cmd-zet/main/zet
+chmod u+x $HOME/.local/bin/zet
 
 ## Install sdkman and java8:
 export SDKMAN_DIR="$HOME/.config/sdkman" && curl -s "https://get.sdkman.io?rcupdate=false" | bash
