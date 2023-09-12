@@ -23,7 +23,7 @@ export DOTFILES="$GHREPOS/dotfiles"
 export SCRIPTS="$DOTFILES/scripts"
 export SCRIPTS_PRIV="$PRIVATE/scripts"
 export PDFDIR="$HOME/Documents/books/importantBooks" # used for `pdf` script
-
+export PROMPT_COMMAND='history -a; history -r'
 ######################### XDG Dir Specification ########################
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_SHARE_HOME="$HOME/.local/share"
