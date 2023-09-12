@@ -9,22 +9,31 @@ These are my dotfiles that I use daily. I hope you find something useful here. :
 
 ## Installation
 
-Sorry, but there's no fully automated installation script that could be run on a fresh installation and produce a full-blown setup in a one shot. I tried to implement it in a past, but it turns to be overcomplicated. It's better to copy and run a piece of code and validate the outcome.
+1. install chezmoi
+2. clone my dotfiles:
 
-Basically, this repo contains set of config files that are symlinked or copied somewhere in a \$HOME directory. See setup file as a primer and some setup files scattered around various folders.
+```
+mkdir -p ~/Repos/github.com/SimonWoodtli
+git clone -C ~/Repos/github.com/SimonWoodtli https://github.com/SimonWoodtli/dotfiles.git
+```
 
-- If you want to get my whole bashrc have a ~/.gitconfig with your username configured. As \$GITUSER requires it and many environmental variables depend on it. 
-* Also feel free to adjust the \$CDPATH to your favorite places for easy navigation.
-* Also many env. variables depend on having this dotfiles repo cloned here: ~/Repos/github.com/SimonWoodtli/dotfiles
+3. initialize repo with chezmoi:
+
+```
+chezmoi -S ~/Repos/github.com/SimonWoodtli/dotfiles init --apply
+```
+
+Most things work on any distro, however if you want a better
+experience look into my [workspace container][workspace]. 
 
 ### Folder Structure
 
-* bin/ contains program specific configurations files
-* bin/install contains software installation scripts they are tested with Arch, Debian and Fedora
-* bin/shell contains all files sourced to your bashrc
-* scripts/ contains custom scripts, mostly my own
-* dircolors/ contains files for `dircolors` to add custom colors to `ls`
-* share/ contains data files for some scripts. Mostly because I was too lazy to upload them somewhere.
+* home/ contains all configuration files that are compliant with chezmoi
+* completion/ contains configuration files for auto completion for chezmoi
+* install/ contains install scripts for a few programs that can't be found on apt/dnf/apk
+* scripts/ contains all my scripts, \_\_scripts are for indirect
+  execution only, \_\_template-scripts is for chezmoi/container initialization
+* home/dot_config/shell contains all files sourced to your bashrc
 
 ### My Environment
 
@@ -37,8 +46,6 @@ Basically, this repo contains set of config files that are symlinked or copied s
 * file manager: mostly unix commands with \$CDPATH and a few custom fzf commands
 
 ### My CLI Apps
-
-I listed some apps that I like and often use. They can all be found to be installed via a script for Arch, Debian and Fedora on my bin/install folder.
 
 * [ripgrep] for full-text search, modern replacement for `grep`.
 * [fd] to find files on a file system, modern replacement for `find`.
@@ -81,8 +88,6 @@ I listed some apps that I like and often use. They can all be found to be instal
 
 ### GUI Apps
 
-They can be installed for Arch, Debian and Fedora via my install scripts in bin/install
-
 * [VirtualBox] to create and run virtual machines, type 2 hypervisor
 * [VMware Workstation] to create and run virtual machines, type 2 hypervisor
 * [draw.io] to create flowcharts and diagrams
@@ -111,10 +116,6 @@ Any suggestions/improvements are [welcome]
 
 [![gravatar](https://secure.gravatar.com/avatar/ba834a706f9df56eee8ee59a2f7be941?s=200)](https://www.linkedin.com/in/simonwoodtli)
 
-## Thanks to…
-
-* my mentor rwxrob and his [dotfiles repository] and the rwx community
-
 ## Stats
 
 ![Alt](https://repobeats.axiom.co/api/embed/8e281b4fde7d8d552576290facb760bd4ebc02bb.svg "Repobeats analytics image")
@@ -123,6 +124,7 @@ Tags:
 
     #linux #dotfiles #bash #terminal
 
+[workspace]: <https://github.com/SimonWoodtli/workspace-alpine>
 [NerdFonts]: <https://www.nerdfonts.com/>
 [welcome]: <https://github.com/SimonWoodtli/dotfiles/issues>
 [dotfiles repository]: <https://github.com/rwxrob/dot>
@@ -181,4 +183,3 @@ Tags:
 [MuPDF]: <https://mupdf.com/>
 [Zeal]: <https://zealdocs.org/>
 [RustDesk]: <https://rustdesk.com/>
-
