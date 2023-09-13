@@ -2,6 +2,7 @@
 ############################## Export PATH #############################
 
 # be sure NOT to add ./ cuz it's unsafe
+
 export PATH=\
 $SCRIPTS:\
 $SCRIPTS_PRIV:\
@@ -28,13 +29,14 @@ $HOME/.nix-profile/bin:\
 /bin
 
 # be sure not to remove ./ or stuff gets weird
-export CDPATH=\
-./:\
-$REPOS/github.com/$GITUSER:\
-$REPOS/github.com/$GITUSER/dotfiles:\
-$REPOS/github.com/$GITUSER/books:\
-$REPOS/github.com/*:\
-$REPOS/github.com:\
-$REPOS:\
-/media/$USER:\
-$HOME
+#export CDPATH=\
+#./:\
+#$REPOS/github.com/$GITUSER:\
+#$REPOS/github.com/$GITUSER/dotfiles:\
+#$REPOS/github.com/$GITUSER/books:\
+#$REPOS/github.com/*:\
+#$REPOS/github.com:\
+#$REPOS:\
+#/media/$USER:\
+#$HOME
+export CDPATH=".:$GHREPOS:$DOTFILES:$REPOS:/media/$USER:$HOME"
