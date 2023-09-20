@@ -6,7 +6,7 @@
 ## 2. create a custom keyboard shortcut: use __bmw-gui as the command           
 ################################ script ################################        
 ## list all bookmarks                                                           
-declare selectBookmark="$(sed '/^#.*#$/d' "$HOME/Private/bookmarks/bookmarksWork" | grep -v '^#' | wofi -d 2>/dev/null | cut -d' ' -f1 )"
+declare selectBookmark="$(sed '/^#.*#$/d' "$HOME/Private/bookmarks/work" | grep -v '^#' | wofi -d 2>/dev/null | cut -d' ' -f1 )"
 ## copy selected bookmark to your x11 clipboard                                 
 echo "$selectBookmark" | tr -d '\n' | xclip -sel clipboard
 

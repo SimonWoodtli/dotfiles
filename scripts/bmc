@@ -1,4 +1,4 @@
 #!/bin/sh
 ## bookmark link handler: select your bookmarks with fzf and pass the link to your TUI browser
-## if you need a GUI version for you GUI browser checkout dotfiles/bin/wofi-magic
-exec sed '/^#.*#$/d' "$HOME/Private/bookmarks/bookmarksCrypto" | grep -v '^#' | fzf --no-preview | cut -d' ' -f1 | tr -d '\n' | xclip -sel clipboard && open $(xclip -o -sel    clip)
+## if you need a GUI version for you GUI browser checkout dotfiles/scripts/__wofi-magic/*
+exec sed '/^#.*#$/d' "$HOME/Private/bookmarks/crypto" | grep -v '^#' | fzf --no-preview | cut -d' ' -f1 | tr -d '\n' | xclip -sel clipboard && open $(xclip -o -sel    clip)
