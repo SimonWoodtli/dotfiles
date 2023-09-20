@@ -1,0 +1,6 @@
+#!/bin/sh
+## bookmark link handler: edit bookmarks
+folder="$HOME/Private/bookmarks"
+##TODO get it working in one command
+file=$(ls $folder | fzf --no-preview) 
+vim $(fd -t file -d 1 --absolute-path $file $folder)
