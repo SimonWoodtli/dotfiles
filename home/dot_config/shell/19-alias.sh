@@ -18,6 +18,9 @@ alias dot="cd $DOTFILES"
 alias scripts="cd $SCRIPTS"
 alias deepl="proxychains deepl"
 alias keepassxc='flatpak run --branch=stable --arch=x86_64 --command=keepassxc-cli org.keepassxc.KeePassXC'
+alias mpv='flatpak run --branch=stable --arch=x86_64 io.mpv.Mpv'
+alias diffside='diff --side-by-side --ignore-all-space'
+
 alias ?=google
 alias ??=duck
 alias ???=searx

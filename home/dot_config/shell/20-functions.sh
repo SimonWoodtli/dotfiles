@@ -7,6 +7,7 @@ cpr() { rsync --progress -auv "$1" "$2"; }
 ##TODO make a case so you can select what kind of comment you want to
 ##remove
 rmc() { sed 's|\s*#.*||g; /^$/ d' "$1" > "$2"; } #rm hashtag comment and empty line
+du1() { find . -maxdepth 1 -type d -exec du -shx {} \; | sort -hr }
 ############################# zet commands #############################
 zc() { cd "$(zet get "$@")"; }
 ze() { zet edit "$1"; }
@@ -19,6 +20,26 @@ zu() { zet use "$1"; }
 #    *) command man "$@" ;;
 #  esac
 #}
+################################# path #################################
+pathappend() {
+	declare arg
+	for arg in "$@"; do
+		test -d "$arg" || continue
+		PATH=${PATH//":$arg:"/:}
+		PATH=${PATH/#"$arg:"/}
+		PATH=${PATH/%":$arg"/}
+		export PATH="${PATH:+"$PATH:"}$arg"
+	done
+} && export -f pathappend
+pathprepend() {
+	for arg in "$@"; do
+		test -d "$arg" || continue
+		PATH=${PATH//:"$arg:"/:}
+		PATH=${PATH/#"$arg:"/}
+		PATH=${PATH/%":$arg"/}
+		export PATH="$arg${PATH:+":${PATH}"}"
+	done
+} && export -f pathprepend
 ########################## fzf ctrl-r history ##########################
 __fzfcmd() {                                                                    
   [[ -n "$TMUX_PANE" ]] && { [[ "${FZF_TMUX:-0}" != 0 ]] || [[ -n "$FZF_TMUX_OPTS" ]]; } &&
