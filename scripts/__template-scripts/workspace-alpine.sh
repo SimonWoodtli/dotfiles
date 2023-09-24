@@ -52,15 +52,15 @@ for pkg in "${npmPackages[@]}"; do
   npm install -g "$pkg"
 done
 
+## Install scripts:
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-tldr
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-ripgrepall
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-go
+
 ## Install go packages:
 ##FIXME exercism does not install
 goPackages=($(yq '.go[]' < /tmp/recipe.yml))
 for pkg in "${goPackages[@]}"; do
   go install "$pkg"
 done
-
-## Install scripts:
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-tldr
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-ripgrepall
-
