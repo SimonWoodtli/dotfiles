@@ -14,14 +14,13 @@ set fileencoding=utf-8
 set fileencodings=utf-8
 
 set number relativenumber   "hybrid numbers
-set ignorecase "ignore case of letters (easier to search)
+set noignorecase "use letter case to search
+set autowrite "auto save file when change when multiple files open
+set t_vb= "disable visual bell
 let skip_defaults_vim=1
 set nocompatible "allow vim-y things
 set linebreak "this will wrap `` for long words even if new line started
 set noshowmatch "no more little pause if you type brackets
-set foldmethod=manual " manual foldingdefault (zf/zd)
-set nofoldenable "disable folding, when paragraphs can be minimized and
-"maximized with spacebar
 set ruler "ruler is on by default, just in case
 "set scrolloff=999 keep cursor in the middle, or some big other number
 set scrolloff=7 "keep cursor at border of screen
@@ -34,6 +33,7 @@ set wildmode=longest,list,full "autocompletion for ex commands with tabs
 set hlsearch "all the /searchterms get highlighted on your display
 "set nohlsearch to turn the highligted searchterms off :noh
 set incsearch "to loop through all the searched elements with `n/N`
+match IncSearch '\s\+$' " mark trailing spaces as errors
 set history=100 "memory management (x history (: history))
 set hidden "stops complaining when switching from buffer with changes
 "default is 1s, make keys like j,k that have jj,kk mapped for escaping be written with less delay
@@ -46,18 +46,46 @@ set spelllang=en_us,de_de
 " vertical pane no border |
 set fillchars+=vert:\ 
 
+" avoid most of the 'Hit Enter ...' messages
+set shortmess=aoOtTI
+
 " no backups
 set nobackup
 set nowritebackup
 set noswapfile
 
 " write good code
-set textwidth=73
-set colorcolumn=80
+set textwidth=72
+"set colorcolumn=73
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
-" makes your list characters prettier (set list)
-set listchars=tab:→\ ,eol:↲,nbsp:␣,space:·,trail:·,extends:⟩,precedes:⟨
+if v:version >= 800
+  " stop vim from silently messing with files that it shouldn't
+  set nofixendofline
+
+  " better ascii friendly listchars
+  " makes your list characters prettier (set list)
+  "set listchars=space:*,trail:*,nbsp:*,extends:>,precedes:<,tab:\|>
+  set listchars=tab:→\ ,eol:↲,nbsp:␣,space:·,trail:·,extends:⟩,precedes:⟨
+
+  " i hate automatic folding
+  set foldmethod=manual " manual foldingdefault (zf/zd)
+  set nofoldenable "disable folding, when paragraphs can be minimized and
+  "maximized with spacebar
+endif
+
+" not a fan of bracket matching or folding
+if has("eval") " vim-tiny detection
+  let g:loaded_matchparen=1
+endif
+
+" wrap around when searching
+set wrapscan
+set nowrap
+
+" faster scrolling
+set ttyfast
+
 " copy & past between 2 files
 set viminfo='20,<1000,s1000 " prevents truncated yanks, deletes, etc.
 "set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/cache/.viminfo
@@ -147,10 +175,23 @@ inoremap <right> <NOP>
 " insert new line without going into insert-mode
 nmap oo m`o<Esc>``
 nmap OO m`O<Esc>``
+
+" better command-line completion
+set wildmenu
+
+" disable search highlighting with <C-L> when refreshing screen
+nnoremap <C-L> :nohl<CR><C-L>
+
+" enable omni-completion
+set omnifunc=syntaxcomplete#Complete
+
 "########################## syntax mandatory ###########################
-" all settings require syntax on
-syntax on
-filetype plugin indent on "allow sensing the filetype
+"syntax on
+if has("syntax")
+  syntax enable
+endif
+filetype plugin on "allow sensing the filetype
+"filetype plugin indent on "allow sensing the filetype
 "############################### plugins ###############################
 if empty(glob('~/.vim/autoload/plug.vim')) " make sure plug is installed
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -161,16 +202,18 @@ endif
 if filereadable(expand("~/.vim/autoload/plug.vim"))
   call plug#begin('~/.vimplugins')
 "######################### plugins essentials ##########################
-  Plug 'itchyny/lightline.vim' "info footer
-  Plug 'mengelbrecht/lightline-bufferline' "info footer with buffer tabs
-  Plug 'tpope/vim-surround' "change single to double quotes: cs'\"
-  Plug 'PProvost/vim-ps1' "windows powershell vim support
-  Plug 'tpope/vim-fugitive' "git integration
-  Plug 'puremourning/vimspector' " Debugger
-  Plug 'preservim/nerdcommenter' " Comment your code quickly
-  Plug 'https://gitlab.com/ivan-cukic/zeal-lynx-cli' "CLI zeal docs
-  Plug 'KabbAmine/zeavim.vim' "GUI zeal docs
+  "Plug 'itchyny/lightline.vim' "info footer
+  "Plug 'mengelbrecht/lightline-bufferline' "info footer with buffer tabs
+  "Plug 'PProvost/vim-ps1' "windows powershell vim support
+  "Plug 'tpope/vim-fugitive' "git integration
+  Plug 'conradirwin/vim-bracketed-paste'
   Plug 'wakatime/vim-wakatime' "keep track of where time spent
+  Plug 'dense-analysis/ale'
+
+  "Plug 'puremourning/vimspector' " Debugger
+  "Plug 'preservim/nerdcommenter' " Comment your code quickly
+  "Plug 'https://gitlab.com/ivan-cukic/zeal-lynx-cli' "CLI zeal docs
+  "Plug 'KabbAmine/zeavim.vim' "GUI zeal docs
 "################################# fzf #################################
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
@@ -178,12 +221,11 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   Plug 'majutsushi/tagbar' "tags in memory
 "########################## plugins languages ##########################
   Plug 'vim-pandoc/vim-pandoc'
-  Plug 'https://gitlab.com/rwxrob/vim-pandoc-syntax-simple'
-  Plug 'cespare/vim-toml'
+  Plug 'rwxrob/vim-pandoc-syntax-simple'
+  "Plug 'cespare/vim-toml'
   Plug 'sheerun/vim-polyglot' " better syntax highlighting for many lang
   " Go
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-  "Plug 'vim-go/vim-go'
   " Javascript
   "Plug '/MaxMEllon/vim-jsx-pretty' "react syntax highlighting
   "Plug 'dense-analysis/ale' "JS linter :ALEToggle
@@ -206,7 +248,7 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   "Plug 'mattn/emmet-vim'
 "############################ colorschemes #############################
   Plug 'morhetz/gruvbox' "color scheme
-  Plug 'HerringtonDarkholme/yats.vim' " correct syntax hightlight for gruvbox
+  "Plug 'HerringtonDarkholme/yats.vim' " correct syntax hightlight for gruvbox
 "############################ plugins stuff ############################
   "Plug 'justinmk/vim-sneak' "move cursor quickly, need to test if I like
   "Plug '~/.vimplugins/yankring'
@@ -265,23 +307,31 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   au FileType go nmap <leader>c :GoCoverageToggle<CR>
   au FileType go nmap <leader>i :GoInfo<CR>
   au FileType go nmap <leader>l :GoMetaLinter!<CR>
+  au FileType go nmap <leader>m ilog.Print("made")<CR><ESC>
+  au FileType go nmap <leader>n iif err != nil {return err}<CR><ESC>
+
+  " ale config:
+  let g:ale_sign_error = '☠'
+  let g:ale_sign_warning = '🙄'
+  let g:ale_linters = {'go': ['gometalinter', 'gofmt','gobuild']}
 
   "" lightline config:
-  let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'modified' ],
-      \             [ 'buffers' ] ]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'FugitiveHead'
-      \ },
-      \ }
-  set laststatus=2
-  autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
-  let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
-  let g:lightline.component_type   = {'buffers': 'tabsel'}
+  "let g:lightline = {
+  "    \ 'colorscheme': 'wombat',
+  "    \ 'active': {
+  "    \   'left': [ [ 'mode', 'paste' ],
+  "    \             [ 'gitbranch', 'readonly', 'modified' ],
+  "    \             [ 'buffers' ] ]
+  "    \ },
+  "    \ 'component_function': {
+  "    \   'gitbranch': 'FugitiveHead'
+  "    \ },
+  "    \ }
+  "set laststatus=2
+  "autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
+  "let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
+  "let g:lightline.component_type   = {'buffers': 'tabsel'}
+  "
 
   " coc autocomplete config
   " let g:coc_global_extensions = [
@@ -293,6 +343,34 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   " \ ]
 else
   autocmd vimleavepre *.go !gofmt -w % " backup if fatih fails
+endif
+
+" force loclist to always close when buffer does (affects vim-go, etc.)
+augroup CloseLoclistWindowGroup
+  autocmd!
+  autocmd QuitPre * if empty(&buftype) | lclose | endif
+augroup END
+
+" format perl on save
+if has("eval") " vim-tiny detection
+fun! s:Perltidy()
+  let l:pos = getcurpos()
+  silent execute '%!perltidy -i=2'
+  call setpos('.', l:pos)
+endfun
+"autocmd FileType perl autocmd BufWritePre <buffer> call s:Perltidy()
+endif
+
+" format shell on save
+if has("eval") " vim-tiny detection
+" TODO check for shfmt and shellcheck before defining
+" FIXME stop from blowing away file when there is shell error
+fun! s:FormatShell()
+  let l:pos = getcurpos()
+  "silent execute '%!shfmt' " FIXME: bug report to shfmt
+  call setpos('.', l:pos)
+endfun
+autocmd FileType sh autocmd BufWritePre <buffer> call s:FormatShell()
 endif
 
 " fill in empty markdown links with duck.com search
@@ -320,12 +398,50 @@ au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.muttrc set filetype=muttrc
 au bufnewfile,bufRead *.tmpl set filetype=go
 au bufnewfile,bufRead /tmp/calcurse*,~/.local/share/calcurse/notes/* set filetype=markdown
+au bufnewfile,bufRead $SNIPPETS/md/* set ft=pandoc
+au bufnewfile,bufRead $SNIPPETS/sh/* set ft=sh
+au bufnewfile,bufRead $SNIPPETS/bash/* set ft=bash
+au bufnewfile,bufRead $SNIPPETS/go/* set ft=go
+au bufnewfile,bufRead $SNIPPETS/c/* set ft=c
+au bufnewfile,bufRead $SNIPPETS/html/* set ft=html
+au bufnewfile,bufRead $SNIPPETS/css/* set ft=css
+au bufnewfile,bufRead $SNIPPETS/js/* set ft=javascript
+au bufnewfile,bufRead $SNIPPETS/python/* set ft=python
+au bufnewfile,bufRead $SNIPPETS/perl/* set ft=perl
+au bufnewfile,bufRead user-data set ft=yaml
+au bufnewfile,bufRead meta-data set ft=yaml
+au bufnewfile,bufRead *.ddl set ft=sql
+au bufnewfile,bufRead *.bash* set ft=bash
+au bufnewfile,bufRead *.gotmpl set ft=go
+au bufnewfile,bufRead .dockerignore set filetype=gitignore
+au bufnewfile,bufRead *.go set spell spellcapcheck=0
+au bufnewfile,bufRead commands.yaml set spell
+au bufnewfile,bufRead *.txt set spell
 
 "" start at last place you were editing
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-"normal! g'\"" | endif "remember where you were and puts you back to it
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe
 
+"fix bork bash detection
+if has("eval")  " vim-tiny detection
+fun! s:DetectBash()
+    if getline(1) == '#!/usr/bin/bash' || getline(1) == '#!/bin/bash'
+        set ft=bash
+        set shiftwidth=2
+    endif
+endfun
+autocmd BufNewFile,BufRead * call s:DetectBash()
+endif
+
+" displays all the syntax rules for current position, useful
+" when writing vimscript syntax plugins
+if has("syntax")
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+endif
 
 " might be needed for C-x/C-o autocomplete
 "set omnifunc=javascriptcomplete#CompleteJS
@@ -340,6 +456,9 @@ function TrimWhiteSpace()
   %s/\s\+$//e
   ''
 endfunction
+" Edit/Reload vimrc configuration file
+nnoremap confe :e $HOME/.vimrc<CR>
+nnoremap confr :source $HOME/.vimrc<CR>
 "########################### leader, f-keys ############################
 
 " solution (Fedora): select 'v' + normal yank 'y', paste 'leader p'
@@ -449,12 +568,73 @@ highlight CursorColumn ctermbg=Yellow guibg=#2b2b2b
 hi Normal ctermbg=NONE
 hi! NonText ctermbg=NONE guibg=NONE
 hi! Normal ctermbg=NONE guibg=NONE
+" make gutter less annoying
+hi SignColumn ctermbg=NONE
+
+" base default color changes (gruvbox dark friendly)
+hi StatusLine ctermfg=black ctermbg=NONE
+hi StatusLineNC ctermfg=black ctermbg=NONE
+hi Normal ctermbg=NONE
+hi Special ctermfg=cyan
+hi LineNr ctermfg=black ctermbg=NONE
+hi SpecialKey ctermfg=black ctermbg=NONE
+hi ModeMsg ctermfg=black cterm=NONE ctermbg=NONE
+hi MoreMsg ctermfg=black ctermbg=NONE
+hi NonText ctermfg=black ctermbg=NONE
+hi vimGlobal ctermfg=black ctermbg=NONE
+hi ErrorMsg ctermbg=234 ctermfg=darkred cterm=NONE
+hi Error ctermbg=234 ctermfg=darkred cterm=NONE
+hi SpellBad ctermbg=234 ctermfg=darkred cterm=NONE
+hi SpellRare ctermbg=234 ctermfg=darkred cterm=NONE
+hi Search ctermbg=236 ctermfg=darkred
+hi vimTodo ctermbg=236 ctermfg=darkred
+hi Todo ctermbg=236 ctermfg=darkred
+hi IncSearch ctermbg=236 cterm=NONE ctermfg=darkred
+hi MatchParen ctermbg=236 ctermfg=darkred
+
+" color overrides
+au FileType * hi StatusLine ctermfg=black ctermbg=NONE
+au FileType * hi StatusLineNC ctermfg=black ctermbg=NONE
+au FileType * hi Normal ctermbg=NONE
+au FileType * hi Special ctermfg=cyan
+au FileType * hi LineNr ctermfg=black ctermbg=NONE
+au FileType * hi SpecialKey ctermfg=black ctermbg=NONE
+au FileType * hi ModeMsg ctermfg=black cterm=NONE ctermbg=NONE
+au FileType * hi MoreMsg ctermfg=black ctermbg=NONE
+au FileType * hi NonText ctermfg=black ctermbg=NONE
+au FileType * hi vimGlobal ctermfg=black ctermbg=NONE
+au FileType * hi goComment ctermfg=black ctermbg=NONE
+au FileType * hi ErrorMsg ctermbg=234 ctermfg=darkred cterm=NONE
+au FileType * hi Error ctermbg=234 ctermfg=darkred cterm=NONE
+au FileType * hi SpellBad ctermbg=234 ctermfg=darkred cterm=NONE
+au FileType * hi SpellRare ctermbg=234 ctermfg=darkred cterm=NONE
+au FileType * hi Search ctermbg=236 ctermfg=darkred
+au FileType * hi vimTodo ctermbg=236 ctermfg=darkred
+au FileType * hi Todo ctermbg=236 ctermfg=darkred
+au FileType * hi IncSearch ctermbg=236 cterm=NONE ctermfg=darkred
+au FileType * hi MatchParen ctermbg=236 ctermfg=darkred
+au FileType markdown,pandoc hi Title ctermfg=yellow ctermbg=NONE
+au FileType markdown,pandoc hi Operator ctermfg=yellow ctermbg=NONE
+au FileType markdown,pandoc set tw=0
+au FileType yaml hi yamlBlockMappingKey ctermfg=NONE
+au FileType yaml set sw=2
+au FileType bash set sw=2
+au FileType c set sw=8
+au FileType markdown,pandoc noremap j gj
+au FileType markdown,pandoc noremap k gk
+au FileType sh set noet
+
+set cinoptions+=:0
+"custom statusline
+set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
+
 
 " lightline: remove yellow -- INSERT -- etc. message at bottom
 set noshowmode
 
 " all these are about indent:
 set autoindent " you should turn it off when you are pasting
+set noflash
 set expandtab "if you don't like tabs
 set smartindent "same as >> but when you wanna do a new line
 set smarttab
@@ -462,9 +642,8 @@ set tabstop=2 "settings for your notes and stuff, don't use to code with it
 set softtabstop=2 "related to tabstop
 set shiftwidth=2 "if you want lines to move in like with tabs `3>>` will move 3 lines in
 
-
 "########################### 🏡 it's personal ###########################
 " read personal/private vim configuration (keep last to override)
 "set rtp^=~/.vimpersonal
 "set rtp^=~/.vimprivate
-
+"set rtp^=~/.vimwork
