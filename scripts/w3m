@@ -8,9 +8,11 @@ if [ ! -x "$w3mpath" ]; then
 fi
 
 # create three panes and run w3m in middle
-if [[ $(tmux list-panes | wc -l) -lt 2 ]]; then
-  tmux split-window -h -p 80
-  tmux split-window -h -p 25
-  tmux swap-pane -s 1 -t 2; tmux select-pane -t 2 #starts w3m in middle pane
-fi
-exec "$w3mpath" "$@"
+#if [[ $(tmux list-panes | wc -l) -lt 2 ]]; then
+  #tmux split-window -h -l 90%
+  #tmux swap-pane -s 1 -t 2; tmux select-pane -t 2 #starts w3m in middle pane
+#fi
+
+width=$(tput cols)
+stty cols 87
+eval "$w3mpath" "$@" && stty cols $width
