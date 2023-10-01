@@ -1,0 +1,4 @@
+#!/bin/sh
+ts yt-dlp --format mp4 -o "$VIDEOS/YouTube/%(uploader)s/%(title)s.%(ext)s" "$@"
+#TODO enable it once detox goes into community/main repo of Alpine, currently on testing
+#detox -r $VIDEOS/YouTube/*
