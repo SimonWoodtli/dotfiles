@@ -1,0 +1,16 @@
+#!/bin/sh
+################################# About ################################
+## Author: Simon D. Woodtli
+## License:  Apache-2.0
+## Dependencies: ffmpeg, swww, yt-dlp
+################################ Script ################################
+name=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 )
+num=$RANDOM
+##dl video section
+ffmpeg -i $(yt-dlp -f bestvideo --get-url $1) -ss $2  -to $3 -f mp4 /tmp/vid${num}.mp4
+##slow down video
+ffmpeg -i /tmp/vid${num}.mp4 -vf 'setpts=2.2*PTS' -f mp4 /tmp/slow${num}.mp4 
+#adding effect and convert to gif
+ffmpeg -i /tmp/slow${num}.mp4 -vf 'eq=brightness=0.07:saturation=2' -f gif $PICTURES/Wallpapers/gif/$name.gif
+##apply gif wallpaper
+swww img $PICTURES/Wallpapers/gif/$name.gif
