@@ -1,0 +1,41 @@
+#!/bin/bash
+################################# About ################################
+## Author: Simon D. Woodtli
+## License:  Apache-2.0
+## Dependencies: urlscan, newsboat/neomutt, mpv, feh, tmux, vim
+## Description: Linkhandler for mutt|newsboat via urlscan
+## Note: newsboat open urlscan with `u|U`
+##    if GUI browser switch mode to xdg-open or browser with `l`
+##    if w3m use __urlscan-linkhandler
+################################ Script ################################
+declare url="$1"
+[ -n "$1" ] || exit
+
+case "$url" in
+  ##Images:
+  *png|*jpg|*jpe|*jpeg|*gif|*pnm|*tiff|*bmp) 
+    if [[ "$url" =~ ^https://yewtu ]]; then
+      url=$(echo -n "$url" | sed 's|yewtu.be|img.youtube.com|g')
+    fi
+    feh "$url" >/dev/null 2>&1 ;;
+  ##Videos:
+  *mkv|*webm|*mp4|*youtube.com/watch*|*youtube.com/playlist*|*youtu.be*|*hooktube.com*|*bitchute.com*|*yewtu.be/watch*)
+    setsid -f flatpak run --branch=stable --arch=x86_64 io.mpv.Mpv --no-sub-auto "$url" >/dev/null 2>&1 ;;
+  ##Music/Podcast:
+  *mp3|*flac|*mp3?nocache) setsid -f ts curl -LJ --output-dir $MUSIC/Podcasts -O "$url"
+    setsid -f ts notify-send -t 3000 -i network-transmit-receive-symbolic "Audio Download" "File Download Complete" ;;
+  *pdf) setsid -f ts curl -LJ --output-dir $DOWNLOADS -O "$url"
+    setsid -f ts notify-send -t 3000 -i network-transmit-receive-symbolic "PDF Download" "File Download Complete"
+    setsid -f ts sleep 3; setsid -f ts mupdf -I $DOWNLOADS/${url##*/} ;;
+  *) ##Files:
+    tmux new-window -c "#{pane_current_path}"
+    declare twindow=$(tmux list-windows | tail -n1 | cut -d ":" -f 1)
+    tmux switch-client -t:$twindow
+    if [ -f "$url" ]; then
+      tmux send-keys -t right C-z "vim $url; wait $!; tmux kill-window" C-m
+    else
+      ##Regular URLs:
+      tmux send-keys -t right C-z "w3m $url; wait $!; tmux kill-window" C-m
+    fi
+esac
+echo -n "$url" | xclip -selection c
