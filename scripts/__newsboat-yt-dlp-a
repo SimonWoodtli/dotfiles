@@ -1,0 +1,5 @@
+#!/bin/sh
+ts yt-dlp --embed-metadata -xic -f bestaudio/best --restrict-filenames -o "$MUSIC/YouTube/%(uploader)s/%(title)s.%(ext)s" "$@"
+ts notify-send -t 3000 -i network-transmit-receive-symbolic "Audio Download" "File Download Complete"
+#TODO enable it once detox goes into community/main repo of Alpine, currently on testing
+#detox -r $MUSIC/YouTube/*

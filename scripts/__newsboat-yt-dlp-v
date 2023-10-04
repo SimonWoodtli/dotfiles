@@ -1,0 +1,5 @@
+#!/bin/sh
+ts yt-dlp --format mp4 --restrict-filenames -o "$VIDEOS/YouTube/%(uploader)s/%(title)s.%(ext)s" "$@"
+ts notify-send -t 3000 -i network-transmit-receive-symbolic "Video Download" "File Download Complete"
+#TODO enable it once detox goes into community/main repo of Alpine, currently on testing
+#detox -r $VIDEOS/YouTube/*
