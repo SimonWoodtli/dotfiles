@@ -4,7 +4,7 @@
 ## Dependencies: mpd, ncmpcpp, mpc, ffmpeg, libnotify
 ################################ Script ################################
 music_dir="$HOME/Music"
-previewdir="$XDG_CONFIG_HOME/ncmpcpp/previews"
+previewdir="$XDG_DATA_HOME/ncmpcpp/previews"
 filename="$(mpc --format "$music_dir"/%file% current)"
 previewname="$previewdir/$(mpc --format %album% current | base64).png"
 
