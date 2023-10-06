@@ -14,7 +14,7 @@ done
 
 export TESTUSER="SimonWoodtli"
 export USER="${USER:-$(whoami)}"
-export BROWSER=/usr/bin/brave-browser
+export BROWSER="$(flatpak info --show-location com.brave.Browser)"
 export VIRTUALMACHINES="$HOME/VirtualMachines"
 export TERM=xterm-256color
 _have git && export GITUSER="$(git config --global user.name)"
@@ -24,6 +24,7 @@ export SCRIPTS="$DOTFILES/scripts"
 export SCRIPTS_PRIV="$PRIVATE/scripts"
 export PDFDIR="$HOME/Documents/books/importantBooks" # used for `pdf` script
 export PROMPT_COMMAND='history -a; history -r'
+export CHEZMOI="$DOTFILES"
 ######################### XDG Dir Specification ########################
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_SHARE_HOME="$HOME/.local/share"
@@ -38,7 +39,6 @@ export SDKMAN_DIR="$XDG_CONFIG_HOME/sdkman"
 _have gpg && export GPG_TTY=$(tty)
 _have ydotool && export YDOTOOL_SOCKET=/tmp/.ydotool_socket #no sudo/pw to use tool
 _have nix && export NIX_BASH_COMPLETION="$(nix profile list | grep "bash-completion" | head -n 1 | awk '{print $4}')"
-_have chezmoi export CHEZMOI="$DOTFILES/home"
 _have cargo && export CARGO_HOME="$XDG_DATA_HOME/cargo"
 _have perl && export PERL_CPANM_HOME="$XDG_CACHE_HOME/cpanm"
 _have docker && export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
