@@ -1,0 +1,123 @@
+################################## MPD #################################
+mpd_host                            = "127.0.0.1"
+mpd_port                            = "6600"
+mpd_music_dir                       = "~/Music"
+mpd_crossfade_time                  = "5"
+mpd_connection_timeout              = "5"
+############################## Navigation ##############################
+cyclic_scrolling                    = "yes"
+header_text_scrolling               = "yes"
+jump_to_now_playing_song_at_start   = "yes"
+lines_scrolled                      = "2"
+mouse_support                       = "no"
+mouse_list_scroll_whole_page        = "no"
+################################ General ###############################
+ncmpcpp_directory                   = "~/.config/ncmpcpp"
+lyrics_directory                    = "~/.local/share/lyrics"
+execute_on_song_change              = "__ncmpcpp-songinfo"
+external_editor                     = "vim"
+use_console_editor                  = "yes"
+message_delay_time                  = "1"
+playlist_disable_highlight_delay    = "2"
+system_encoding                     = "utf-8"
+regular_expressions                 = "extended"
+autocenter_mode                     = "yes"
+centered_cursor                     = "yes"
+ignore_leading_the                  = "yes"
+ignore_diacritics                   = "yes"
+allow_for_physical_item_deletion    = "no"
+default_place_to_search_in          = "database"
+connected_message_on_startup        = "yes"
+playlist_shorten_total_times        = "yes"
+user_interface                      = "classic"
+follow_now_playing_lyrics           = "yes"
+display_bitrate                     = "yes"
+startup_screen                      = "media_library"
+enable_window_title                 = "yes"
+empty_tag_marker                    = ""
+############################# Display Modes ############################
+playlist_editor_display_mode        = "columns"
+search_engine_display_mode          = "columns"
+playlist_display_mode               = "columns"
+browser_display_mode                = "columns"
+############################## Visualizer ##############################
+visualizer_data_source              = "/tmp/mpd.fifo"
+visualizer_output_name              = "my_fifo"
+visualizer_look                     = "+|"
+visualizer_type                     = "spectrum"
+visualizer_in_stereo                = "yes"
+visualizer_fps                      = "60"
+#visualizer_color = "33,39,63,75,81,99,117,153,189"
+############################# Progress Bar #############################
+progressbar_look                    =  "=>-"
+progressbar_color                   = "black"
+progressbar_elapsed_color           = "yellow"
+song_status_format                  = " $4%a $5⟫⟫ $0%t $5⟫⟫ $7%b "
+############################ Colors General ############################
+colors_enabled                      = "yes"
+main_window_color                   = "yellow"
+header_window_color                 = "white"
+volume_color                        ="white"
+statusbar_color                     = "white"
+################################ Colors ################################
+color1                              = "white"
+color2                              = "magenta"
+############################# UI Visibility ############################
+header_visibility                   = "yes"
+statusbar_visibility                = "yes"
+titles_visibility                   = "yes"
+############################# UI Appearance ############################
+#now_playing_prefix                 = "$b$8$7 "
+#now_playing_suffix                 = "  $/b$8"
+#current_item_prefix                = "$b$7$/b$3 "
+#current_item_suffix                = "  $8"
+#song_status_format                 = "$7%t"
+#song_list_format                   = "$8%a - %t$R  %l"
+#song_columns_list_format           = "(15)[white]{tr} (60)[blue]{a}"
+#song_library_format                = {{%a - %t} (%b)}|{%f}
+#song_library_format = {%n - }{%t}|{%f}
+#song_window_title_format           = "Music"
+media_library_primary_tag           = "album_artist"
+media_library_albums_split_by_date  = "no"
+############################# Current Item #############################
+current_item_prefix                 = "$(blue)$r"
+current_item_suffix                 = "$/r$(end)"
+current_item_inactive_column_prefix = "$(cyan)$r"
+############################## Song Format #############################
+song_columns_list_format = "(20)[yellow]{a} (7)[green]{g} (50)[white]{t|f:Title} (20)[cyan]{b} (7f)[magenta]{l}"
+song_list_format = "{$7%a - $9}{$5%t$9}|{$5%f$9}$R{$6%b $9}{$3%l$9}"
+
+## For a song format you can use:
+##
+## %l - length
+## %f - filename
+## %D - directory
+## %a - artist
+## %A - album artist
+## %t - title
+## %b - album
+## %y - date
+## %n - track number (01/12 -> 01)
+## %N - full track info (01/12 -> 01/12)
+## %g - genre
+## %c - composer
+## %p - performer
+## %d - disc
+## %C - comment
+## %P - priority
+## $R - begin right alignment
+##
+## - 0 - default window color (discards all other colors)
+## - 1 - black
+## - 2 - red
+## - 3 - green
+## - 4 - yellow
+## - 5 - blue
+## - 6 - magenta
+## - 7 - cyan
+## - 8 - white
+## - 9 - end of current color
+## - b - bold text
+## - u - underline text
+## - r - reverse colors
+## - a - use alternative character set
