@@ -2,11 +2,11 @@
 ## Method 1 dependencies: ydotool, xinput, wofi, xclip                             
 ## Method 2 dependencies: dotool, wofi, xclip
 ################################# setup ################################
-## 1. run setup script or copy the scripts you want to : /usr/local/bin
+## 1. run setup script or copy/symlink the scripts you want to : /usr/local/bin
 ## 2. create a custom keyboard shortcut: use __bmw-gui as the command
 ################################ script ################################
 ## list all bookmarks
-declare selectBookmark="$(sed '/^#.*#$/d' "$HOME/Private/bookmarks/crypto" | grep -v '^#' | wofi -d 2>/dev/null | cut -d' ' -f1 )"
+selectBookmark="$(sed '/^#.*#$/d' "$HOME/Private/bookmarks/crypto" | grep -v '^#' | wofi -d 2>/dev/null | cut -d' ' -f1 )"
 ## copy selected bookmark to your x11 clipboard
 echo "$selectBookmark" | tr -d '\n' | xclip -sel clipboard
 
