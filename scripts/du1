@@ -1,0 +1,2 @@
+#!/bin/sh
+exec find . -maxdepth 1 -type d -exec du -shx {} \; | sort -hr
