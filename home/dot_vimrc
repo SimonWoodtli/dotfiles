@@ -12,9 +12,9 @@
 set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8
-
 set number relativenumber   "hybrid numbers
 set noignorecase "use letter case to search
+"set ignorecase "ignore letter case to search
 set autowrite "auto save file when change when multiple files open
 set t_vb= "disable visual bell
 let skip_defaults_vim=1
@@ -29,7 +29,6 @@ set icon "sync terminal title with current file edited
 "set wrap linebreak nolist soft wrap only wraps it but not formats it
 set viminfo='20,<1000,s1000 "increase yank buffer size if you want to
 " yank from one file to another
-set wildmode=longest,list,full "autocompletion for ex commands with tabs
 set hlsearch "all the /searchterms get highlighted on your display
 "set nohlsearch to turn the highligted searchterms off :noh
 set incsearch "to loop through all the searched elements with `n/N`
@@ -37,27 +36,23 @@ match IncSearch '\s\+$' " mark trailing spaces as errors
 set history=100 "memory management (x history (: history))
 set hidden "stops complaining when switching from buffer with changes
 "default is 1s, make keys like j,k that have jj,kk mapped for escaping be written with less delay
-set timeoutlen=200 
-
+set timeoutlen=200
 " set both german and english to spellcheck
-" to download german dictonary run within vim:
-":setl spell spelllang=de
+" to download german dictonary run within vim: :set spell spelllang=de
 set spelllang=en_us,de_de
 " vertical pane no border |
 set fillchars+=vert:\ 
-
 " avoid most of the 'Hit Enter ...' messages
 set shortmess=aoOtTI
 
-" no backups
+" no backups:
 set nobackup
 set nowritebackup
 set noswapfile
 
-" write good code
+" write good code:
 set textwidth=72
-"set colorcolumn=73
-highlight ColorColumn ctermbg=0 guibg=lightgrey
+set colorcolumn=73
 
 if v:version >= 800
   " stop vim from silently messing with files that it shouldn't
@@ -97,6 +92,7 @@ set viminfo='20,<1000,s1000 " prevents truncated yanks, deletes, etc.
 "           | |    + files marks saved
 "           | + lines saved each register (old name for <, vi6.2)
 "           + save/restore buffer list
+
 "######################### low level settings ##########################
 set formatoptions-=t   " don't auto-wrap text using text width
 set formatoptions+=c   " autowrap comments using textwidth with leader
@@ -115,6 +111,7 @@ set formatoptions+=m   " multi-byte character line break support
 set formatoptions+=M   " don't add space before or after multi-byte char
 set formatoptions-=B   " don't add space between two multi-byte chars in join
 set formatoptions+=1   " don't break a line after a one-letter word
+
 "############################ nice features ############################
 " Copy/Paste/Cut with system clipboard not just vim buffer:
 " only works if compiled with +clipboard check: `vim --version`
@@ -124,8 +121,6 @@ endif
 " Vmap for maintain Visual Mode after shifting > and <
 vmap < <gv
 vmap > >gv
-
-
 
 " Currently I am using function below, mainly cause i wan 10j to center
 " screen too, not just Ctrl-d and searches
@@ -150,12 +145,9 @@ function! Center_cursor()
     call setpos(".", pos)
 endfunction
 
-" make Y consitent with D and C (yank til end)
-map Y y$ 
 " vertically center document when entering insert mode
 autocmd InsertEnter * norm zz
-" search and replace [foo] to [foo1] globally
-nnoremap S :%s//gI<Left><Left><Left>
+
 " Map alternatives the <ESC> key (<C-[> already is)
 inoremap jj <Esc>
 cnoremap jj <Esc>
@@ -172,26 +164,36 @@ inoremap <up> <NOP>
 inoremap <down> <NOP>
 inoremap <left> <NOP>
 inoremap <right> <NOP>
-" insert new line without going into insert-mode
-nmap oo m`o<Esc>``
-nmap OO m`O<Esc>``
 
-" better command-line completion
+" better command-line completion #:foo...
 set wildmenu
-
+set wildmode=longest,list,full "autocompletion for ex commands with tabs
 " disable search highlighting with <C-L> when refreshing screen
 nnoremap <C-L> :nohl<CR><C-L>
 
-" enable omni-completion
+" enable omni-completion #C-e to cancel
 set omnifunc=syntaxcomplete#Complete
+" might be needed for C-x/C-o autocomplete
+"set omnifunc=javascriptcomplete#CompleteJS
+"set omnifunc=htmlcomplete#CompleteTags
+"set omnifunc=csscomplete#CompleteCSS
+"set omnifunc=phpcomplete#CompletePHP
 
-"########################## syntax mandatory ###########################
-"syntax on
+" fill in empty markdown links with duck.com search
+" [some thing]() -> [some thing](https://duck.com/lite?kae=t&q=some thing)
+autocmd vimleavepre *.md !perl -p -i -e 's,\[([^\]]+?)\]\(\),[\1](https://duck.com/lite?q=\1),g' %
+
+"#################### syntax highlighting mandatory ####################
 if has("syntax")
-  syntax enable
+  syntax enable "enable and allows for custom color settings
+  "syntax on "enable and override current color settings with defaults
 endif
+"############################## filetypes ##############################
+" also having ~/.vim/after/ftplugin/foo.vim allows for per filetype
+" custom configurations. => keeps .vimrc clean
+"TODO put all language specific settings into their own files
 filetype plugin on "allow sensing the filetype
-"filetype plugin indent on "allow sensing the filetype
+"filetype plugin indent on "sensing filetype and turns indentation on
 "############################### plugins ###############################
 if empty(glob('~/.vim/autoload/plug.vim')) " make sure plug is installed
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -202,36 +204,39 @@ endif
 if filereadable(expand("~/.vim/autoload/plug.vim"))
   call plug#begin('~/.vimplugins')
 "######################### plugins essentials ##########################
-  "Plug 'itchyny/lightline.vim' "info footer
-  "Plug 'mengelbrecht/lightline-bufferline' "info footer with buffer tabs
-  "Plug 'PProvost/vim-ps1' "windows powershell vim support
-  "Plug 'tpope/vim-fugitive' "git integration
-  Plug 'conradirwin/vim-bracketed-paste'
-  Plug 'wakatime/vim-wakatime' "keep track of where time spent
-  Plug 'dense-analysis/ale'
+  Plug 'itchyny/lightline.vim' "info footer
+  Plug 'mengelbrecht/lightline-bufferline' "info footer with buffer tabs
+  Plug 'tpope/vim-fugitive' "info footer + git integration
+  Plug 'maximbaz/lightline-ale' "info footer ale integrated
+  Plug 'wakatime/vim-wakatime' "tracks your time spent files/project
+  Plug 'dense-analysis/ale' "syntax checker, live linter
+  Plug 'conradirwin/vim-bracketed-paste' "correct paste indentation (withtout :set paste!)
 
+  "Plug 'PProvost/vim-ps1' "windows powershell vim support
   "Plug 'puremourning/vimspector' " Debugger
   "Plug 'preservim/nerdcommenter' " Comment your code quickly
+
+  "TODO rewrite zeal-lynx plugin for w3m
   "Plug 'https://gitlab.com/ivan-cukic/zeal-lynx-cli' "CLI zeal docs
-  "Plug 'KabbAmine/zeavim.vim' "GUI zeal docs
 "################################# fzf #################################
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
   Plug 'airblade/vim-rooter' "helps fzf to look at git repos
   Plug 'majutsushi/tagbar' "tags in memory
 "########################## plugins languages ##########################
   Plug 'vim-pandoc/vim-pandoc'
   Plug 'rwxrob/vim-pandoc-syntax-simple'
+  Plug 'sheerun/vim-polyglot' "better syntax highlighting for many lang
   "Plug 'cespare/vim-toml'
-  Plug 'sheerun/vim-polyglot' " better syntax highlighting for many lang
   " Go
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   " Javascript
+  Plug 'moll/vim-node' "Node.js
+  Plug 'godlygeek/tabular' "make quick tables, clean json data
+  Plug 'pangloss/vim-javascript' "syntax JS
   "Plug '/MaxMEllon/vim-jsx-pretty' "react syntax highlighting
-  "Plug 'dense-analysis/ale' "JS linter :ALEToggle
-  Plug 'moll/vim-node' " Node.js
-  Plug 'godlygeek/tabular' " make quick tables, clean json data
-  Plug 'pangloss/vim-javascript'
+  " Typescript
+  Plug 'HerringtonDarkholme/yats.vim' "syntax TS
   " C
   "Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp']}
   "Plug 'ludwig/split-manpage.vim'
@@ -239,43 +244,29 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   "Plug 'davidhalter/jedi-vim'
   "Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
   "Plug 'plytophogy/vim-virtualenv'
-  " Plug 'python-mode/python-mode'
+  "Plug 'python-mode/python-mode'
   " HTML/CSS
-  "Plug 'mattn/emmet-vim'
-  "Plug 'hail2u/vim-css3-syntax'
   Plug 'ap/vim-css-color' "css color preview
-  "Plug 'tpope/vim-haml'
   "Plug 'mattn/emmet-vim'
+  "Plug 'tpope/vim-haml'
 "############################ colorschemes #############################
   Plug 'morhetz/gruvbox' "color scheme
-  "Plug 'HerringtonDarkholme/yats.vim' " correct syntax hightlight for gruvbox
 "############################ plugins stuff ############################
-  "Plug 'justinmk/vim-sneak' "move cursor quickly, need to test if I like
   "Plug '~/.vimplugins/yankring'
-  "Plug 'preservim/nerdtree'
-  "Plug 'Xuyuanp/nerdtree-git-plugin'
-  "Plug 'elzr/vim-json' better syntax for json
   "Plug 'romainl/vim-devdocs' "devdocs.io in vim
-  "autocomplete
-  "Plug 'neoclide/coc.nvim', {'branch': 'release'} "powerful autocomplete
-  " tags
   "Plug 'xolox/vim-easytags' "Ctag automater
   call plug#end()
 "########################### plugins configs ###########################
-  " set foldcolumn=0 does not work however disable the folding module from 
-  " 'git-pandoc' will
-  let g:pandoc#modules#disabled = ["folding"]
-  set nocompatible "needed for vim-polygot
+  " vim-tagbar:
+  let g:tagbar_autofocus = 1
+  " vim-pandoc:
+  let g:pandoc#modules#disabled = ["folding"] "fix cause foldcolumn=0 not working
+  " vim-polygot:
+  set nocompatible
+  " colors:
   colorscheme gruvbox
   set background=dark
-  
-  " KabbAmine/zeavim.vim
-  nmap <Leader>z <Plug>Zeavim
-  vmap <Leader>z <Plug>ZVVisSelection
-  nmap gz <Plug>ZVOperator
-  nmap <Leader><Leader>z <Plug>ZVKeyDocset
-
-  " pandoc
+  " pandoc:
   let g:pandoc#formatting#mode = 'h' " A'
   let g:pandoc#formatting#textwidth = 72
   " golang:
@@ -310,94 +301,103 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
   au FileType go nmap <leader>m ilog.Print("made")<CR><ESC>
   au FileType go nmap <leader>n iif err != nil {return err}<CR><ESC>
 
-  " ale config:
+  " ale config: #:ALEInfo to see vars
   let g:ale_sign_error = '☠'
-  let g:ale_sign_warning = '🙄'
-  let g:ale_linters = {'go': ['gometalinter', 'gofmt','gobuild']}
+  let g:ale_sign_warning = '⚠'
+  let g:ale_echo_msg_format = '%severity% [%linter%] %s'
+  let g:ale_python_flake8_options = '--max-line-length 88 --extend-ignore=E203'
+  let g:ale_echo_msg_error_str = '☠'
+  let g:ale_echo_msg_warning_str = '⚠'
+  let g:ale_linters_explicit = 1
+  let g:ale_linters = {
+        \  'go': ['gometalinter', 'gofmt','gobuild'],
+        \  'python': [ 'flake8', 'mypy', 'pylint'],
+        \  'javascript': ['eslint', 'prettier'],
+        \  'json': ['jq'],
+        \  'css': ['stylelint'],
+        \  'html': ['tidy'],
+        \ }
+  let g:ale_fixers = {
+        \  'javascript': ['eslint', 'prettier'],
+        \  'json': ['jq'],
+        \  'css': ['prettier'],
+        \  'sh': ['shfmt'],
+        \  'bash': ['shfmt'],
+        \  'perl': ['perltidy'],
+        \ }
 
-  "" lightline config:
-  "let g:lightline = {
-  "    \ 'colorscheme': 'wombat',
-  "    \ 'active': {
-  "    \   'left': [ [ 'mode', 'paste' ],
-  "    \             [ 'gitbranch', 'readonly', 'modified' ],
-  "    \             [ 'buffers' ] ]
-  "    \ },
-  "    \ 'component_function': {
-  "    \   'gitbranch': 'FugitiveHead'
-  "    \ },
-  "    \ }
-  "set laststatus=2
-  "autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
-  "let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
-  "let g:lightline.component_type   = {'buffers': 'tabsel'}
-  "
-
-  " coc autocomplete config
-  " let g:coc_global_extensions = [
-  " \ 'coc-snippets',
-  " \ 'coc-tsserver',
-  " \ 'coc-eslint',
-  " \ 'coc-prettier',
-  " \ 'coc-json',
-  " \ ]
+  "" lightline/statusbar config:
+  let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'modified' ],
+      \             [ 'buffers' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'FugitiveHead'
+      \ },
+      \ }
+  "Define Extra Components for statusbar:
+  let g:lightline.component_expand = {
+        \  'buffers': 'lightline#bufferline#buffers',
+        \  'linter_checking': 'lightline#ale#checking',
+        \  'linter_infos': 'lightline#ale#infos',
+        \  'linter_warnings': 'lightline#ale#warnings',
+        \  'linter_errors': 'lightline#ale#errors',
+        \  'linter_ok': 'lightline#ale#ok',
+        \ }
+  let g:lightline.component_type   = {
+        \  'buffers': 'tabsel',
+        \  'linter_checking': 'right',
+        \  'linter_infos': 'right',
+        \  'linter_warnings': 'warning',
+        \  'linter_errors': 'error',
+        \  'linter_ok': 'right',
+        \ }
+  "could also be integrated into g:lightline {}
+  let g:lightline.active = {
+        \ 'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
+        \            [ 'lineinfo' ],
+        \            [ 'percent' ],
+        \            [ 'fileformat', 'fileencoding', 'filetype'] ] }
+  "Ale Icons instead of default txt:
+  let g:lightline#ale#indicator_checking = "\uf110"
+  let g:lightline#ale#indicator_infos = "\uf129"
+  let g:lightline#ale#indicator_warnings = "\uf071"
+  let g:lightline#ale#indicator_errors = "\uf05e"
+  let g:lightline#ale#indicator_ok = "\uf00c"
+  set laststatus=2
+  autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
 else
   autocmd vimleavepre *.go !gofmt -w % " backup if fatih fails
 endif
-
+"############################### buffers ###############################
 " force loclist to always close when buffer does (affects vim-go, etc.)
 augroup CloseLoclistWindowGroup
   autocmd!
   autocmd QuitPre * if empty(&buftype) | lclose | endif
 augroup END
 
-" format perl on save
-if has("eval") " vim-tiny detection
-fun! s:Perltidy()
-  let l:pos = getcurpos()
-  silent execute '%!perltidy -i=2'
-  call setpos('.', l:pos)
-endfun
-"autocmd FileType perl autocmd BufWritePre <buffer> call s:Perltidy()
-endif
-
-" format shell on save
-if has("eval") " vim-tiny detection
-" TODO check for shfmt and shellcheck before defining
-" FIXME stop from blowing away file when there is shell error
-fun! s:FormatShell()
-  let l:pos = getcurpos()
-  "silent execute '%!shfmt' " FIXME: bug report to shfmt
-  call setpos('.', l:pos)
-endfun
-autocmd FileType sh autocmd BufWritePre <buffer> call s:FormatShell()
-endif
-
-" fill in empty markdown links with duck.com search
-" [some thing]() -> [some thing](https://duck.com/lite?kae=t&q=some thing)
-autocmd vimleavepre *.md !perl -p -i -e 's,\[([^\]]+?)\]\(\),[\1](https://duck.com/lite?q=\1),g' %
-""TODO get :GoDoc to open in vertical split like :help ~/.vim/after/ftplugin/help.vim, or tmux popup
-" these settings are in aftter/ftplugin:
-"autocmd FileType python nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E pydoc " . expand('<cword>'))<CR>
-"autocmd FileType perl noremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E perldoc -f " . expand('<cword>'))<CR>
-"autocmd FileType sh nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E man " . expand('<cword>'))<CR>
-autocmd FileType go nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E go doc " . expand('<cword>'))<CR>
-"FIXME it's `go doc fmt.Printf` and not `go doc Printf`, hence K with the "cursor on Printf won't work, needs to include pkgname
-"TODO JS documentation wanted badly
-"autocmd FileType javascript noremap <silent><buffer> K <Esc>:silent! call system("tmux split-window docs " . expand('<cword>'))<CR>
-"autocmd FileType javascript setlocal keywordprg=open\ https://developer.mozilla.org/search?topic=api\\&topic=js\\&q=\
-"TODO this plugin but with w3m 'ivan-cukic/zeal-lynx-cli'
-"############################### buffer ################################
 "" help you to detect filetypes that are not automatically detected
 au bufnewfile,bufRead bashconfig set filetype=sh
+au bufnewfile,bufRead user-data set ft=yaml
+au bufnewfile,bufRead meta-data set ft=yaml
+au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
+au bufnewfile,bufRead /tmp/calcurse*,~/.local/share/calcurse/notes/* set filetype=markdown
 au bufnewfile,bufRead *.profile set filetype=sh
 au bufnewfile,bufRead *.crontab set filetype=crontab
 au bufnewfile,bufRead *ssh/config set filetype=sshconfig
 au bufnewfile,bufRead *gitconfig set filetype=gitconfig
-au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.muttrc set filetype=muttrc
 au bufnewfile,bufRead *.tmpl set filetype=go
-au bufnewfile,bufRead /tmp/calcurse*,~/.local/share/calcurse/notes/* set filetype=markdown
+au bufnewfile,bufRead *.ddl set ft=sql
+au bufnewfile,bufRead *.bash* set ft=bash
+au bufnewfile,bufRead *.gotmpl set ft=go
+au bufnewfile,bufRead .dockerignore set filetype=gitignore
+au bufnewfile,bufRead *.go set spell spellcapcheck=0
+au bufnewfile,bufRead commands.yaml set spell
+au bufnewfile,bufRead *.txt set spell
 au bufnewfile,bufRead $SNIPPETS/md/* set ft=pandoc
 au bufnewfile,bufRead $SNIPPETS/sh/* set ft=sh
 au bufnewfile,bufRead $SNIPPETS/bash/* set ft=bash
@@ -408,19 +408,10 @@ au bufnewfile,bufRead $SNIPPETS/css/* set ft=css
 au bufnewfile,bufRead $SNIPPETS/js/* set ft=javascript
 au bufnewfile,bufRead $SNIPPETS/python/* set ft=python
 au bufnewfile,bufRead $SNIPPETS/perl/* set ft=perl
-au bufnewfile,bufRead user-data set ft=yaml
-au bufnewfile,bufRead meta-data set ft=yaml
-au bufnewfile,bufRead *.ddl set ft=sql
-au bufnewfile,bufRead *.bash* set ft=bash
-au bufnewfile,bufRead *.gotmpl set ft=go
-au bufnewfile,bufRead .dockerignore set filetype=gitignore
-au bufnewfile,bufRead *.go set spell spellcapcheck=0
-au bufnewfile,bufRead commands.yaml set spell
-au bufnewfile,bufRead *.txt set spell
-
 "" start at last place you were editing
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+"########################## custom functions ###########################
 "fix bork bash detection
 if has("eval")  " vim-tiny detection
 fun! s:DetectBash()
@@ -433,7 +424,7 @@ autocmd BufNewFile,BufRead * call s:DetectBash()
 endif
 
 " displays all the syntax rules for current position, useful
-" when writing vimscript syntax plugins
+" when writing vimscript syntax plugins (F2)
 if has("syntax")
 function! <SID>SynStack()
   if !exists("*synstack")
@@ -443,126 +434,123 @@ function! <SID>SynStack()
 endfunc
 endif
 
-" might be needed for C-x/C-o autocomplete
-"set omnifunc=javascriptcomplete#CompleteJS
-"set omnifunc=htmlcomplete#CompleteTags
-"set omnifunc=csscomplete#CompleteCSS
-"set omnifunc=phpcomplete#CompletePHP
-
-"########################## custom functions ###########################
-" Removes trailing spaces
-" e flag: supress error message
+" Removes trailing spaces, e flag: supress error message
 function TrimWhiteSpace()
   %s/\s\+$//e
   ''
 endfunction
+"######################## normal-mode commands #########################
+" make Y consitent with D and C (yank til end)
+map Y y$
+" insert new line without going into insert-mode
+nmap oo m`o<Esc>``
+nmap OO m`O<Esc>``
+"TODO JS documentation wanted badly
+"autocmd FileType javascript noremap <silent><buffer> K <Esc>:silent! call system("tmux split-window docs " . expand('<cword>'))<CR>
+"autocmd FileType javascript setlocal keywordprg=open\ https://developer.mozilla.org/search?topic=api\\&topic=js\\&q=\
+"
+""TODO get :GoDoc to open in vertical split like :help ~/.vim/after/ftplugin/help.vim, or tmux popup
+" these settings are in aftter/ftplugin:
+"autocmd FileType python nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E pydoc " . expand('<cword>'))<CR>
+"autocmd FileType perl noremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E perldoc -f " . expand('<cword>'))<CR>
+"autocmd FileType sh nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E man " . expand('<cword>'))<CR>
+autocmd FileType go nnoremap <silent><buffer> K <Esc>:silent! call system("tmux display-popup -w 80% -h 60% -E go doc " . expand('<cword>'))<CR>
+"FIXME it's `go doc fmt.Printf` and not `go doc Printf`, hence K with the "cursor on Printf won't work, needs to include pkgname
 " Edit/Reload vimrc configuration file
-nnoremap confe :e $HOME/.vimrc<CR>
-nnoremap confr :source $HOME/.vimrc<CR>
-"########################### leader, f-keys ############################
-
+nnoremap confe :e $DOTFILES/home/dot_vimrc<CR>
+nnoremap confr :!chezmoi apply<CR>:source $HOME/.vimrc<CR>
+"########################### f-key commands ############################
+noremap <F1> :set number! relativenumber!<CR>
+nnoremap <F2> :call <SID>SynStack()<CR>
+noremap <F3> :ALEToggle <CR>
+"toggle whitespace:
+noremap <F4> :set list!<CR>
+" quickfix vim integrated file search: cursor location keyword search
+" I prefer fzf search with rg `:Rg <C-R><C-W><CR>`
+noremap <F5> :execute "vimgrep /" . expand("<cword>") . "/j **" <Bar> cw<CR>
+noremap <F6> :ALEInfo<CR>
+noremap <F7> :set paste!<CR>
+noremap <F8> :TagbarToggle<CR>
+noremap <F9> :set spell!<CR>
+" Automatically deletes all trailing whitespace on save.
+map <F11> :call TrimWhiteSpace()<CR>
+map! <F11> :call TrimWhiteSpace()<CR>
+"change folding to indent:
+noremap <F12> :set fdm=indent<CR>
+"########################### leader commands ###########################
+let mapleader ="\<Space>"
+" needed for spacebar leader, to avoid character move with spacebar
+nnoremap <SPACE> <Nop>
+"############################ leader xclip #############################
 " solution (Fedora): select 'v' + normal yank 'y', paste 'leader p'
 " current copy only allows to copy whole line or multiple lines but not
 " only the visually selected text
 "map <Leader>p :call system('xclip -sel clipboard', @0)<CR>
-let mapleader ="\<Space>"
-" needed for spacebar leader, to avoid character move with spacebar
-nnoremap <SPACE> <Nop>
 " yank 1line: `v leader yy`
 " yank 10line: `v 10j leader yy`
 " problem: select 'v' + yank 'leader yy', copies whole line
 " requires 'xclip' but still better than installing bloated 'gvim' to get +clipboard
-vmap <Leader>yy :!xclip -f -sel clip<CR>
+" TODO create binary with docker and compile it with clipboard flag
+vnoremap <Leader>y :!xclip -f -sel clip<CR>
 "map <Leader>pp mz: -1r !xclip -o -sel clip<CR>`z
 noremap <Leader>p :r !xclip -o -sel clip<CR>
-
-
-map <F1> :set number! relativenumber!<CR>
-nmap <F2> :call <SID>SynStack()<CR>
-" toggle autoindent+autocomment on/off: (:set paste, :set nopaste)
-set pastetoggle=<F3> 
-map <F4> :set list!<CR>
-map <F5> :set cursorline! cursorcolumn!<CR>
-" hover over tag press F6 to see all files with tag
-" https://vim.fandom.com/wiki/Find_in_files_within_Vim
-map <F6> :execute "vimgrep /" . expand("<cword>") . "/j **" <Bar> cw<CR>
-map <F7> :set spell!<CR>
-map <F8> :NERDTreeToggle<CR>
-nmap <F9> :TagbarToggle<CR>
-" Automatically delets all trailing whitespace on save.
-map <F10> :call TrimWhiteSpace()<CR>
-map! <F10> :call TrimWhiteSpace()<CR>
-map <F12> :set fdm=indent<CR>
-let g:tagbar_autofocus = 1
-
-nnoremap <Leader><Leader>s :%s//g <Left><Left><Left>
-
-
-" vim vanilla commands:
+" requires 'xclip' but still better than installing bloated 'gvim' to get +clipboard
+"############################ leader search ############################
+" search and replace [foo] to [foo1] globally, case sensitive
+nnoremap <Leader><Leader>s :%s//g <Left><Left><Left> 
+" search and replace [foo] to [foo1] globally, ignore case
+nnoremap <Leader><Leader>S :%s//gI <Left><Left><Left>
+"######################## leader buffer vanilla ########################
 "switch buffers with :buffer tab tab (Tried to keybind did not work)
 "switch buffers with second command :b[Num], :b1 for buffer 1
 "nmap <silent> <Leader>b :ls<cr>
-" Switch buffer to last edited file
-" If I need to switch to more than just the last edited file:
-" Install Plugin: /ton/vim-bufsurf
-nmap <silent> <Leader>n :e #<cr>
-
-" fzf commands:
-" switch buffers
+" Switch buffer to last edited file:
+nnoremap <silent> <Leader>n :e #<CR>
+" If I need to switch to more than just the last edited file: ton/vim-bufsurf
+"############################# leader fzf ##############################
 " If many keybindings use <leader><leader>b.. :Buffers loads slow
 " if <leader>b :Buffers it's also slow
 " Solution: only use double leader for :Buffers
-nmap <silent> <leader><leader>b :Buffers<cr>
+" switch buffers:
+nnoremap <silent> <leader><leader><Tab> :Buffers<CR>
 " search all buffers:
-nmap <silent> <Leader>b/ :Lines<cr>
+nnoremap <silent> <Leader><Leader>b :Lines<CR>
 " search current buffer:
-nmap <silent> <Leader>b. :BLines<cr>
+nnoremap <silent> <Leader><Leader>B :BLines<CR>
 " search vim command history:
-nmap <silent> <Leader>h :History:<cr>
+nnoremap <silent> <Leader><Leader>H :History:<CR>
 " search vim help
-nmap <silent> <Leader>t :Helptags<cr>
+nnoremap <silent> <Leader><Leader>h :Helptags<CR>
 " search filenames:
-nmap <silent> <Leader>O :FZF<cr>
-" search content files with ripgrep:
-nmap <silent> <Leader>o :Rg<cr>
-
+nnoremap <silent> <Leader><Leader>f :FZF<CR>
+" search file content with ripgrep:
+nnoremap <silent> <Leader><Leader>o :Rg<CR>
+" search file content with ripgrep with keyword of current cursor location:
+nnoremap <silent> <Leader><Leader>O :Rg <C-R><C-W><CR>
+"############################# leader git ##############################
 " git commands: vim-fugitive plugin
-noremap <Leader>ga :Gwrite<CR>
-noremap <Leader>gc :Gcommit<CR>
-noremap <Leader>gsh :Gpush<CR>
-noremap <Leader>gll :Gpull<CR>
-noremap <Leader>gs !!git status<CR>
-noremap <Leader>gb :Gblame<CR>
-noremap <Leader>gd :Gvdiff<CR>
-noremap <Leader>gr :Gremove<CR>
+nnoremap <Leader>ga :Gwrite<CR>
+nnoremap <Leader>gc :Gcommit<CR>
+nnoremap <Leader>gps :Gpush<CR>
+nnoremap <Leader>gll :Gpull<CR>
+nnoremap <Leader>gs !!git status<CR>
+nnoremap <Leader>gb :Gblame<CR>
+nnoremap <Leader>gd :Gvdiff<CR>
+nnoremap <Leader>gr :Gremove<CR>
 " fzf search git graph and checkout commit:
 " Loads slow with only one leader
-nmap <Leader><Leader>g :Commits<cr>
-
-" autocomplete
-"double space to enter auto
+nnoremap <Leader><Leader>g :Commits<cr>
+"##################### leader omni auto completion #####################
+" double space activates omni auto completion
 inoremap <Leader><Leader> <C-x><C-o>
-"C-n auto & navigate autocomplete-menu
+"C-k/C-j to navigate omni autocomplete-menu
 inoremap <C-j> <C-n>
-"navigate autocomplete-menu
 inoremap <C-k> <C-p>
 
-" displays all the syntax rules for current position, useful
-" when writing vimscript syntax plugins (F2)
-function! <SID>SynStack()
-	if !exists("*synstack")
-		return
-	endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
 "########################### visual settings ###########################
 set t_Co=256 " set  256bit color mode
 " makes visual mode highlighting blue
 highlight Visual cterm=bold ctermbg=Blue ctermfg=NONE
-" visual effect on F5 cursor line changed to underline
-hi clear CursorLine
-highlight CursorLine ctermbg=Yellow guibg=#2b2b2b
-highlight CursorColumn ctermbg=Yellow guibg=#2b2b2b
 
 " make github colorschemes transparent - needs to be after Plugin stuff
 hi Normal ctermbg=NONE
@@ -572,14 +560,15 @@ hi! Normal ctermbg=NONE guibg=NONE
 hi SignColumn ctermbg=NONE
 
 " base default color changes (gruvbox dark friendly)
-hi StatusLine ctermfg=black ctermbg=NONE
-hi StatusLineNC ctermfg=black ctermbg=NONE
+hi StatusLine ctermfg=grey ctermbg=NONE
+hi StatusLineNC ctermfg=grey ctermbg=NONE
+hi WildMenu ctermfg=white ctermbg=black
 hi Normal ctermbg=NONE
 hi Special ctermfg=cyan
-hi LineNr ctermfg=black ctermbg=NONE
+hi LineNr ctermfg=darkgrey ctermbg=NONE
 hi SpecialKey ctermfg=black ctermbg=NONE
 hi ModeMsg ctermfg=black cterm=NONE ctermbg=NONE
-hi MoreMsg ctermfg=black ctermbg=NONE
+hi MoreMsg ctermfg=yellow ctermbg=NONE
 hi NonText ctermfg=black ctermbg=NONE
 hi vimGlobal ctermfg=black ctermbg=NONE
 hi ErrorMsg ctermbg=234 ctermfg=darkred cterm=NONE
@@ -593,14 +582,15 @@ hi IncSearch ctermbg=236 cterm=NONE ctermfg=darkred
 hi MatchParen ctermbg=236 ctermfg=darkred
 
 " color overrides
-au FileType * hi StatusLine ctermfg=black ctermbg=NONE
-au FileType * hi StatusLineNC ctermfg=black ctermbg=NONE
+au FileType * hi StatusLine ctermfg=grey ctermbg=NONE
+au FileType * hi StatusLineNC ctermfg=grey ctermbg=NONE
+au FileType * hi WildMenu ctermfg=white ctermbg=black
 au FileType * hi Normal ctermbg=NONE
 au FileType * hi Special ctermfg=cyan
-au FileType * hi LineNr ctermfg=black ctermbg=NONE
+au FileType * hi LineNr ctermfg=darkgrey ctermbg=NONE
 au FileType * hi SpecialKey ctermfg=black ctermbg=NONE
 au FileType * hi ModeMsg ctermfg=black cterm=NONE ctermbg=NONE
-au FileType * hi MoreMsg ctermfg=black ctermbg=NONE
+au FileType * hi MoreMsg ctermfg=yellow ctermbg=NONE
 au FileType * hi NonText ctermfg=black ctermbg=NONE
 au FileType * hi vimGlobal ctermfg=black ctermbg=NONE
 au FileType * hi goComment ctermfg=black ctermbg=NONE
@@ -624,23 +614,18 @@ au FileType markdown,pandoc noremap j gj
 au FileType markdown,pandoc noremap k gk
 au FileType sh set noet
 
-set cinoptions+=:0
-"custom statusline
-set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
-
-
 " lightline: remove yellow -- INSERT -- etc. message at bottom
 set noshowmode
 
-" all these are about indent:
+"############################# indentation #############################
 set autoindent " you should turn it off when you are pasting
-set noflash
 set expandtab "if you don't like tabs
 set smartindent "same as >> but when you wanna do a new line
 set smarttab
 set tabstop=2 "settings for your notes and stuff, don't use to code with it
 set softtabstop=2 "related to tabstop
 set shiftwidth=2 "if you want lines to move in like with tabs `3>>` will move 3 lines in
+set cinoptions+=:0 "C no indentation
 
 "########################### 🏡 it's personal ###########################
 " read personal/private vim configuration (keep last to override)
