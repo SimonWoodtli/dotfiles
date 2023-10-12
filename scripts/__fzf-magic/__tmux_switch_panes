@@ -1,17 +1,17 @@
 #!/usr/bin/sh
 ##search and jump to a pane in the current session
 # tmux list-pane formating
-declare target_spec="#{session_name}:#{window_id}:#{pane_id}:"
-declare list_data="#{window_name} #{pane_title} #{pane_current_path} #{pane_current_command}"
+target_spec="#{session_name}:#{window_id}:#{pane_id}:"
+list_data="#{window_name} #{pane_title} #{pane_current_path} #{pane_current_command}"
 
 __fzf_cmd() {
   fzf -e -i --prompt="Select a pane (current session): " --info=default --layout=reverse --tiebreak=index
 }
 
 # select pane
-declare line="$(tmux list-panes -s -F "$target_spec $list_data" | __fzf_cmd)" || exit 0
-declare session="$(echo "$line" |  cut -d ':' -f1)"
-declare window_num="$(echo "$line" |  cut -d ':' -f2)"
-declare pane_num="$(echo "$line" |  cut -d ':' -f3)"
+line="$(tmux list-panes -s -F "$target_spec $list_data" | __fzf_cmd)" || exit 0
+session="$(echo "$line" |  cut -d ':' -f1)"
+window_num="$(echo "$line" |  cut -d ':' -f2)"
+pane_num="$(echo "$line" |  cut -d ':' -f3)"
 
 tmux select-pane -t "$pane_num" && tmux select-window -t "$window_num" && tmux switch-client -t "$session"

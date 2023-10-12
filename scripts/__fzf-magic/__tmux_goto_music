@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 ## jump to "music/ncmpcpp" window in "entertainment" session
-declare window="ncmpcpp"
-declare session="entertainment"
-declare filterSession="$(tmux list-windows -a -F "#S:#I-#W" | grep "$window" | grep "$session" | cut -d "-" -f 1)"
+window="ncmpcpp"
+session="entertainment"
+filterSession="$(tmux list-windows -a -F "#S:#I-#W" | grep "$window" | grep "$session" | cut -d "-" -f 1)"
 tmux switch-client -t "$filterSession"

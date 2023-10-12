@@ -1,10 +1,10 @@
 #!/usr/bin/sh
 ##create 'communication' session and jump to first window                          
 ##or if session exists just jump to first window                                   
-declare session="communication"
-tmux has-session -t $session &> /dev/null
+session="communication"
+tmux has-session -t $session 2>/dev/null
 ## create tmux session if it doesn't already exist
-if [[ "$?" ]]; then
+if [ "$?" ]; then
   tmux new-session -d -s "$session" -c "$HOME"
   ## create windows:
   tmux send-keys -t "$session":1 'weechat' C-m

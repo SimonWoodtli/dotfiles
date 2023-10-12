@@ -1,16 +1,16 @@
 #!/usr/bin/sh
 ##search and jump to a window in the current session
 # tmux list-windows formating
-declare target_spec="#{session_name}:#{window_id}:"
-declare list_data="#{window_name} #{pane_title} #{pane_current_path} #{pane_current_command}"
+target_spec="#{session_name}:#{window_id}:"
+list_data="#{window_name} #{pane_title} #{pane_current_path} #{pane_current_command}"
 
 __fzf_cmd() {
   fzf -e -i --prompt="Select a window (current session): " --info=default --layout=reverse --tiebreak=index
 }
 
 # select window
-declare line="$(tmux list-windows -F "$target_spec $list_data" | __fzf_cmd)" || exit 0
-declare session="$(echo "$line" |  cut -d ':' -f1)"
-declare window_num="$(echo "$line" |  cut -d ':' -f2)"
+line="$(tmux list-windows -F "$target_spec $list_data" | __fzf_cmd)" || exit 0
+session="$(echo "$line" |  cut -d ':' -f1)"
+window_num="$(echo "$line" |  cut -d ':' -f2)"
 
 tmux select-window -t "$window_num" && tmux switch-client -t "$session"
