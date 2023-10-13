@@ -316,6 +316,8 @@ if filereadable(expand("~/.vim/autoload/plug.vim"))
         \  'json': ['jq'],
         \  'css': ['stylelint'],
         \  'html': ['tidy'],
+        \  'sh': ['shellcheck'],
+        \  'bash': ['shellcheck'],
         \ }
   let g:ale_fixers = {
         \  'javascript': ['eslint', 'prettier'],
@@ -473,8 +475,8 @@ noremap <F7> :set paste!<CR>
 noremap <F8> :TagbarToggle<CR>
 noremap <F9> :set spell!<CR>
 " Automatically deletes all trailing whitespace on save.
-map <F11> :call TrimWhiteSpace()<CR>
-map! <F11> :call TrimWhiteSpace()<CR>
+map <F10> :call TrimWhiteSpace()<CR>
+map! <F10> :call TrimWhiteSpace()<CR>
 "change folding to indent:
 noremap <F12> :set fdm=indent<CR>
 "########################### leader commands ###########################
@@ -616,6 +618,8 @@ au FileType sh set noet
 
 " lightline: remove yellow -- INSERT -- etc. message at bottom
 set noshowmode
+" status line below status bar (last line) format:
+set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
 
 "############################# indentation #############################
 set autoindent " you should turn it off when you are pasting
