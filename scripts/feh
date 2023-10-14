@@ -1,6 +1,6 @@
 #!/bin/sh
 ## feh wrapper script
-declare fehpath=/usr/bin/feh
+fehpath=/usr/bin/feh
 [ ! -x $fehpath ] && fehpath=/usr/local/bin/feh
 
 if [ ! -x "$fehpath" ]; then
