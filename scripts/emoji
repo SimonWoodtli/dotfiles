@@ -1,8 +1,27 @@
 #!/usr/bin/bash
-##TODO make `emoji` command available within vim like other fzf commands
-##:Rg etc. => :emoji
-
-## loop over array to check if dependencies are installed
+################################# About ################################
+## Author: Simon D. Woodtli
+## Project: https://github.com/SimonWoodtli/dotfiles/blob/main/scripts/emoji
+## Script Name: emoji
+## License:  Apache-2.0
+## Dependencies: fzf, xclip, sed, cut, tr
+################################# Setup ##############################
+## 1. Copy script into your $PATH and chmod it
+## 2. Run script once to populate database
+## 3. Add to your ~/.vimrc: (rm # char at beginning)
+################################# vimrc ################################
+#"ex-command fzf window:
+#command! Emoji call fzf#run(fzf#wrap({'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"', 'sink': function('InsertFirstCharAtCursor')}))
+#"print function:
+#function! InsertFirstCharAtCursor(text)
+#  let rmTxt = split(a:text, ' ')
+#  let firstChar = get(rmTxt, 0)
+#  execute "normal! i" . firstChar . "\<Esc>"
+#endfunction
+#"leader-command: (adjust to what you like)
+#nnoremap <silent> <leader><leader>e :Emoji<CR>
+################################ Script ################################
+## Check if dependencies are installed
 _checkDependencies() {
   local -a dependencies=( xclip fzf sed cut tr )
   local -a missingDependencies=()
@@ -14,35 +33,28 @@ _checkDependencies() {
     exit 1
   fi
 }
-## fetch data and filter out stuff
-## cut -d delimiter # and -f field 2
+## Fetch data and filter out unwanted data
 _createEmojiList() {
   _checkDependencies
-  curl "https://unicode.org/Public/emoji/15.0/emoji-test.txt"                 \
+  curl "https://unicode.org/Public/emoji/15.1/emoji-test.txt"                 \
     | sed 's|^#.*$||g'                        `#remove all comment lines`     \
     | cut -d '#' -f 2                         `#remove columns until last one`\
     | cut -c2-                                `#remove empty first character` \
     | sed '/^[[:blank:]]*$/d'                 `#remove all empty lines`       \
     | sed 's|E[[:digit:]]*\.[[:digit:]]*||g'  `#remove all E Numbers`         \
     | sed '/^.*skin.tone.*$/d'                `#remove all skin colors`       \
-    > "$HOME/.local/share/emojidb/emoji.v15.0" #update 16 when published
+    > "$HOME/.local/share/emojidb/emoji.v15.1" #update 16 when published
 }
-## check if emojidb and emoji file are present or create them
+## Check if emojidb and emoji file are present or create them
 _checkEmojiDirFile() {
   [[ -d "$HOME/.local/share/emojidb" ]] || mkdir "$HOME/.local/share/emojidb"
-  [[ -f "$HOME/.local/share/emojidb/emoji.v15.0" ]] || _createEmojiList
+  [[ -f "$HOME/.local/share/emojidb/emoji.v15.1" ]] || _createEmojiList
 }
-##TODO echo only emoji after fzf and copy to clipboard
-## copy the selected emoji to clipboard and print it
-_copyEmojiClipboard() {
-  ##TODO check if it is a modular/combined emoji if so store first two or
-  ##more chars
-  ## cut line and only store first character
-  local emoji=$(fzf < "$HOME/.local/share/emojidb/emoji.v15.0" | cut -c 1-1)
+_printEmojiCopyClipboard() {
+  ##FIXME Currently terminal does not support multibinary emojis with ZWJ
+  ## cut line and only store first string
+  local emoji=$(fzf < "$HOME/.local/share/emojidb/emoji.v15.1" | cut -f1 -d ' ')
   ## print and copy emoji
   echo "$emoji"; echo "$emoji" | tr -d '\n' | xclip -sel clipboard
 }
-_checkEmojiDirFile && _checkDependencies && _copyEmojiClipboard
-##Additional:
-## remove first 34 lines and last 10 lines from multi line string
-#declare cutDataHeaderFooter=$(echo "$Data" | tail -n +34 | head -n -10 )
+_checkEmojiDirFile && _checkDependencies && _printEmojiCopyClipboard
