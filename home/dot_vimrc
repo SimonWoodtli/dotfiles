@@ -441,6 +441,19 @@ function TrimWhiteSpace()
   %s/\s\+$//e
   ''
 endfunction
+
+" insert emoji with `:Emoji` or <leader<leader>e
+if filereadable(expand("~/.vimplugins/fzf.vim/plugin/fzf.vim"))
+function! InsertFirstCharAtCursor(text)
+  let rmTxt = split(a:text, ' ')
+  let firstChar = get(rmTxt, 0)
+  execute "normal! a" . firstChar . "\<Esc>"
+endfunction
+endif
+
+"############################# ex commands #############################
+command! Emoji call fzf#run(fzf#wrap({'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"', 'sink': function('InsertFirstCharAtCursor')}))
+"command! Emoji call fzf#run({'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"', 'sink': function('InsertFirstCharAtCursor')})
 "######################## normal-mode commands #########################
 " make Y consitent with D and C (yank til end)
 map Y y$
@@ -510,6 +523,7 @@ nnoremap <Leader><Leader>S :%s//gI <Left><Left><Left>
 nnoremap <silent> <Leader>n :e #<CR>
 " If I need to switch to more than just the last edited file: ton/vim-bufsurf
 "############################# leader fzf ##############################
+nnoremap <silent> <leader><leader>e :Emoji<CR>
 " If many keybindings use <leader><leader>b.. :Buffers loads slow
 " if <leader>b :Buffers it's also slow
 " Solution: only use double leader for :Buffers
