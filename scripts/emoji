@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 ################################# About ################################
 ## Author: Simon D. Woodtli
+## Thanks to u/rustyflavor on reddit for some neat modifications
 ## Project: https://github.com/SimonWoodtli/dotfiles/blob/main/scripts/emoji
 ## Script Name: emoji
 ## License:  Apache-2.0
@@ -21,12 +22,15 @@
 #"leader-command: (adjust to what you like)
 #nnoremap <silent> <leader><leader>e :Emoji<CR>
 ################################ Script ################################
+emojidb="$HOME/.local/share/emojidb/emoji.v15.1"
+
+_checkCommand() { command -v "$@" &>/dev/null; }
 ## Check if dependencies are installed
 _checkDependencies() {
-  local -a dependencies=( xclip fzf sed cut tr )
+  local -a dependencies=( fzf curl )
   local -a missingDependencies=()
   for dependency in "${dependencies[@]}"; do
-    command -v "$dependency" >/dev/null 2>&1 || missingDependencies+=( "$dependency" )
+    _checkCommand "$dependency" || missingDependencies+=( "$dependency" )
   done
   if [[ -n "${missingDependencies[@]}" ]]; then
     echo "ERROR: Missing dependency(ies): "${missingDependencies[@]}""
@@ -35,26 +39,28 @@ _checkDependencies() {
 }
 ## Fetch data and filter out unwanted data
 _createEmojiList() {
-  _checkDependencies
-  curl "https://unicode.org/Public/emoji/15.1/emoji-test.txt"                 \
-    | sed 's|^#.*$||g'                        `#remove all comment lines`     \
-    | cut -d '#' -f 2                         `#remove columns until last one`\
-    | cut -c2-                                `#remove empty first character` \
-    | sed '/^[[:blank:]]*$/d'                 `#remove all empty lines`       \
-    | sed 's|E[[:digit:]]*\.[[:digit:]]*||g'  `#remove all E Numbers`         \
-    | sed '/^.*skin.tone.*$/d'                `#remove all skin colors`       \
-    > "$HOME/.local/share/emojidb/emoji.v15.1" #update 16 when published
+  #update url manually if new release comes out
+  local url="https://unicode.org/Public/emoji/15.1/emoji-test.txt" 
+  mkdir -p "${emojidb%/*}"
+  curl -s "$url" | sed '
+      /^#/d          # remove comments
+      /^\s*$/d       # remove empty lines
+      /skin tone/d   # remove skin tones
+      s/^[^#]*# //   # remove first column
+      s/\bE[0-9.]\+// # remove E number
+  ' > "$emojidb"
 }
 ## Check if emojidb and emoji file are present or create them
-_checkEmojiDirFile() {
-  [[ -d "$HOME/.local/share/emojidb" ]] || mkdir "$HOME/.local/share/emojidb"
-  [[ -f "$HOME/.local/share/emojidb/emoji.v15.1" ]] || _createEmojiList
-}
 _printEmojiCopyClipboard() {
+  [[ -f "$emojidb" ]] || _createEmojiList
+  local emoji=$(fzf < "$emojidb")
+  emoji=${emoji%% *}
   ##FIXME Currently terminal does not support multibinary emojis with ZWJ
-  ## cut line and only store first string
-  local emoji=$(fzf < "$HOME/.local/share/emojidb/emoji.v15.1" | cut -f1 -d ' ')
-  ## print and copy emoji
-  echo "$emoji"; echo "$emoji" | tr -d '\n' | xclip -sel clipboard
+  printf "%s\n" "$emoji"
+  if _checkCommand xclip; then
+      printf %s "$emoji" | xclip -sel clipboard
+  else
+      printf "%s\n" "Install xclip for automatic copy to clipboard"
+  fi
 }
-_checkEmojiDirFile && _checkDependencies && _printEmojiCopyClipboard
+_checkDependencies && _printEmojiCopyClipboard
