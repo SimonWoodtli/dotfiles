@@ -5,27 +5,37 @@
 ## Project: https://github.com/SimonWoodtli/dotfiles/blob/main/scripts/emoji
 ## Script Name: emoji
 ## License:  Apache-2.0
-## Dependencies: fzf, xclip, sed, cut, tr
+## Dependencies: fzf, curl
 ################################# Setup ##############################
 ## 1. Copy script into your $PATH and chmod it
 ## 2. Run script once to populate database
 ## 3. Add to your ~/.vimrc: (rm # char at beginning)
 ################################# vimrc ################################
-#"ex-command fzf window:
-#command! Emoji call fzf#run(fzf#wrap({'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"', 'sink': function('InsertFirstCharAtCursor')}))
 #"print function:
 #function! InsertFirstCharAtCursor(text)
 #  let rmTxt = split(a:text, ' ')
 #  let firstChar = get(rmTxt, 0)
-#  execute "normal! i" . firstChar . "\<Esc>"
+#  execute "normal! a" . firstChar . "\<Esc>"
 #endfunction
+#" var used by :Emoji
+#let emoji = {
+#  \ 'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"',
+#  \ 'sink': function('InsertFirstCharAtCursor'),
+#  \ 'options': '--prompt "search: " --no-preview -i -e --info=default --layout=reverse',
+#  \ }
+#" var used by :Gitmoji
+#let gitmoji = copy(emoji)
+#let gitmoji['source'] = 'cat "$HOME/.local/share/emojidb/gitmoji"'
+#"ex-command fzf window:
+#command! Emoji call fzf#run(fzf#wrap(emoji))
+#command! Gitmoji call fzf#run(fzf#wrap(gitmoji))
 #"leader-command: (adjust to what you like)
+#nnoremap <silent> <leader><leader>g :Gitmoji<CR>
 #nnoremap <silent> <leader><leader>e :Emoji<CR>
 ################################ Script ################################
 emojidb="$HOME/.local/share/emojidb/emoji.v15.1"
 
 _checkCommand() { command -v "$@" &>/dev/null; }
-## Check if dependencies are installed
 _checkDependencies() {
   local -a dependencies=( fzf curl )
   local -a missingDependencies=()
@@ -37,10 +47,9 @@ _checkDependencies() {
     exit 1
   fi
 }
-## Fetch data and filter out unwanted data
 _createEmojiList() {
   #update url manually if new release comes out
-  local url="https://unicode.org/Public/emoji/15.1/emoji-test.txt" 
+  local url="https://unicode.org/Public/emoji/15.1/emoji-test.txt"
   mkdir -p "${emojidb%/*}"
   curl -s "$url" | sed '
       /^#/d          # remove comments
@@ -50,10 +59,24 @@ _createEmojiList() {
       s/\bE[0-9.]\+// # remove E number
   ' > "$emojidb"
 }
-## Check if emojidb and emoji file are present or create them
 _printEmojiCopyClipboard() {
+  ## Check if emojidb and emoji file are present or create them
   [[ -f "$emojidb" ]] || _createEmojiList
-  local emoji=$(fzf < "$emojidb")
+  # clear screen
+  printf "\033c"
+  # not running tmux
+  if [ "$TMUX_PANE" = "%0" ] || [ -z "$TMUX" ] || [ -z "$TERM_PROGRAM" ]; then
+    local emoji="$(fzf --no-preview -i -e --prompt='emoji: '        \
+      --info=default --layout=reverse < "$emojidb")"
+  # tmux -ge 3.2 popup
+  elif [ "$TERM_PROGRAM" = tmux ] ; then
+    local emoji="$(fzf-tmux --no-preview -p --prompt='emoji: '      \
+      -w 80% -h 70% -i -e --info=default --layout=reverse < "$emojidb")"
+  # tmux -lt 3.2 regular split
+  elif [ -n "$TMUX" ] ; then
+    local emoji="$(fzf-tmux --no-preview --prompt='emoji: ' -i -e   \
+      --info=default --layout=reverse < "$emojidb")"
+  fi
   emoji=${emoji%% *}
   ##FIXME Currently terminal does not support multibinary emojis with ZWJ
   printf "%s\n" "$emoji"
