@@ -1,0 +1,95 @@
+#!/bin/bash
+################################# About ################################
+## Author: Simon D. Woodtli
+## Project: https://github.com/SimonWoodtli/dotfiles/blob/main/scripts/gitmoji
+## Script Name: gitmoji
+## License:  Apache-2.0
+## Dependencies: fzf curl jq
+################################# Setup ##############################
+## 1. Copy script into your $PATH and chmod it
+## 2. Run script once to populate database
+## 3. Add to your ~/.vimrc: (rm # char at beginning)
+################################# vimrc ################################
+#"print function:
+#function! InsertFirstCharAtCursor(text)
+#  let rmTxt = split(a:text, ' ')
+#  let firstChar = get(rmTxt, 0)
+#  execute "normal! a" . firstChar . "\<Esc>"
+#endfunction
+#" var used by :Emoji
+#let emoji = {
+#  \ 'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"',
+#  \ 'sink': function('InsertFirstCharAtCursor'),
+#  \ 'options': '--prompt "search: " --no-preview -i -e --info=default --layout=reverse',
+#  \ }
+#" var used by :Gitmoji
+#let gitmoji = copy(emoji)
+#let gitmoji['source'] = 'cat "$HOME/.local/share/emojidb/gitmoji"'
+#"ex-command fzf window:
+#command! Emoji call fzf#run(fzf#wrap(emoji))
+#command! Gitmoji call fzf#run(fzf#wrap(gitmoji))
+#"leader-command: (adjust to what you like)
+#nnoremap <silent> <leader><leader>g :Gitmoji<CR>
+#nnoremap <silent> <leader><leader>e :Emoji<CR>
+################################ Script ################################
+gitmojidb="$HOME/.local/share/emojidb/gitmoji"
+
+_checkCommand() { command -v "$@" &>/dev/null; }
+_checkDependencies() {
+  local -a dependencies=( fzf curl jq )
+  local -a missingDependencies=()
+  for dependency in "${dependencies[@]}"; do
+    _checkCommand "$dependency" || missingDependencies+=( "$dependency" )
+  done
+  if [[ -n "${missingDependencies[@]}" ]]; then
+    echo "ERROR: Missing dependency(ies): ${missingDependencies[@]}"
+    exit 1
+  fi
+}
+_fetchGitmojiData() {
+  local fetchGitmojiData=$(curl -s https://gitmoji.dev/api/gitmojis | jq -r ".")
+  ## weird flow but bash child processes don't propagate var to parent
+  _filterGitmojiData
+}
+_filterGitmojiData() {
+  local -a filterGitmoji=( $(jq -r ".[] | .[] | .emoji" <<< "$fetchGitmojiData") )
+  local -a filterGitmojiTxt
+  ## make sure multi string elements are assigned to one element not every space separated
+  while IFS= read -r line
+  do
+    filterGitmojiTxt+=("$line")
+  done <<< "$(jq -r ".[] | .[] | .description" <<< "$fetchGitmojiData")"
+  _createGitmojiList
+}
+_createGitmojiList() {
+  mkdir -p "${gitmojidb%/*}"
+  for i in "${!filterGitmoji[@]}"; do
+    printf "%s\n" "${filterGitmoji[i]} ${filterGitmojiTxt[i]%.*}" >> "$gitmojidb"
+  done
+}
+_printEmojiCopyClipboard() {
+  [[ -f "$gitmojidb" ]] || _fetchGitmojiData
+  # clear screen
+  printf "\033c"
+  # not running tmux
+  if [ "$TMUX_PANE" = "%0" ] || [ -z "$TMUX" ] || [ -z "$TERM_PROGRAM" ]; then
+    local gitmoji="$(fzf --no-preview -i -e --prompt='gitmoji: '        \
+      --info=default --layout=reverse < "$gitmojidb")"
+  # tmux -ge 3.2 popup
+  elif [ "$TERM_PROGRAM" = tmux ] ; then
+    local gitmoji="$(fzf-tmux --no-preview -p --prompt='gitmoji: '      \
+      -w 80% -h 70% -i -e --info=default --layout=reverse < "$gitmojidb")"
+  # tmux -lt 3.2 regular split
+  elif [ -n "$TMUX" ] ; then
+    local gitmoji="$(fzf-tmux --no-preview --prompt='gitmoji: ' -i -e   \
+      --info=default --layout=reverse < "$gitmojidb")"
+  fi
+  gitmoji=${gitmoji%% *}
+  printf "%s\n" "$gitmoji"
+  if _checkCommand xclip; then
+    printf %s "$gitmoji" | xclip -sel clipboard
+  else
+    printf "%s\n" "Install xclip for automatic copy to clipboard"
+  fi
+}
+_checkDependencies && _printEmojiCopyClipboard
