@@ -72,15 +72,15 @@ _printEmojiCopyClipboard() {
   # clear screen
   printf "\033c"
   # not running tmux
-  if [ "$TMUX_PANE" = "%0" ] || [ -z "$TMUX" ] || [ -z "$TERM_PROGRAM" ]; then
+  if [[ -z "$TMUX" || -z "$TERM_PROGRAM" ]]; then
     local gitmoji="$(fzf --no-preview -i -e --prompt='gitmoji: '        \
       --info=default --layout=reverse < "$gitmojidb")"
   # tmux -ge 3.2 popup
-  elif [ "$TERM_PROGRAM" = tmux ] ; then
+  elif [[ "$TERM_PROGRAM" = tmux ]] ; then
     local gitmoji="$(fzf-tmux --no-preview -p --prompt='gitmoji: '      \
       -w 80% -h 70% -i -e --info=default --layout=reverse < "$gitmojidb")"
   # tmux -lt 3.2 regular split
-  elif [ -n "$TMUX" ] ; then
+  elif [[ -n "$TMUX" ]] ; then
     local gitmoji="$(fzf-tmux --no-preview --prompt='gitmoji: ' -i -e   \
       --info=default --layout=reverse < "$gitmojidb")"
   fi
