@@ -1,22 +1,38 @@
 #!/bin/sh
-
-# The world's best pastebin terminal replacement. I'm so in love.
-# You can call this from *within* vi!
-# `ix < scriptname`
-
-if [ -n "$1" ]; then
+################################# About ################################
+## Author: Simon D. Woodtli
+## Project: https://github.com/SimonWoodtli/dotfiles/blob/main/scripts/ix
+## Script Name: ix
+## License:  Apache-2.0
+## Dependency: curl
+################################# tldr #################################
+## terminal upload: ix < fileYouWannaShare
+## terminal print: ix 4Jv3
+## vim upload line: !!ix
+## vim upload paragraph: !}ix
+## vim upload file: !Gix
+## vim print: !!ix 4Jv3
+################################ Script ################################
+rd=$'\033[31m'
+rt=$'\033[0m'
+_have() { type "$1" >/dev/null; }
+_checkDependency() {
+  _have curl || { echo "${rd}ERROR:$rt Install curl first"; exit 1; }
+}
+_printFile() {
   exec curl -s "ix.io/$1"
-fi
-
-url=$(curl -s -F 'f:1=<-' http://ix.io)
-wee "$url" 2>/dev/null
-echo "$url"
-which xclip >/dev/null || exit 0
-echo "$url" | xclip 
-
-# netcat `nc` with IP of receiver
-# 0x0.st
-# bashupload.com
-# transfer.sh
-# chunk.io
-# gitlab.com/timvisee/send-instances
+}
+_uploadFile() {
+  [ -n "$1" ] && _printFile "$1"
+  ##file descriptor test: 0 input, 1 output 2 error
+  if [ ! -t 0 ]; then
+    url=$(curl -s -F 'f:1=<-' http://ix.io)
+    printf "%s\n" "$url"
+  fi
+  if _have xclip; then
+    printf %s "$url" | xclip -sel clipboard
+  else
+    echo "${rd}ERROR:$rt Install xclip first"; exit 1
+  fi
+}
+_checkDependency && _uploadFile "$1"
