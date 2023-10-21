@@ -1,6 +1,10 @@
 #!/bin/bash
+## ghe: githubextended
+## TODO add more functions to gh for things the current gh tool cannot
+## do but you want it to.
+##func ziplink/zipball from rwxrob
 
-## download zipball from github page `gm zipball <account>/<repo>`
+## download zipball from github page `ghe zipball <account>/<repo>`
 declare subcommand="$1"; shift
 declare -r gold=$'\033[38;2;250;130;10m'
 declare -r cyan=$'\033[38;2;0;255;255m'
@@ -8,14 +12,14 @@ declare -r reset=$'\033[0m'
 
 ziplink () {
   if [[ -z "$1" ]]; then
-    echo "usage: gh ziplink <account>/<repo>"
+    echo "usage: ghe ziplink <account>/<repo>"
   fi
   curl -s "https://api.github.com/repos/$1/releases/latest" |jq -r .zipball_url
 }
 
 zipball () {
   if [[ -z "$1" ]]; then
-    echo "usage: gh zipball <account>/<repo>"
+    echo "usage: ghe zipball <account>/<repo>"
   fi
   declare link=$(ziplink "$1")
   declare file=${1##*/}.${link##*/}.zip
