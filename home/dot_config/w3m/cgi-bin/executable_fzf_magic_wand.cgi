@@ -1,49 +1,49 @@
-#!/usr/bin/sh
-# dependencies: fzf gawk coreutils
-declare newL=$'\n' #insert new line: multi line also works like: 
+#!/bin/bash
+# dependencies: fzf coreutils
+declare newL=$'\n' #insert new line: multi line also works like:
 #echo -e "Hello World\n===========\n" but only on linux
 #here documents like`cat <<EOF...EOF` need to be defined at once
 #incremental variable changes that offer \n cannot be used like that
-__main() {
+_main() {
   local buffer=/tmp/w3m-buffer
   # clear screen
   printf "\033c"
   # not running tmux
-  if [ "$TMUX_PANE" = "%0" ] || [ -z "$TMUX" ] || [ -z "$TERM_PROGRAM" ] ; then
-    local selectLine="$(__glossary | sort -t '@' -k2 | column -t  -s '#' \
+  if [[ -z "$TMUX" || -z "$TERM_PROGRAM" ]] ; then
+    local selectLine="$(_glossary | sort -t '@' -k2 | column -t  -s '#' \
       | fzf --no-preview -i -e --delimiter '@' --with-nth 2.. \
-      --prompt='magic-wand [$func|&custom|*fav]: ' \
+      --prompt='w3m-magic [$func|&custom|*fav]: ' \
       --info=default --layout=reverse --tiebreak=index)"
     local selectScript="$(echo "$selectLine" | awk '{print $1}')"
     local selectVariable="$(echo "$selectLine" | awk '{print $3}')"
     local selection="$selectScript"${newL}"$selectVariable"
   # tmux -ge 3.2 popup
-  elif [ "$TERM_PROGRAM" = tmux ] ; then
-    local selectLine="$(__glossary | sort -t '@' -k2 | column -t  -s '#' \
+  elif [[ "$TERM_PROGRAM" = tmux ]] ; then
+    local selectLine="$(_glossary | sort -t '@' -k2 | column -t  -s '#' \
       | fzf-tmux --no-preview -p -w 80% -h 70% -i -e --delimiter '@' --with-nth 2.. \
-      --prompt='magic-wand [$func|&custom|*fav]: ' \
+      --prompt='w3m-magic [$func|&custom|*fav]: ' \
       --info=default --layout=reverse --tiebreak=index)"
     local selectScript="$(echo "$selectLine" | awk '{print $1}')"
     local selectVariable="$(echo "$selectLine" | awk '{print $3}')"
     local selection="$selectScript"${newL}"$selectVariable"
   # tmux -lt 3.2 regular split
-  elif [ -n "$TMUX" ] ; then
-    local selectLine="$( __glossary | sort -t '@' -k2 | column -t  -s '#' \
+  elif [[ -n "$TMUX" ]] ; then
+    local selectLine="$(_glossary | sort -t '@' -k2 | column -t  -s '#' \
       | fzf-tmux --no-preview -i -e --delimiter '@' --with-nth 2.. \
-      --prompt='magic-wand [$func|&custom|*fav]: ' \
+      --prompt='w3m-magic [$func|&custom|*fav]: ' \
       --info=default --layout=reverse --tiebreak=index)"
     local selectScript="$(echo "$selectLine" | awk '{print $1}')"
     local selectVariable="$(echo "$selectLine" | awk '{print $3}')"
     local selection="$selectScript"${newL}"$selectVariable"
   fi
-  __writeBuffer
+  _writeBuffer
 }
-__writeBuffer() {
+_writeBuffer() {
   ##if $selection is empty
-  [ -z "$selection" ] && echo "" > "$buffer" && exit
+  [[ -z "$selection" ]] && echo "" > "$buffer" && exit
   echo "$selection" > "$buffer"
 }
-__glossary() {
+_glossary() {
 # $ = built-in functions ; & = custom ; * = favorites
 #
 #__set_user_agent.cgi#@SET_USER_AGENT&#linux#-- Set user agent string linux         
@@ -226,7 +226,7 @@ __click_next.cgi#@CLICK_NEXT&#-- Click next page button 'Next'
 __click_prev.cgi#@CLICK_PREV&#-- Click previous page button 'Previous'
 __click_next_arrow.cgi#@CLICK_NEXT_ARROW&#-- Click next page button '>'
 __click_prev_arrow.cgi#@CLICK_PREV_ARROW&#-- Click previous page button '<'
-__closetab_stash.cgi#@CLOSE_TAB_STASH&#-- Close tab (Stash URL to ~/.w3m/RestoreTab.txt)
+__closetab_stash.cgi#@CLOSE_TAB_STASH&#-- Close tab (Stash URL to ~/.config/w3m/RestoreTab.txt)
 __dict_curl.cgi#@DICT_WORD_CURL&#-- Online dictionary for word at cursor
 __display_borders.cgi#@BORDERS&#-- Toggle table boarders
 __display_image.cgi#@DISPLAY_IMAGE_TOGGLE&#-- Toggle display image
@@ -236,7 +236,7 @@ __edit_config.cgi#@EDIT_CONFIG&#-- Edit W3M configuration
 __edit_keymap.cgi#@EDIT_KEYMAP&#-- Edit W3M keymap
 __edit_mailcap.cgi#@EDIT_MAILCAP&#-- Edit W3M mailcap
 __edit_menu.cgi#@EDIT_MENU&#-- Edit W3M context menu
-__edit_restoretab.cgi#@EDIT_RESTORETAB&#-- Edit W3M restoretab ~/.w3m/RestoreTab.txt
+__edit_restoretab.cgi#@EDIT_RESTORETAB&#-- Edit W3M restoretab ~/.config/w3m/RestoreTab.txt
 __edit_siteconf.cgi#@EDIT_SITECONF&#-- Edit W3M siteconf
 __edit_urimethodmap.cgi#@EDIT_URIMETHODMAP&#-- Edit W3M urimethodmap
 __search_1337x.cgi#@SEARCH_1337X&*#-- Search 1337x for torrents
@@ -255,7 +255,7 @@ __goto_w3m_clipboard.cgi#@GOTO_CLIP_W3M&#-- Paste URL and go (via W3M clipboard 
 __goto_x11_clipboard.cgi#@GOTO_CLIP_X11&#-- Paste URL and go (via xsel X11 clipboard)
 __readerview_rdrview.cgi#@RDRVIEW_RDRVIEW&*#-- Reader view using rdrview (c/c++)
 __readerview_readability.cgi#@RDRVIEW_READABILITY&#-- Reader view using go-readability (golang)
-__restore_tab.cgi#@RESTORE_TAB&#-- Restore tab from ~/.w3m/RestoreTab.txt
+__restore_tab.cgi#@RESTORE_TAB&#-- Restore tab from ~/.config/w3m/RestoreTab.txt
 __save_session.cgi#@SAVE_SESSION&*#-- Save session and ask to quit (run 'w3mlastsession' command to restore)
 __show_input_line_editing_mode_key_binding.cgi#@LIST_EDIT_MODE_KEY&#-- Show input editing mode key binding
 __show_user_defined_key_binding.cgi#@LIST_DEFINED_KEY&*#-- Show user custom key binding
@@ -293,4 +293,4 @@ __yank_page_url.cgi#@YANK_URL&*#-- Copy page URL to clipboard
 /media#@DIR_MEDIA&#-- Open /media directory
 EOF
 }
-__main
+_main

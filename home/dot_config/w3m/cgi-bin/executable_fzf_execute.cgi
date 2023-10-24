@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 ## Any command that requires the 2nd variable line from /tmp/w3m-buffer needs 
-## to grab it directly from within it's own script in ~/.w3m/cgi-bin
+## to grab it directly from within it's own script in ~/config/w3m/cgi-bin
 ## => can't pass variables from child to parent
 #
 ## The execute script only targets the 1st line from /tmp/w3m-buffer with either 

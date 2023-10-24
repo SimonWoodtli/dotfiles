@@ -6,4 +6,4 @@
 ## #.* removes any appearence of a # comment
 ## second sed:
 ## /^$/ d deletes all empty lines
-sed 's|\s*#.*||g; /^$/ d' "$CHEZMOI/dot_config/w3m/keymap-comments" > "$CHEZMOI/dot_config/w3m/keymap"
+sed 's|\s*#.*||g; /^$/ d' "$DOTFILES/home/dot_config/w3m/keymap-comments" > "$DOTFILES/home/dot_config/w3m/keymap"

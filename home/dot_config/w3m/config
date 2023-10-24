@@ -73,31 +73,31 @@ preserve_timestamp 1
 keymap_file keymap
 document_root  /tmp
 personal_document_root  /tmp
-cgi_bin ~/.w3m/cgi-bin:/usr/lib/w3m/cgi-bin:/usr/local/libexec/w3m/cgi-bin #required for to source plugin dir
-index_file 
-mime_types ~/.w3m/mime.types, /etc/mime.types
-mailcap ~/.w3m/mailcap, /etc/w3m/mailcap, /etc/mailcap
-urimethodmap ~/.w3m/urimethodmap, /etc/w3m/urimethodmap
+cgi_bin ~/.config/w3m/cgi-bin:/usr/lib/w3m/cgi-bin:/usr/local/libexec/w3m/cgi-bin #required for to source plugin dir
+index_file
+mime_types ~/.config/w3m/mime.types, /etc/mime.types
+mailcap ~/.config/w3m/mailcap, /etc/w3m/mailcap, /etc/mailcap
+urimethodmap ~/.config/w3m/urimethodmap, /etc/w3m/urimethodmap
 editor $EDITOR
 mailto_options 1
 mailer gnome-open mailto:%s
 extbrowser gnome-open
-extbrowser2 
-extbrowser3 
-extbrowser4 
-extbrowser5 
-extbrowser6 
-extbrowser7 
-extbrowser8 
-extbrowser9 
+extbrowser2
+extbrowser3
+extbrowser4
+extbrowser5
+extbrowser6
+extbrowser7
+extbrowser8
+extbrowser9
 bgextviewer 1
 use_lessopen 0
-passwd_file ~/.w3m/passwd
+passwd_file ~/.config/w3m/passwd
 disable_secret_security_check 0
-ftppasswd 
+ftppasswd
 ftppass_hostnamegen 0
-pre_form_file ~/.w3m/pre_form
-siteconf_file ~/.w3m/siteconf
+pre_form_file ~/.config/w3m/pre_form
+siteconf_file ~/.config/w3m/siteconf
 user_agent Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.79 Safari/537.1
 no_referer 0
 cross_origin_referer 1
@@ -111,33 +111,33 @@ follow_redirection 10
 meta_refresh 1
 localhost_only 0
 dns_order 0
-nntpserver 
-nntpmode 
+nntpserver
+nntpmode
 max_news 50
 use_proxy 1
-http_proxy 
-https_proxy 
-gopher_proxy 
-ftp_proxy 
-no_proxy 
+http_proxy
+https_proxy
+gopher_proxy
+ftp_proxy
+no_proxy
 noproxy_netaddr 0
 no_cache 0
-ssl_forbid_method 
-ssl_min_version 
-ssl_cipher 
+ssl_forbid_method
+ssl_min_version
+ssl_cipher
 ssl_verify_server 1
-ssl_cert_file 
-ssl_key_file 
+ssl_cert_file
+ssl_key_file
 ssl_ca_path /etc/pki/tls/certs/
-ssl_ca_file 
+ssl_ca_file
 ssl_ca_default 1
 use_cookie 1
 show_cookie 0
 accept_cookie 1
 accept_bad_cookie 0
-cookie_reject_domains 
-cookie_accept_domains 
-cookie_avoid_wrong_number_of_dots 
+cookie_reject_domains
+cookie_accept_domains
+cookie_avoid_wrong_number_of_dots
 display_charset UTF-8
 document_charset UTF-8
 auto_detect 2
