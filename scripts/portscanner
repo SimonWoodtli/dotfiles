@@ -1,0 +1,33 @@
+#!/bin/sh
+##TODO add subcommand `scan me` which uses `ip a` and scans
+#wifi or ethernet interface. Make a user input prompt to ask which
+#interface to scan.
+##TODO add a have bat && bat /tmp/.. command to display output
+##TODO add a `scan google.com` cmd which uses `ping google.com` to get
+#IP and then scans that IP
+
+ip="$1"
+
+if [ -z "$ip" ]; then
+	##TODO add a regex check to check for valid IPv4
+  echo "usage: scan <ip>"
+  exit 1
+fi
+
+ports=$(nmap -p- --min-rate=1000  -T4 "$ip" | \
+	#FIXME redo this, try for a single sed
+  grep ^[0-9]     |  \
+  cut -d '/' -f 1 |  \
+  tr '\n' ','     |  \
+  sed s/,$//         \
+)
+
+if [ -z "$ports" ]; then
+  echo "No host (or ports) found."
+  exit 0
+fi
+
+# For a full list of all script run by -sC:
+# <https://nmap.org/nsedoc/categories/default.html>
+
+nmap -v -sC -sV -p $ports "$ip" | tee /tmp/nmap.out

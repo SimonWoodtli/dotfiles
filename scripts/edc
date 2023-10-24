@@ -1,17 +1,17 @@
 #!/bin/bash
 ################################# About ################################
-## Author: Simon D. Woodtli                                                        
-## Project: https://github.com/SimonWoodtli/dotfiles/scripts/cry
-## Script Name: cry
+## Author: Simon D. Woodtli
+## Project: https://github.com/SimonWoodtli/dotfiles/scripts/edc
+## Script Name: edc (encrypt decrypt cipher)
 ## License:  Apache-2.0
 ## Dependencies: sops, age, fzf, tmux, bat
 ################################# Setup ################################
-## TODO create  a config file in ~/.config/cry/config and put crucial
+## TODO create  a config file in ~/.config/edc/config and put crucial
 #info in their (age key path etc), and add an `init` func for it
-## TODO maybe also add the age keys that cry uses into ~/.config/cry/
+## TODO maybe also add the age keys that edc uses into ~/.config/edc/
 ## 1. Copy script into your $PATH
-## 2. Tab completion, add to your bashrc: 
-##    complete -C cry cry
+## 2. Tab completion, add to your bashrc:
+##    complete -C edc edc 
 ## 3. Adjust path of SOPS_AGE_KEY_FILE to where you want to store your keys
 ## 4. Adjust path of $keyPath var. to where you want to store your keys
 ## 5. Custom fzf options, add to your bashrc:
