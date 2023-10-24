@@ -114,7 +114,7 @@ experience look into my [workspace container][workspace].
 * [Cryptomator] to encrypt cloud storage
 * [KeePassXC] to store and manage passwords
 
-# Tools I want to checkout
+### Tools I want to checkout
 
 * [direnv] to load directory-local `.envrc` and read environment variables.
   It's used to load 12factor apps environment variables, create per-project
@@ -172,6 +172,7 @@ Tags:
 [ventoy]: <https://github.com/ventoy/Ventoy>
 [dust]: <https://github.com/bootandy/dust>
 [neomutt]: <https://neomutt.org/>
+[newsboat]: <https://newsboat.org/>
 [yt-dlp]: <https://github.com/yt-dlp/yt-dlp>
 [streamlink]: <https://github.com/streamlink/streamlink>
 [w3m]: <https://w3m.sourceforge.net/>
@@ -203,6 +204,7 @@ Tags:
 [Flatseal]: <https://github.com/tchx84/Flatseal>
 [Extension Manager]: <https://github.com/mjakeman/extension-manager>
 [Cryptomator]: <https://cryptomator.org/>
+[KeePassXC]: <https://keepassxc.org/>
 <!-- cli apps try out: -->
 [rupa/z]: <https://github.com/rupa/z>
 [direnv]: <https://direnv.net/>
