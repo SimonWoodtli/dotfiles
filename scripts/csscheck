@@ -1,2 +1,0 @@
-#!/bin/sh
-exec html5validator --root $1 --show-warnings --skip-non-css

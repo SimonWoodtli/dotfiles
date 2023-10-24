@@ -1,5 +1,0 @@
-#!/bin/sh
-## TODO extend script for other things that need updating/building
-#cd $DOTFILES
-#exec $DOTFILES/./build-bashrc
-#exec bash -l
