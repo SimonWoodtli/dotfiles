@@ -1,3 +1,2 @@
 #!/bin/sh
-result=$(pdftotext -q "$1" - | grep -oP "\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>])\S)+)\b" | head -n 1)
-echo $result
+printf "%s\n" "$(pdftotext -q "$1" - | grep -oP "\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>])\S)+)\b" | head -n 1)"
