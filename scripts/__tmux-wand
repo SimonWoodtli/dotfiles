@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: Simon D. Woodtli
 selection="$(fd . "$SCRIPTS" --max-depth 2                            \
   | sort                                                                      \
   | fzf -e -i --prompt="tmux-magic: " --preview-window='right:45%:wrap'        \

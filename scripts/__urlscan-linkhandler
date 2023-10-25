@@ -35,6 +35,7 @@ case "$url" in
       tmux send-keys -t right C-z "vim $url; wait $!; tmux kill-window" C-m
     else
       ##Regular URLs:
+      ##FIXME currently broken
       tmux send-keys -t right C-z "w3m $url; wait $!; tmux kill-window" C-m
     fi
 esac
