@@ -1,8 +1,7 @@
 #!/bin/bash
+## Author: Simon D. Woodtli
 
 place=$HOME/Repos/github.com/$GITUSER/webdev/simonwoodtli.com
 
 insert=$(grep "<li>" "$place/blogindex.html" | sed 5q | tr -d '\n' | sed -e 's/[\/&]/\\&/g')
 sed -i "s/<!-- blog -->.*/<!-- blog -->$insert/g" $place/index.html
-
-

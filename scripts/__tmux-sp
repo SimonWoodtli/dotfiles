@@ -1,6 +1,8 @@
-#!/usr/bin/bash
-## added sp-tmux to display current song on tmux panel:
-## set -g status-right '#(sp-tmux)'
+#!/bin/bash
+## Author: Simon D. Woodtli
+## Description: Display Spotify songinfo in tmux status bar
+## thanks to Wander Nauta for `sp`
+## set -g status-right '#(__tmux-sp)'
 ## set -g status-interval 1 #seconds till statusbar gets updated
 if [ -z "$(pidof spotify)" ]; then
 	exit 1
@@ -32,7 +34,7 @@ function sp-metadata {
 
 function sp-tmux {
   # Prints the currently playing track in a friendly format.
-  declare title=$(sp-metadata  | grep -E "title" | sed -E 's/title\|//g')
+  declare title=$(sp-metadata  | grep -E "title" | sed 's/title|//; s/ *([^)]*)//g' )
   declare artist=$(sp-metadata  | grep -E "artist" | sed -E 's/artist\|//g')
   echo $artist -- $title
 }
