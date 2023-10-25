@@ -1,2 +1,8 @@
 #!/bin/sh
-strace -f -vvv -s 4096 -o strace.out "$1"
+## Author: Simon D. Woodtli
+## track system calls of a given program: `strace program`
+data="/tmp/strace.out"
+_have() { type "$1" >/dev/null; }
+_have strace || { echo "ERROR: strace is not installed"; exit 1; }
+strace -r -f -vvv -s 4096 -o "$data" "$1"
+_have bat && bat "$data" || { cat "$data"; exit 0; }
