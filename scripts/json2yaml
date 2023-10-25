@@ -1,8 +1,20 @@
-#!/usr/bin/python3
+#!/usr/bin/python
+"""
+Author: Simon D. Woodtli
+Desc: Scritp to convert json to yaml
+Dependencies: types-PyYAML
+"""
 import sys
 import json
 import yaml
-print(yaml.dump(json.load(open(sys.argv[1]))))
-#print yaml.dump(yaml.load(json.dumps(json.loads(open(sys.argv[1]).read()))), default_flow_style=False)
 
+# Open the JSON file
+with open(sys.argv[1], 'r', encoding='utf-8') as file:
+    data = json.load(file)
 
+# Convert JSON to YAML
+yaml_data = yaml.dump(data)
+
+# Write YAML to a file
+with open('output.yaml', 'w', encoding='utf-8') as file:
+    file.write(yaml_data)
