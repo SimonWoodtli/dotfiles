@@ -1,2 +1,3 @@
 #!/bin/sh
-exec perl -p -i -e "$@" # so fucking better than sed and/or awk
+#sed/awk alternative
+exec perl -p -i -e "$@"

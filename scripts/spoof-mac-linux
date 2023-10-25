@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: Simon D. Woodtli
 
 interface=${1-wlp18s0}
 

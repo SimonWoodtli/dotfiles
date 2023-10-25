@@ -1,7 +1,10 @@
 #!/bin/sh
+## Author: rwxrob
 
 if ! type pv >/dev/null 2>&1; then
-  telln 'Missing `pv` command.'
+  ##FIXME telln requires tell which I don't have
+  #telln 'Missing `pv` command.'
+  echo 'Missing `pv` command.'
   exit 1
 fi
 

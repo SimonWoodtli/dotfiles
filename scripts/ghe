@@ -1,8 +1,17 @@
 #!/bin/bash
+## Author: Simon D. Woodtli
+## ziplink/zipball from rwxrob
 ## ghe: githubextended
 ## TODO add more functions to gh for things the current gh tool cannot
 ## do but you want it to.
 ##func ziplink/zipball from rwxrob
+## TODO add
+#* hasissue
+#* issues
+#* issue
+#* comment
+#* close
+#* repos
 
 ## download zipball from github page `ghe zipball <account>/<repo>`
 declare subcommand="$1"; shift

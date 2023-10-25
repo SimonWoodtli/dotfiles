@@ -1,6 +1,8 @@
 #!/bin/bash
-# assumes there is alway a space after comment charaters
+## Author: rwxrob
+## Description: uncomment within vim using !!ucmt
 
-while IFS= read -r line; do 
+## assumes there is alway a space after comment charaters
+while IFS= read -r line; do
   echo "${line#* }"
 done

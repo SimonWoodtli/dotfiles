@@ -1,4 +1,5 @@
-#!/usr/bin/bash
+#!/bin/bash
+## Author: Simon D. Woodtli
 ##TODO add servers in known_hosts too
 ## to get the same effect you can also use fzf completion: ssh **<tab> 
 fssh() {

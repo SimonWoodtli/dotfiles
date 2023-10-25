@@ -1,4 +1,6 @@
 #!/bin/bash
+## Author: Simon D. Woodtli
+#TODO rewrite to choose using Virtualbox, Vmware or Qemu/Virtmanager
 startVM() {
   ## Start Whonix-Gateway headless
   vboxmanage startvm --type headless Whonix-Gateway-CLI
@@ -15,9 +17,9 @@ poweroffVM() {
 }
 
 ## TODO make one script for all VMs
-## TODO 
+## TODO
 ## * fix error msg when multiple parameters given or `whonix 2 s`
-## * Make echo msg in different color 
+## * Make echo msg in different color
 if [ -z "$@" ]; then
   startVM
 elif [ "$1" == "off" ]; then

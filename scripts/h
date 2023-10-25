@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: ?
 
 if [ "$1" == "cli" -o "$1" == "" ]; then
 echo -e "

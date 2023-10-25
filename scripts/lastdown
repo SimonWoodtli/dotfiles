@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: rwxrob
 
 if [ -z "$DOWNLOADS" ];then
   echo "DOWNLOADS env variable not set"

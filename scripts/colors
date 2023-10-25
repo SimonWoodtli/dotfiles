@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: ?
 
 set -eu # Fail on errors or undeclared variables
 

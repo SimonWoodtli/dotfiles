@@ -1,5 +1,5 @@
 #!/bin/sh
-##TODO rewrite with rg and fd
+## Author: rwxrob
 ## make it use `git grep -i` if git repo, (test performance first)
 
 find .                          \

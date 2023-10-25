@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: Simon D. Woodtli
 #TODO add all my languages as function templates here
 declare subcommand="$1"; shift
 

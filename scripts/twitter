@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+## Author: rwxrob
 
 USER=rwxrob
 EMAIL=rob@rwx.gg

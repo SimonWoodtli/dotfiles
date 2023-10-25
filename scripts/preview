@@ -1,7 +1,10 @@
 #!/bin/sh
+## Author: rwxrob
 
-if ! havecmd browser-sync ; then
-  telln '*Need to install `browser-sync`*.'
+if ! type browser-sync >/dev/null 2>&1; then
+  ##FIXME telln requires tell which I don't have
+  #telln '*Need to install `browser-sync`*.'
+  echo 'Need to install browser-sync.'
   exit 1
 fi
 

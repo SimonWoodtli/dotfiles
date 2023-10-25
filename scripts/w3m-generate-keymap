@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 ## Comments on same line don't work in `keymap` hence the
 ## `generate-keymap` script
 ## first sed:

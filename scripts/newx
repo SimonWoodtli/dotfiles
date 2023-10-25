@@ -1,4 +1,8 @@
-#!/usr/bin/bash
+#!/bin/bash
+## Author: Simon D. Woodtli
+## thanks to rwxrob for this idea
+## TODO redo whole script
+## make printed line include my basic header with Author etc.
 
 test ! -n "${SCRIPTS}"  && echo "SCRIPTS not set" && exit 1;
 test ! -n "${1}"  && echo "usage: newscript <name>" && exit 1;

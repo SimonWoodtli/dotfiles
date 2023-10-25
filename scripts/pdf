@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: rwxrob
 
 if [ -z "$PDFDIR" ];then
   warn 'The `PDFDIR` env var not set.'

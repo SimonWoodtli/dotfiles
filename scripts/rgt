@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: Simon D. Woodtli
 ## dependencies: rg
 __printSearchedTag() {
   local keywords="$@"

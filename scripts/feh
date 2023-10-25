@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: Simon D. Woodtli
 ## feh wrapper script
 fehpath=/usr/bin/feh
 [ ! -x $fehpath ] && fehpath=/usr/local/bin/feh

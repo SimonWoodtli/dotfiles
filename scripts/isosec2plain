@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: rwxrob
 set -e
 
 declare arg="$1"

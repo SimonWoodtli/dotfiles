@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#https://github.com/tisfeng/deepl-cli
+## Script: https://github.com/tisfeng/deepl-cli
 
 import random
 import time

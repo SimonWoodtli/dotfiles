@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: Simon D. Woodtli
 [ -z "$1" ] && echo "Needs a pdf file or a DOI as an argument." && return 1
 
 if [ -f "$1" ]; then

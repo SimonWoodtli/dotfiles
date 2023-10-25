@@ -1,4 +1,5 @@
 #!/bin/bash -ex
+## Author: ?
 
 # Erroneous re: file=...,media=cdrom and such
 # shellcheck disable=SC2054

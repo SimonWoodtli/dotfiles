@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: rwxrob
 ## difference between $* and $@? Both hold list of all arguments passed to
 ## script. However the values are not the same if surrounded by double quotes:
 ## - $@ expanded as "$1" "$2" "$3" ... "$n"
@@ -11,6 +12,7 @@
 # echo $@
 # echo "$@"
 # exit
+## Alternatives: `tldr` and `howdoi`
 
 [[ "$1" == -h || "$1" == --help || "$1" == :help ]] && curl -sS https://cht.sh/:help | bat && exit
 [ "$1" == :list ] && curl -sS https://cht.sh/:list | bat && exit

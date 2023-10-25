@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+## Author: rwxrob
 
 # This is an unoptimized prototype with lots of subshells in preparation
 # for port to Go eventually. In other words, this just works for now.

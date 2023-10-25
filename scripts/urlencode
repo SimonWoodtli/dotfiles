@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: ?
 
 rawurlencode() {
   local string="${1}"

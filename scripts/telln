@@ -1,3 +1,5 @@
 #!/bin/sh
-## dependency for twitch, preview, mvlastpic
+## Author: rwxrob
+## dependency for some of robs scripts like preview, mvlastpic
+## FIXME I don't have tell script
 tell "$@"; echo

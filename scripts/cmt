@@ -1,8 +1,7 @@
 #!/bin/bash
-
-## create comments default # otherwise use `!!cmt //`
-## create comments default # otherwise use `!!cmt //`
-## useful in vim with !!
+## Author: rwxrob
+## Description: create comment within vim using !!cmt
+## default is # otherwise use `!!cmt //`
 while read -r line; do
   echo "${1-#} $line"
 done

@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: Simon D. Woodtli
 ## Turn on/off on Gnome
 if [[ "$1" == "on" ]]; then
   echo "Automatic suspend is turned on after 30min. And Display turn off time is set to 15min"

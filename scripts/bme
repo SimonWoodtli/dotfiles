@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: Simon D. Woodtli
 ## bookmark link handler: edit bookmarks
 folder="$HOME/Private/bookmarks"
 ##TODO get it working in one command

@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: Simon D. Woodtli
 ## main purpose of script: open files that require GUI from CLI,
 ## additional features: read markdown in w3m, open URLs
 ## in browsers and open git repos README.md

@@ -1,4 +1,5 @@
-#!/usr/bin/bash
+#!/bin/bash
+## Author: rwxrob
 
 readonly -a clocks=(
   🕛 🕐 🕑 🕒 🕓 🕔 🕕 🕖 🕗 🕘 🕙 🕚

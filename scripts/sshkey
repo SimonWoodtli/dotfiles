@@ -1,4 +1,6 @@
 #!/bin/sh
+## Author: Simon D. Woodtli
+## thanks rwxrob for original script and idea
 set -e
 
 confd="$HOME/.ssh"

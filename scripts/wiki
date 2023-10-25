@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: Simon D. Woodtli
 encode() {
   local args="$*"
   local encodeArgs="${args// /+}"

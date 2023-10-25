@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: rwxrob
 
 all=$(sudo docker ps -aq)
 if [[ -z $all ]];then

@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: rwxrob
 
 declare target="$1"
 declare red=$'\033[38;2;255;0;0m'

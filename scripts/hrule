@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: rwxrob
 
 ch="${1:-#}"
 echo $(echon "$ch" $HRULEWIDTH)

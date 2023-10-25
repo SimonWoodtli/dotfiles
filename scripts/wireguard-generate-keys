@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+## Author: Simon D. Woodtli
 
 umask 077
 

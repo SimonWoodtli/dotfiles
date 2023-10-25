@@ -1,5 +1,6 @@
 #!/bin/sh
-extract () {
+## Author: unknown
+_extract() {
 if [ -n "$1" ] ; then
     if [ -f $1 ] ; then
             case $1 in
@@ -26,4 +27,4 @@ else
 fi
 }
 
-extract "$@"
+_extract "$@"

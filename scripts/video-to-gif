@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: ?
 
 palette=$(mktemp -u --suffix .png)
 input=${1?}

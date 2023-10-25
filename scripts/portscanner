@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: Simon D. Woodtli
 ##TODO add subcommand `scan me` which uses `ip a` and scans
 #wifi or ethernet interface. Make a user input prompt to ask which
 #interface to scan.

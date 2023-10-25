@@ -1,2 +1,4 @@
 #!/bin/sh
+##FIXME mpv as flatpak won't run, or maybe streamlink is generally not
+#working?
 exec streamlink --player mpv "$@" best

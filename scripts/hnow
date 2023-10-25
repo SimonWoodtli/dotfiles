@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: rwxrob
 
 case "${1:-2}" in 
   1) exec echo '# ' $(now) ;; 

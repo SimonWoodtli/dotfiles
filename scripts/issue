@@ -1,4 +1,5 @@
 #!/bin/sh
+## Author: rwxrob
 
 if [ -n "$1" ]; then
   exec gh issue edit "$@"

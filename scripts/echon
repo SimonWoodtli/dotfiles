@@ -1,4 +1,5 @@
 #!/bin/bash
+## Author: rwxrob
 
 echon () {
   declare i
