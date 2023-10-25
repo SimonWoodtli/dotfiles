@@ -57,6 +57,7 @@ $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-tldr
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-ripgrepall
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-go
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-exec-oneliners
 
 ## Install go packages:
 ##FIXME exercism does not install
@@ -64,3 +65,10 @@ goPackages=($(yq '.go[]' < /tmp/recipe.yml))
 for pkg in "${goPackages[@]}"; do
   go install "$pkg"
 done
+
+## Fix bash completion for host CLI run via distrobox-host-exec:
+podman cp /usr/share/bash-completion/completions/flatpak workspace:/usr/share/bash-completion/completions/flatpak
+podman cp /usr/share/bash-completion/completions/podman workspace:/usr/share/bash-completion/completions/podman
+podman cp /usr/share/bash-completion/completions/rpm-ostree workspace:/usr/share/bash-completion/completions/rpm-ostree
+podman cp /usr/share/bash-completion/completions/mpc workspace:/usr/share/bash-completion/completions/mpc
+podman cp /usr/share/bash-completion/completions/playerctl.bash workspace:/usr/share/bash-completion/completions/playerctl.bash
