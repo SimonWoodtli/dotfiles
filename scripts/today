@@ -1,3 +1,2 @@
-#!/usr/bin/bash
-today="$(date +%Y\ %b\ %e)"
-echo "$today, "
+#!/bin/bash
+echo "$(date +%Y\ %b\ %e), "
