@@ -1,11 +1,17 @@
-#!/bin/sh
-meteo() {
-  local LOCALE=$(echo ${LANG:-en} | cut -c1-2)
-  if [ $# -eq 0 ]; then
-    local LOCATION=$(curl -s ipinfo.io/loc)
-  else
-    local LOCATION=$1
+#!/bin/bash
+## Author: Simon D. Woodtli
+## Dependency: urlencode
+## Description: print weather forecast from current location or input
+_meteo() {
+  local locale="$(cut -c-2 <<< "${LANG:-en}")"
+  if [[ $# -eq 0 ]]; then
+    local location=$(curl -s ipinfo.io/loc)
   fi
-  curl -s "$LOCALE.wttr.in/$LOCATION"
+  if [[ $# -gt 0 ]]; then
+    local location="$@"
+    #[[ $# -gt 1 || "$1" =~ " " ]] && location=$(urlencode "$location")
+    [[ ! $# -gt 1 && ! "$1" =~ " " ]] || location=$(urlencode "$location")
+  fi
+  curl -s "wttr.in/$location?m&lang=$locale"
 }
-meteo
+_meteo "$@"
