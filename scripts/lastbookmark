@@ -1,2 +1,3 @@
 #!/bin/sh
-tail -1 "$HOME/.lynx_bookmarks.html" | pandoc -f html -t markdown
+##FIXME change formating to * <url>
+pandoc -f html -t markdown --wrap=none < "$XDG_CONFIG_HOME/w3m/bookmark.html" | tail -n 1
