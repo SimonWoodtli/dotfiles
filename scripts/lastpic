@@ -1,2 +1,8 @@
 #!/bin/sh
+## Author: rwxrob
+if [ -z "$PICTURES" ];then
+  echo "PICTURES env variable not set"
+  exit 1
+fi
+
 echo "$(newest $PICTURES)"
