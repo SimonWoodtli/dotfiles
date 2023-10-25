@@ -3,36 +3,60 @@
 ## Author: Simon D. Woodtli
 ## Project: https://github.com/SimonWoodtli/dotfiles/blob/main/scripts/ix
 ## Script Name: ix
+## Decription: Pastebin cmd supports ix, x0, 0x0 and file.io
 ## License:  Apache-2.0
 ## Dependency: curl
 ################################# tldr #################################
 ## terminal upload: ix < fileYouWannaShare
+## terminal upload: cat fileYouWannaShare | ix
 ## terminal print: ix 4Jv3
 ## vim upload line: !!ix
 ## vim upload paragraph: !}ix
 ## vim upload file: !Gix
 ## vim print: !!ix 4Jv3
 ################################ Script ################################
+## set var, pick from: ix x0 0x0 file
+service="ix"
 rd=$'\033[31m'
 rt=$'\033[0m'
 _have() { type "$1" >/dev/null; }
+## assign vars according to chosen service
+case "$service" in
+  ix) urlService="http://ix.io"; curlCmd="f:1=<-" ;;
+  x0) urlService="https://x0.at"; curlCmd="file=@${1:--}" ;;
+  0x0) urlService="https://0x0.st"; curlCmd="file=@${1:--}" ;;
+  file) urlService="https://file.io/?expires=14d"; curlCmd="file=@${1:--}" ;;
+  *) echo "${rd}ERROR:$rt set service variable to ix, x0 or 0x0"
+  exit 1 ;;
+esac
+#TODO add `ix fzf` function to fuzzy find file from $PWD dir
 _checkDependency() {
   _have curl || { echo "${rd}ERROR:$rt Install curl first"; exit 1; }
 }
 _printFile() {
-  exec curl -s "ix.io/$1"
+  case "$2" in
+    ix) exec curl -s "$urlService/$1" ;;
+    x0) exec curl -s "$urlService/$1" ;;
+    0x0) exec curl -s "$urlService/$1" ;;
+    file) exec curl -s "${urlService%/*}/$1" ;;
+  esac
 }
 _uploadFile() {
-  [ -n "$1" ] && _printFile "$1"
-  ##file descriptor test: 0 input, 1 output 2 error
-  if [ ! -t 0 ]; then
-    url=$(curl -s -F 'f:1=<-' http://ix.io)
-    printf "%s\n" "$url"
+  [ -n "$1" ] && _printFile "$1" "$service" && exit 0
+  if [ "$service" = "file" ]; then
+    _have jq || { echo "${rd}ERROR:$rt Install jq first"; exit 1; }
+    url="$(curl -s -F "$curlCmd" "$urlService" 2>/dev/null | jq '.link')"
+    #response=( $(jq -r --compact-output '.link,.name,.expires,.size' <<< "$url" ) )
+    #rm quotes
+    url="${url%\"}"; url="${url#\"}"
   fi
+  if [ -z "$url" ]; then
+    url=$(curl -s -F "$curlCmd" "$urlService")
+  fi
+  printf "%s\n" "$url"
   if _have xclip; then
-    printf %s "$url" | xclip -sel clipboard
-  else
-    echo "${rd}ERROR:$rt Install xclip first"; exit 1
+    printf "%s" "$url" | xclip -sel clipboard
+    _have notify-send && notify-send "Copied 🔗 to Clipboard"
   fi
 }
-_checkDependency && _uploadFile "$1"
+_checkDependency && _uploadFile "$@"
