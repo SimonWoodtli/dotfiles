@@ -1,0 +1,169 @@
+#!/usr/bin/python
+
+# https://gitlab.com/ivan-cukic/zeal-w3m-cli/-/blob/master/zeal-cli?ref_type=heads
+import argparse
+import sqlite3
+import pathlib
+import xdg_base_dirs
+from bs4 import BeautifulSoup
+from subprocess import Popen, PIPE, STDOUT
+
+
+# Modified by Simon D. Woodtli
+# 1. use w3m instead of lynx
+# 2. update module names
+#TODO rewrite this in go with lynx|w3m to view, and fetch docsets official+community
+# `pip install beautifulsoup4 xdg-base-dirs`
+#https://github.com/jmerle/zeal-user-contrib
+#https://github.com/Sanix-Darker/zeal-lynx-cli
+#https://github.com/Morpheus636/zeal-cli/tree/main
+#https://gitlab.com/ivan-cukic/zeal-lynx-cli/-/issues/1
+# This script uses Zeal project's datasets to show
+# the documentation pages in the awesome terminal
+# web browser - w3m.
+#
+# -- Usage --
+# To show a list of all available pages in a docset:
+#
+# zeal-cli DOCSET_NAME
+#
+# To show a particular page
+#
+# zeal-cli DOCSET_NAME PAGE
+#
+# By default, DOCSET_NAME is the name name of the directory
+# where Zeal keeps a specific set of documentation files.
+# For example, if the path to the installed documentation set
+# is ~/.local/share/Zeal/Zeal/docsets/C++.docset/, the
+# DOCSET_NAME will be "C++" (without the '.docset' extension)
+#
+
+
+# By changing docset_configuration, you can
+# define a custom name for a docset. The following
+# defines that 'cpp' will be an alias for the 'C++' docset,
+# 'qt5' will be an alias for the 'Qt_5' docset, and 'qt6'
+# will be an alias for the 'Qt_6' docset.
+#
+# As the documentation is often a siterip of official
+# online docs, it can contain quite a few useless things like
+# navigation menus, table of contents and other things
+# that just take valuable space in w3m. You can define
+# filters -- which tags to remove from the html before
+# it is shown, and which tag to extract from the original
+# html and show only its content ignoring the rest.
+
+docset_configuration = {}
+docset_configuration['cpp'] = {
+    "zeal_name" : "C++",
+    "to_remove" : [ "span.editsection", "div.t-navbar", "table.toc" ],
+    "to_show" : "div#bodyContent"
+    }
+docset_configuration['qt5'] = {
+    "zeal_name" : "Qt_5",
+    "to_show" : "div.context"
+    }
+docset_configuration['qt6'] = {
+    "zeal_name" : "Qt_6",
+    "to_show" : "div.context"
+    }
+docset_configuration['cmake'] = {
+    "zeal_name" : "CMake",
+    "to_remove" : [ "p#contents", "div.related", "div#contents" ],
+    "to_show" : "div.document"
+    }
+docset_configuration['boost'] = {
+    "zeal_name" : "Boost",
+    "to_remove" : [ "div.toc", "div.titlepage" ],
+    "to_show" : "div.chapter"
+    }
+
+
+# Start the code
+
+parser = argparse.ArgumentParser(description='Zeal+Lynx.')
+parser.add_argument('--zeal-prefix', help='Where are Zeal\'s files located?', nargs='?')
+parser.add_argument('--w3m-dump', help='when "=true" -- dump rendered HTML to stdout instead of running Lynx proper', nargs='?')
+parser.add_argument('docset', help='Which documentation set to use')
+parser.add_argument('docpage', help='Which page to load', nargs='?')
+args = parser.parse_args()
+
+# Do we have a custom configuration for the current docset?
+zeal_name = args.docset
+current_docset_configuration = {}
+try:
+    current_docset_configuration = docset_configuration[args.docset]
+    zeal_name = current_docset_configuration["zeal_name"]
+except:
+    pass
+
+# If the user has Zeal files in a custom location,
+# it can be specified with the --zeal-prefix flag
+if args.zeal_prefix is None:
+    args.zeal_prefix = xdg_base_dirs.xdg_data_home().joinpath('Zeal/Zeal').as_posix()
+
+zeal_docset_prefix = args.zeal_prefix + "/docsets/" + zeal_name + ".docset/Contents/Resources"
+
+db_url = pathlib.Path(zeal_docset_prefix + "/docSet.dsidx").as_uri()
+db = sqlite3.connect(db_url + '?mode=ro', uri=True)
+
+# A convenience function that allows the usual CSS syntax
+# when specifying node filters -- div.class and div#id
+def find_node(html, node_definition):
+    class_sep_position = node_definition.find('.')
+    if class_sep_position > -1:
+        tag = node_definition[:class_sep_position]
+        class_name = node_definition[class_sep_position + 1:]
+        print(tag)
+        print("class: ", class_name)
+        return html.find_all(tag, { "class" : class_name })
+
+    else:
+        id_sep_position = node_definition.find('#')
+        tag = node_definition[:id_sep_position]
+        id_name = node_definition[id_sep_position + 1:]
+        print(tag)
+        print("id: ", id_name)
+        return html.find_all(tag, { "id" : id_name })
+
+if args.docpage is None:
+    # No page was specified, we should list all the available pages
+    for row in db.execute('SELECT name FROM searchIndex;'):
+        print(row[0])
+    pass
+
+else:
+    # extract the path to the page, and load it in w3m
+    for row in db.execute('SELECT path FROM searchIndex WHERE name = :name;', { "name" : args.docpage }):
+        relative_file_path = row[0]
+        while relative_file_path[0] == '<':
+            relative_file_path = relative_file_path[relative_file_path.find('>') + 1:]
+
+        full_file_path = zeal_docset_prefix + "/Documents/" + relative_file_path
+        file = open(full_file_path)
+        html = BeautifulSoup(file, "html.parser")
+
+        content = html
+        if "to_remove" in current_docset_configuration:
+            for to_remove in current_docset_configuration["to_remove"]:
+                try:
+                    for node in find_node(html, to_remove):
+                        node.extract()
+                except:
+                    pass
+
+        try:
+            content = find_node(html, current_docset_configuration["to_show"])[0]
+        except:
+            pass
+
+        if args.w3m_dump == "true":
+            w3m_process = Popen(['w3m', '-stdin', '-dump'], stdin=PIPE)
+        else:
+            w3m_process = Popen(['w3m', '-T text/html'], stdin=PIPE)
+
+        stdout_data = w3m_process.communicate(input=str(content).encode('utf-8'))
+
+    pass
+
+
