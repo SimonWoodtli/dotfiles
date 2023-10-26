@@ -50,6 +50,16 @@ set nobackup
 set nowritebackup
 set noswapfile
 
+" setup undo file: allows to undo after save/file close
+if !isdirectory($HOME."/.vim")
+    call mkdir($HOME."/.vim", "", 0770)
+endif
+if !isdirectory($HOME."/.vim/undo-dir")
+    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+endif
+set undodir=~/.vim/undo-dir
+set undofile
+
 " write good code:
 set textwidth=72
 set colorcolumn=73
@@ -442,17 +452,28 @@ function TrimWhiteSpace()
   ''
 endfunction
 
-" insert emoji with `:Emoji` or <leader<leader>e
+" Function used by :Emoji and :Gitmoji
 if filereadable(expand("~/.vimplugins/fzf.vim/plugin/fzf.vim"))
 function! InsertFirstCharAtCursor(text)
   let rmTxt = split(a:text, ' ')
   let firstChar = get(rmTxt, 0)
   execute "normal! a" . firstChar . "\<Esc>"
 endfunction
+" var used by :Emoji
+let emoji = {
+  \ 'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"',
+  \ 'sink': function('InsertFirstCharAtCursor'),
+  \ 'options': '--prompt "search: " --no-preview -i -e --info=default --layout=reverse',
+  \ }
+" var used by :Gitmoji
+let gitmoji = copy(emoji)
+let gitmoji['source'] = 'cat "$HOME/.local/share/emojidb/gitmoji"'
 endif
 
 "############################# ex commands #############################
-command! Emoji call fzf#run(fzf#wrap({'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"', 'sink': function('InsertFirstCharAtCursor')}))
+command! Emoji call fzf#run(fzf#wrap(emoji))
+command! Gitmoji call fzf#run(fzf#wrap(gitmoji))
+"run fzf with external cmd: 'source': 'bashscript arg1 arg2'
 "command! Emoji call fzf#run({'source': 'cat "$HOME/.local/share/emojidb/emoji.v15.1"', 'sink': function('InsertFirstCharAtCursor')})
 "######################## normal-mode commands #########################
 " make Y consitent with D and C (yank til end)
@@ -524,6 +545,7 @@ nnoremap <silent> <Leader>n :e #<CR>
 " If I need to switch to more than just the last edited file: ton/vim-bufsurf
 "############################# leader fzf ##############################
 nnoremap <silent> <leader><leader>e :Emoji<CR>
+nnoremap <silent> <leader><leader>g :Gitmoji<CR>
 " If many keybindings use <leader><leader>b.. :Buffers loads slow
 " if <leader>b :Buffers it's also slow
 " Solution: only use double leader for :Buffers
@@ -544,6 +566,7 @@ nnoremap <silent> <Leader><Leader>o :Rg<CR>
 " search file content with ripgrep with keyword of current cursor location:
 nnoremap <silent> <Leader><Leader>O :Rg <C-R><C-W><CR>
 "############################# leader git ##############################
+"TODO figure out how to display git branch in lightline statusbar. Then I can rm git plugin
 " git commands: vim-fugitive plugin
 nnoremap <Leader>ga :Gwrite<CR>
 nnoremap <Leader>gc :Gcommit<CR>
@@ -555,7 +578,7 @@ nnoremap <Leader>gd :Gvdiff<CR>
 nnoremap <Leader>gr :Gremove<CR>
 " fzf search git graph and checkout commit:
 " Loads slow with only one leader
-nnoremap <Leader><Leader>g :Commits<cr>
+nnoremap <Leader><Leader>c :Commits<cr>
 "##################### leader omni auto completion #####################
 " double space activates omni auto completion
 inoremap <Leader><Leader> <C-x><C-o>
