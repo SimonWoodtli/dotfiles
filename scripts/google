@@ -1,3 +1,3 @@
 #!/bin/sh
 #cause proxy needed for google.com :O and w3m only supports http proxy
-exec proxychains w3m "https://google.com/search?q=$*"
+exec proxychains -q w3m "https://google.com/search?q=$*"
