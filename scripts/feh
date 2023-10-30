@@ -1,13 +1,50 @@
-#!/bin/sh
+#!/bin/bash
 ## Author: Simon D. Woodtli
 ## feh wrapper script
-fehpath=/usr/bin/feh
+declare fehpath=/usr/bin/feh
+declare keyhandler=__feh-keyhandler
+declare rd=$'\033[31m'
+declare rt=$'\033[0m'
 [ ! -x $fehpath ] && fehpath=/usr/local/bin/feh
 
-if [ ! -x "$fehpath" ]; then
-  echo "Doesn't look like feh is installed."
-  exit 1
-fi
-
-## fullscreen, + Return or colon to activate thumbnail
-exec "$fehpath" --scale-down --auto-zoom -F --action ";$SCRIPTS/feh-keyhandler $PWD/%F" --start-at "$@"
+_have() { type "$1" >/dev/null; }
+_checkDependency() {
+  _have feh || { echo "${rd}ERROR:$rt Install feh first"; exit 1; }
+}
+_countImg() {
+  ##TODO test: are these image types all supported by feh?
+  local -i countImg=$(find . \
+    -maxdepth 1 -type f \
+    \( -name "*.png" \
+    -o -name "*.jpeg*" \
+    -o -name "*.jpg" \
+    -o -name "*.jp2" \
+    -o -name "*.tif*" \
+    -o -name "*.bmp" \
+    -o -name "*.svg" \
+    -o -name "*.gif" \
+    -o -name "*.apng" \
+    -o -name "*.webm" \
+    -o -name "*.heic" \
+    -o -name "*.avif" \
+    -o -name "*.webp" \) | wc -l)
+  printf "%s\n" "$countImg"
+}
+_feh() {
+  local -i countImg=$(_countImg)
+  #FIXME currently Return key as thumbnail toggle not working
+  local -a cmd=(
+    "$fehpath" "--scale-down" "--auto-zoom" "-F"
+    "--action" "$keyhandler $PWD/%F Return"
+    "--action2" "$keyhandler $PWD/%F 2"
+    "--action3" "$keyhandler $PWD/%F 3"
+  )
+  _have xclip && cmd+=( "--action1" "$keyhandler $PWD/%F 1" )
+  if (( countImg > 1 )); then
+    cmd+=( "--start-at" )
+    "${cmd[@]}" "$@" 2>/dev/null
+  else
+    "${cmd[@]}"
+  fi
+}
+_checkDependency && _feh "$@"
