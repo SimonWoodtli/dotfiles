@@ -1,0 +1,61 @@
+#!/bin/sh
+## Author: Simon D. Woodtli
+## Hotkeys: Return, 1, 2
+fehpath=/usr/bin/feh
+[ ! -x $fehpath ] && fehpath=/usr/local/bin/feh
+key="$2"
+imagePath="$1"
+
+case "$key" in
+  Return) ## startup thumbnail mode:
+    kill -9 "$(pidof feh)"
+    exec feh --scale-down --auto-zoom -F -t -E 150 -y 150 -W 1920 ;;
+  1) ##FIXME xclip copies png/jpeg but not webp
+    xclip -selection clipboard -t "$(file --mime-type -b "$imagePath")" -i "$imagePath";;
+  2) ## set dark theme wallpaper:
+    gsettings set org.gnome.desktop.background picture-uri-dark file://"$imagePath"
+    ## set light theme wallpaper:
+    gsettings set org.gnome.desktop.background picture-uri file://"$imagePath" ;;
+esac
+
+## Couldn't figure out toggle thumbnail mode, cause keystrokes not
+#registred in thumbnail window. Killing the last feh window is the
+#next best thing IMO.
+## test if running another regular feh wrap instance will be able to
+#listen to keystrokes -> It does #exec feh ;; so it's definetly a
+#limitation of feh and togglemenu itself
+#
+##Unless I find a way to get the togglemenu to register hotkey strokes,
+##toggeling won't be possible. Currently the regular `feh` window
+#registers hotkey strokes and executes the __feh-keyhandler script.
+#However it seems to be a feature of feh that within the toggle window
+#it won't listen to keystrokes hence this is not going to happen.
+#buffer=/tmp/feh-buffer
+#pid=$(pidof feh)
+# if [ ! -f "$buffer" ]; then
+# echo $pid > "$buffer"
+# grandPid=$(ps --forest -o pid -g "$(ps -o sid= -p $pid)" | tail -n 1)
+# echo thumbnail open: pid = $pid, grandchild = $grandPid
+# #FIXME key listener stops working once another feh window gets invoked, hotkeys won't work on thumbnail window nor main window
+# $fehpath --scale-down --auto-zoom -F -t -E 150 -y 150 -W 1920 \
+# --action2 "echo foo > $buffer"
+# #--action2 ";$SCRIPTS/__feh-keyhandler $PWD/%F 2"
+# #--action ";$SCRIPTS/__feh-keyhandler $PWD/%F Return" \
+# #--action1 ";$SCRIPTS/__feh-keyhandler $PWD/%F 1" \
+# #Problem keyhandler script doesn't run till end if feh gets invoked again, solution maybe loop?
+# #It looks like feh runs thumbmail with only the flags defined here,
+# #it does not take over the flags from Scripts/feh weird?
+# else
+# ##kill feh toggle window here
+# #FIXME wrong grandchild process selected need to grep for the right one instead of tail
+# grandPid=$(ps --forest -o pid -g $(ps -o sid= -p < "$buffer") | tail -n 1)
+# echo thumbnail close: grandchild = $grandPid
+# #kill -9 $grandPid
+# rm "$buffer"
+# #echo "" > "$buffer"
+# fi;;
+# 3) ##TEST HOTKEY:
+#    [ ! -f "$buffer" ] && echo buffer does not exist || echo buffer exists;;
+#
+#echo end of script: grandchild = $grandPid
+#exit

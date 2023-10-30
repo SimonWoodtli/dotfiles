@@ -32,19 +32,17 @@ _countImg() {
 }
 _feh() {
   local -i countImg=$(_countImg)
-  #FIXME currently Return key as thumbnail toggle not working
   local -a cmd=(
     "$fehpath" "--scale-down" "--auto-zoom" "-F"
     "--action" "$keyhandler $PWD/%F Return"
     "--action2" "$keyhandler $PWD/%F 2"
-    "--action3" "$keyhandler $PWD/%F 3"
   )
   _have xclip && cmd+=( "--action1" "$keyhandler $PWD/%F 1" )
   if (( countImg > 1 )); then
     cmd+=( "--start-at" )
-    "${cmd[@]}" "$@" 2>/dev/null
+    exec "${cmd[@]}" "$@" 2>/dev/null
   else
-    "${cmd[@]}"
+    exec "${cmd[@]}"
   fi
 }
 _checkDependency && _feh "$@"
