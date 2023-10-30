@@ -34,10 +34,10 @@ _feh() {
   local -i countImg=$(_countImg)
   local -a cmd=(
     "$fehpath" "--scale-down" "--auto-zoom" "-F"
-    "--action" "$keyhandler $PWD/%F Return"
-    "--action2" "$keyhandler $PWD/%F 2"
+    "--action" ";$keyhandler $PWD/%F Return"
+    "--action2" ";$keyhandler $PWD/%F 2"
   )
-  _have xclip && cmd+=( "--action1" "$keyhandler $PWD/%F 1" )
+  _have xclip && cmd+=( "--action1" ";$keyhandler $PWD/%F 1" )
   if (( countImg > 1 )); then
     cmd+=( "--start-at" )
     exec "${cmd[@]}" "$@" 2>/dev/null
