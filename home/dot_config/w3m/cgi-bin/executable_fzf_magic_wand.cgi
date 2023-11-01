@@ -43,20 +43,48 @@ _writeBuffer() {
   [[ -z "$selection" ]] && echo "" > "$buffer" && exit
   echo "$selection" > "$buffer"
 }
+#functions I don't use/want:
+# VIEW_BOOKMARK#@VIEW_BOOKMARK\$#-- View bookmarks
+# BOOKMARK#@BOOKMARK\$#-- View bookmarks
+# ADD_BOOKMARK#@ADD_BOOKMARK\$#-- Add current page to bookmarks
+# ALARM#@ALARM\$#-- Set alarm
+#Can't find a a w3m/menu file for styling example and no documentation:
+# __edit_menu.cgi#@EDIT_MENU&#-- Edit W3M context menu
+#
+##TODO get these functions to work with chezmoi:
+# __edit_config.cgi#@EDIT_CONFIG&#-- Edit W3M configuration
+# __edit_keymap.cgi#@EDIT_KEYMAP&#-- Edit W3M keymap
+# __edit_mailcap.cgi#@EDIT_MAILCAP&#-- Edit W3M mailcap
+# __edit_siteconf.cgi#@EDIT_SITECONF&#-- Edit W3M siteconf
+# __edit_urimethodmap.cgi#@EDIT_URIMETHODMAP&#-- Edit W3M urimethodmap
+# FIXME they don't work:
+# PEEK_IMG#@PEEK_IMG\$#-- Show image address
+# PEEK_LINK#@PEEK_LINK\$#-- Show target address
+# ACCESSKEY#@ACCESSKEY\$#-- Pop up accesskey menu
+#FIXME add proxychain
+# __search_google.cgi#@SEARCH_GOOGLE&*#-- ? Search the web via google
+#FIXME open image for current cursor link opens wrong URL => use VIEW_IMAGE
+#would be nice to fix this for mpv can display gifs too, but no dealbreaker
+# __open_image.cgi#@OPEN_IMAGE&*#-- Open image link at cursor with mpv
+#FIXME open folder to see files with w3m should be possible
+# ~/Downloads#@DIR_DL&#-- Open ~/Downloads directory
+# ~/Videos#@DIR_MEDIA&#-- Open ~/Vides directory
+# ~/Music#@DIR_MEDIA&#-- Open ~/Music directory
+# ~/Pictures#@DIR_MEDIA&#-- Open ~/Pictures directory
+#FIXME wikipedia search redirect to php.index
+# __search_wikipedia.cgi#@SEARCH_WIKIPEDIA&#-- ?! Search wikipedia for articles
+#FIXME no txt field appears for search via dictionary
+#__search_veronica2.cgi#@SEARCH_V2&#-- ? Search gopherspace via veronica-2
 _glossary() {
 # $ = built-in functions ; & = custom ; * = favorites
 #
-#__set_user_agent.cgi#@SET_USER_AGENT&#linux#-- Set user agent string linux         
+#__set_user_agent.cgi#@SET_USER_AGENT&#linux#-- Set user agent string linux
 # #= delimiter
 #1. script name 2. #@function name# 3. #custom variable# 4. -- description
 cat <<EOF
 ABORT#@ABORT\$#-- Quit at once
-ACCESSKEY#@ACCESSKEY\$#-- Pop up accesskey menu
-ADD_BOOKMARK#@ADD_BOOKMARK\$#-- Add current page to bookmarks
-ALARM#@ALARM\$#-- Set alarm
 BACK#@BACK\$#-- Close current buffer and return to the one below in stack
 BEGIN#@BEGIN\$#-- Go to the first line
-BOOKMARK#@BOOKMARK\$#-- View bookmarks
 CENTER_H#@CENTER_H\$#-- Center on cursor column
 CENTER_V#@CENTER_V\$#-- Center on cursor line
 CHARSET#@CHARSET\$#-- Change the character encoding for the current document
@@ -143,8 +171,6 @@ NOTHING#@NOTHING\$#-- Do nothing
 NULL#@NULL\$#-- Do nothing
 OPTIONS#@OPTIONS\$#-- Display options setting panel
 PEEK#@PEEK\$#-- Show current address
-PEEK_IMG#@PEEK_IMG\$#-- Show image address
-PEEK_LINK#@PEEK_LINK\$#-- Show target address
 PIPE_BUF#@PIPE_BUF\$#-- Pipe current buffer through a shell command and display output
 PIPE_SHELL#@PIPE_SHELL\$#-- Execute shell command and display output
 PREV#@PREV\$#-- Switch to the previous buffer
@@ -196,72 +222,66 @@ UNDO#@UNDO\$#-- Cancel the last cursor movement
 UP#@UP\$#-- Scroll the screen up one line
 VERSION#@VERSION\$#-- Display the version of w3m
 VIEW#@VIEW\$#-- Toggle between HTML shown or processed
-VIEW_BOOKMARK#@VIEW_BOOKMARK\$#-- View bookmarks
-VIEW_IMAGE#@VIEW_IMAGE\$#-- Display image in viewer
+VIEW_IMAGE#@VIEW_IMAGE\$#-- Open/Display image in viewer (feh)
 WHEREIS#@WHEREIS\$#-- Search forward
 WRAP_TOGGLE#@WRAP_TOGGLE\$#-- Toggle wrapping mode in searches
-/usr/share/doc/w3m/doc/README#@README_INTRO&#-- Readme intro page
-/usr/share/doc/w3m/doc/README.cookie#@README_COOKIE&#-- Readme cookie page
-/usr/share/doc/w3m/doc/README.cygwin#@README_CYGWIN&#-- Readme cygwin page
-/usr/share/doc/w3m/doc/README.dict#@README_DICT&#-- Readme dictionary page
-/usr/share/doc/w3m/doc/README.func#@README_FUNC&#-- Readme function page
-/usr/share/doc/w3m/doc/README.img#@README_IMG&#-- Readme inline image page
-/usr/share/doc/w3m/doc/README.m17n#@README_M17N&#-- Readme muntilingualizaion page
-/usr/share/doc/w3m/doc/README.mouse#@README_MOUSE&#-- Readme mouse page
-/usr/share/doc/w3m/doc/README.passwd#@README_PASSWD&#-- Readme password page
-/usr/share/doc/w3m/doc/README.pre_form#@README_PRE_FORM&#-- Readme pre-fill form page
-/usr/share/doc/w3m/doc/README.siteconf#@README_SITECONF&#-- Readme siteconf page
-/usr/share/doc/w3m/doc/README.sixel#@README_SIXEL&#-- Readme sixel image page
-/usr/share/doc/w3m/doc/README.tab#@README_TAB&#-- Readme tab browsing page
-/usr/share/doc/w3m/doc/FAQ.html#@README_FAQ&#-- Readme FAQ page
-/usr/share/doc/w3m/doc/MANUAL.html#@README_MANUAL&#-- Readme manual page
-/usr/share/doc/w3m/doc/STORY.html#@README_STORY&#-- Readme story history of W3M page
-__open_video.cgi#@OPEN_VIDEO&*#-- Open video link at cursor with mpv
-__open_image.cgi#@OPEN_IMAGE&*#-- Open image link at cursor with mpv
-__open_browser_link.cgi#@OPEN_BROWSER_LINK&#-- Open link at cursor in external browser ($BROWSER)
-__open_browser_page.cgi#@OPEN_BROWSER_PAGE&#-- Open page URL in external browser ($BROWSER)
-__download_link.cgi#@DOWNLOAD_LINK&*#-- Download link at cursor with wget
-__download_youtube.cgi#@DOWNLOAD_YOUTUBE&*#-- Download youtube link at cursor with youtube-dl
+/usr/share/doc/w3m/README#@README_INTRO&#-- Readme intro page
+/usr/share/doc/w3m/README.cookie#@README_COOKIE&#-- Readme cookie page
+/usr/share/doc/w3m/README.cygwin#@README_CYGWIN&#-- Readme cygwin page
+/usr/share/doc/w3m/README.dict#@README_DICT&#-- Readme dictionary page
+/usr/share/doc/w3m/README.func#@README_FUNC&#-- Readme function page
+/usr/share/doc/w3m/README.img#@README_IMG&#-- Readme inline image page
+/usr/share/doc/w3m/README.m17n#@README_M17N&#-- Readme muntilingualizaion page
+/usr/share/doc/w3m/README.mouse#@README_MOUSE&#-- Readme mouse page
+/usr/share/doc/w3m/README.passwd#@README_PASSWD&#-- Readme password page
+/usr/share/doc/w3m/README.pre_form#@README_PRE_FORM&#-- Readme pre-fill form page
+/usr/share/doc/w3m/README.siteconf#@README_SITECONF&#-- Readme siteconf page
+/usr/share/doc/w3m/README.sixel#@README_SIXEL&#-- Readme sixel image page
+/usr/share/doc/w3m/README.tab#@README_TAB&#-- Readme tab browsing page
+/usr/share/doc/w3m/FAQ.html#@README_FAQ&#-- Readme FAQ page
+/usr/share/doc/w3m/MANUAL.html#@README_MANUAL&#-- Readme manual page
+/usr/share/doc/w3m/STORY.html#@README_STORY&#-- Readme story history of W3M page
 __click_next.cgi#@CLICK_NEXT&#-- Click next page button 'Next'
 __click_prev.cgi#@CLICK_PREV&#-- Click previous page button 'Previous'
 __click_next_arrow.cgi#@CLICK_NEXT_ARROW&#-- Click next page button '>'
 __click_prev_arrow.cgi#@CLICK_PREV_ARROW&#-- Click previous page button '<'
-__closetab_stash.cgi#@CLOSE_TAB_STASH&#-- Close tab (Stash URL to ~/.config/w3m/RestoreTab.txt)
-__dict_curl.cgi#@DICT_WORD_CURL&#-- Online dictionary for word at cursor
 __display_borders.cgi#@BORDERS&#-- Toggle table boarders
 __display_image.cgi#@DISPLAY_IMAGE_TOGGLE&#-- Toggle display image
 __display_link_number.cgi#@LINK_NUMBER&#-- Toggle link number (hinting mode e.g press 3[ to jump to link 3)
-__edit_bookmark.cgi#@EDIT_BOOKMARK&#-- Edit bookmark
-__edit_config.cgi#@EDIT_CONFIG&#-- Edit W3M configuration
-__edit_keymap.cgi#@EDIT_KEYMAP&#-- Edit W3M keymap
-__edit_mailcap.cgi#@EDIT_MAILCAP&#-- Edit W3M mailcap
-__edit_menu.cgi#@EDIT_MENU&#-- Edit W3M context menu
+__yank_current_link.cgi#@YANK_LINK&*#-- Copy link at cursor to clipboard
+__yank_page_url.cgi#@YANK_URL&*#-- Copy page URL to clipboard
+__paste_x11_clipboard_goto.cgi#@GOTO_CLIP_X11&#-- open page with pasted URL (via xclip X11 clipboard)
+__paste_tmux_clipboard_goto.cgi#@GOTO_CLIP_TMUX&#-- open page with pasted URL (via tmux clipboard)
+__paste_w3m_clipboard_goto.cgi#@GOTO_CLIP_W3M&#-- open page with pasted URL (via W3M clipboard /tmp/clipbrd.txt)
+__open_video.cgi#@OPEN_VIDEO&*#-- Open video link at cursor with mpv
+__open_browser_link.cgi#@OPEN_BROWSER_LINK&#-- Open link at cursor in external browser ($BROWSER)
+__open_browser_page.cgi#@OPEN_BROWSER_PAGE&#-- Open page URL in external browser ($BROWSER)
+__download_link.cgi#@DOWNLOAD_LINK&*#-- Download link at cursor with wget
+__download_youtube.cgi#@DOWNLOAD_YOUTUBE&*#-- Download youtube link at cursor with yt-dlp
+__download_torrent.cgi#@DOWNLOAD_TORRENT&*#-- Download torrent magnet link at cursor with qBitTorrent
+__add_bookmark_link.cgi#@ADD_BOOKMARK_LINK&*#-- Add url from cursor position to bookmarks/work
+__add_bookmark_page.cgi#@ADD_BOOKMARK_PAGE&*#-- Add url from current page to bookmarks/work
+__edit_bookmark.cgi#@EDIT_BOOKMARK&#-- Edit bookmark ~/Private/bookmarks/work
 __edit_restoretab.cgi#@EDIT_RESTORETAB&#-- Edit W3M restoretab ~/.config/w3m/RestoreTab.txt
-__edit_siteconf.cgi#@EDIT_SITECONF&#-- Edit W3M siteconf
-__edit_urimethodmap.cgi#@EDIT_URIMETHODMAP&#-- Edit W3M urimethodmap
-__search_1337x.cgi#@SEARCH_1337X&*#-- Search 1337x for torrents
-__search_commandlinefu.cgi#@SEARCH_CMDFU&#-- Search for commandline one liners via commandlinefu
-__search_duckduckgo.cgi#@SEARCH_DDG&*#-- Search the web via duckduckgo
-__search_geminispace.cgi#@SEARCH_GEMSPC&#-- Search gemini capsules via geminispace
-__search_google.cgi#@SEARCH_GOOGLE&*#-- Search the web via google
-__search_invidious.cgi#@SEARCH_INVIDIOUS&#-- Search youtube videos via invidious
-__search_nyaasi.cgi#@SEARCH_NYAASI&#-- Search nyaa for anime torrents
-__search_piratebay.cgi#@SEARCH_TPB&*#-- Search piratebay for torrents
-__search_veronica2.cgi#@SEARCH_V2&#-- Search gopherspace via veronica-2
-__search_wikipedia.cgi#@SEARCH_WIKIPEDIA&#-- Search wikipedia for articles
-__search_xdcceu.cgi#@SEARCH_XDCCEU&*#-- Search xdcceu for xdcc (irc dcc files)
-__goto_tmux_clipboard.cgi#@GOTO_CLIP_TMUX&&#-- Paste URL and go (via tmux clipboard)
-__goto_w3m_clipboard.cgi#@GOTO_CLIP_W3M&#-- Paste URL and go (via W3M clipboard /tmp/clipbrd.txt)
-__goto_x11_clipboard.cgi#@GOTO_CLIP_X11&#-- Paste URL and go (via xsel X11 clipboard)
+__search_1337x.cgi#@SEARCH_1337X&*#-- ? Search 1337x for torrents
+__search_commandlinefu.cgi#@SEARCH_CMDFU&#-- ? Search for commandline one liners via commandlinefu
+__search_duckduckgo.cgi#@SEARCH_DDG&*#-- ? Search the web via duckduckgo
+__search_invidious.cgi#@SEARCH_INVIDIOUS&#-- ? Search yt youtube videos via invidious
+__search_nyaasi.cgi#@SEARCH_NYAASI&#-- ? Search nyaa for anime torrents
+__search_piratebay.cgi#@SEARCH_TPB&*#-- ? Search piratebay for torrents
+__search_geminispace.cgi#@SEARCH_GEMSPC&#-- ? Search gemini capsules via geminispace
+__search_xdcceu.cgi#@SEARCH_XDCCEU&*#-- ? Search xdcceu for xdcc (irc dcc files)
+__closetab_stash.cgi#@CLOSE_TAB_STASH&#-- Close tab (Stash URL to ~/.config/w3m/RestoreTab.txt)
+__restore_tab.cgi#@RESTORE_TAB&#-- Restore tab from ~/.config/w3m/RestoreTab.txt
 __readerview_rdrview.cgi#@RDRVIEW_RDRVIEW&*#-- Reader view using rdrview (c/c++)
 __readerview_readability.cgi#@RDRVIEW_READABILITY&#-- Reader view using go-readability (golang)
-__restore_tab.cgi#@RESTORE_TAB&#-- Restore tab from ~/.config/w3m/RestoreTab.txt
 __save_session.cgi#@SAVE_SESSION&*#-- Save session and ask to quit (run 'w3mlastsession' command to restore)
 __show_input_line_editing_mode_key_binding.cgi#@LIST_EDIT_MODE_KEY&#-- Show input editing mode key binding
 __show_user_defined_key_binding.cgi#@LIST_DEFINED_KEY&*#-- Show user custom key binding
 __toggle_color.cgi#@COLOR&#-- Toggle color
 __toggle_line_number.cgi#@LINE_NUMBER&*#-- Toggle line number
 __treat_url_like_strings.cgi#@TREAT_URL&*#-- Toggle plain text to clickable link
+__dict_curl.cgi#@DICT_WORD_CURL&#-- Online dictionary for word at cursor
 __clear_user_agent.cgi#@CLEAR_USER_AGENT&#-- Clear user agent string
 __set_user_agent.cgi#@SET_USER_AGENT&#amazon_4k_firetv#-- Set user agent string amazon_4k_firetv
 __set_user_agent.cgi#@SET_USER_AGENT&#amazon_kindle_3_ereader#-- Set user agent string amazon_kindle_3_ereader
@@ -270,9 +290,9 @@ __set_user_agent.cgi#@SET_USER_AGENT&#android_browser#-- Set user agent string a
 __set_user_agent.cgi#@SET_USER_AGENT&#blackberry#-- Set user agent string blackberry
 __set_user_agent.cgi#@SET_USER_AGENT&#chromebook#-- Set user agent string chromebook
 __set_user_agent.cgi#@SET_USER_AGENT&#chromecast#-- Set user agent string chromecast
-__set_user_agent.cgi#@SET_USER_AGENT&#linux#-- Set user agent string linux         
+__set_user_agent.cgi#@SET_USER_AGENT&#linux#-- Set user agent string linux
 __set_user_agent.cgi#@SET_USER_AGENT&#macosx_10_15#-- Set user agent string macosx_10_15
-__set_user_agent.cgi#@SET_USER_AGENT&#ios_12#-- Set user agent string ios_12       
+__set_user_agent.cgi#@SET_USER_AGENT&#ios_12#-- Set user agent string ios_12
 __set_user_agent.cgi#@SET_USER_AGENT&#nintendo_3ds#-- Set user agent string nintendo_3ds
 __set_user_agent.cgi#@SET_USER_AGENT&#nintendo_wii_u#-- Set user agent string nintendo_wii_u
 __set_user_agent.cgi#@SET_USER_AGENT&#nvidia_shield_tablet_k1#-- Set user agent string nvidia_shield_tablet_k1
@@ -281,16 +301,12 @@ __set_user_agent.cgi#@SET_USER_AGENT&#opera_mobile_11.10#-- Set user agent strin
 __set_user_agent.cgi#@SET_USER_AGENT&#playstation_4#-- Set user agent string playstation_4
 __set_user_agent.cgi#@SET_USER_AGENT&#playstation_vita_psvita#-- Set user agent string playstation_vita_psvita
 __set_user_agent.cgi#@SET_USER_AGENT&#roku_ultra#-- Set user agent string roku_ultra
-__set_user_agent.cgi#@SET_USER_AGENT&#safari#-- Set user agent string safari    
+__set_user_agent.cgi#@SET_USER_AGENT&#safari#-- Set user agent string safari
 __set_user_agent.cgi#@SET_USER_AGENT&#samsung_galaxy_tab_s3#-- Set user agent string samsung_galaxy_tab_s3
 __set_user_agent.cgi#@SET_USER_AGENT&#windows_10#-- Set user agent string windows_10
 __set_user_agent.cgi#@SET_USER_AGENT&#windows_7#-- Set user agent string windows_7
 __set_user_agent.cgi#@SET_USER_AGENT&#xbox_one#-- Set user agent string xbox_one
 __set_user_agent.cgi#@SET_USER_AGENT&#xbox_one_s#-- Set user agent string xbox_one_s
-__yank_current_link.cgi#@YANK_LINK&*#-- Copy link at cursor to clipboard
-__yank_page_url.cgi#@YANK_URL&*#-- Copy page URL to clipboard
-~/Downloads#@DIR_DL&#-- Open ~/Downloads directory
-/media#@DIR_MEDIA&#-- Open /media directory
 EOF
 }
 _main

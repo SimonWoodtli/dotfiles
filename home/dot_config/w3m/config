@@ -17,7 +17,7 @@ dictcommand file:///cgi-bin/cmd_duckduckgo.cgi
 multicol 0
 alt_entity 0
 graphic_char 0
-display_borders 0
+display_borders 1
 disable_center 0
 fold_textarea 0
 display_ins_del 1
@@ -80,8 +80,8 @@ mailcap ~/.config/w3m/mailcap, /etc/w3m/mailcap, /etc/mailcap
 urimethodmap ~/.config/w3m/urimethodmap, /etc/w3m/urimethodmap
 editor $EDITOR
 mailto_options 1
-mailer gnome-open mailto:%s
-extbrowser gnome-open
+mailer xdg-open mailto:%s
+extbrowser xdg-open
 extbrowser2
 extbrowser3
 extbrowser4

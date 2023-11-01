@@ -157,7 +157,6 @@ keymap    C-y       DOWN
 keymap    gg        BEGIN
 keymap    G         END
 keymap    C-d       NEXT_PAGE
-keymap    d         NEXT_PAGE
 keymap    C-u       PREV_PAGE
 keymap    u         PREV_PAGE
 keymap    zz        CENTER_V
@@ -175,6 +174,7 @@ keymap    w         NEXT_WORD
 keymap    b         PREV_WORD
 keymap    :f        MOVE_LIST_MENU
 keymap    :F        LIST_MENU
+keymap    :M        MAIN_MENU
 keymap    J         NEXT_LINK
 keymap    K         PREV_LINK
 keymap    :l        PEEK_LINK
@@ -194,6 +194,7 @@ keymap    /         ISEARCH
 keymap    ?         ISEARCH_BACK
 keymap    n         SEARCH_NEXT
 keymap    N         SEARCH_PREV
+keymap    i         VIEW_IMAGE
 keymap    xx        CLOSE_TAB
 keymap    C-w       CLOSE_TAB
 keymap    C-t       NEW_TAB
@@ -208,24 +209,27 @@ keymap    |         PIPE_BUF
 keymap    :Q        EXIT
 keymap    ZQ        QUIT
 keymap    :q        QUIT
-keymap  SPC-f   COMMAND "SET_OPTION display_link_number=toggle ; RESHAPE"
-keymap  ff      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN"
-keymap  ft      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; TAB_LINK"
-keymap  fy      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null'"
-keymap  fo       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; GOTO_LINK"
-keymap  fn       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; TAB_LINK"
-keymap  yy      EXTERN_LINK "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
-keymap  YY      EXTERN "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
+keymap    SPC-f     COMMAND "SET_OPTION display_link_number=toggle ; RESHAPE"
+keymap    ff        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN"
+keymap    ft        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; TAB_LINK"
+keymap    fo        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; GOTO_LINK"
+keymap    fn        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; TAB_LINK"
+keymap    fy        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | xclip -sel clip -loop 0 >/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null'"
+keymap    yy        EXTERN_LINK "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | xclip -sel clip -loop 0 >/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
+keymap    YY        EXTERN "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | xclip -sel clip -loop 0 >/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
 keymap    xb        EXTERN_LINK     '$BROWSER'
 keymap    XB        EXTERN          '$BROWSER'
 keymap    xl        EXTERN_LINK     '$BROWSER_PRIVATE'
 keymap    XL        EXTERN          '$BROWSER_PRIVATE'
-keymap    xm        EXTERN_LINK   'TS_SOCKET=/tmp/w3m tsp mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
-keymap    XM        EXTERN        'TS_SOCKET=/tmp/w3m tsp mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
-keymap    xi        EXTERN_LINK   'feh'
-keymap    xI        EXTERN_LINK   'TS_SOCKET=/tmp/w3m tsp mpv --loop --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
-keymap    xd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp wget -c -P ~/Downloads'
-keymap    yd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp youtube-dl -o "~/Downloads/%(title)s.%(ext)s"'
+keymap    xm        EXTERN_LINK   'TS_SOCKET=/tmp/w3m ts mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+keymap    XM        EXTERN        'TS_SOCKET=/tmp/w3m ts mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+keymap    xi        EXTERN_LINK   '$SCRIPTS/feh'
+keymap    xI        EXTERN_LINK   'w3m -o display_image=1 -o imgdisplay=w3mimgdisplay'
+keymap    bm        COMMAND   "EXTERN_LINK 'echo %s >> $PRIVATE/bookmarks/work'"
+keymap    BM        COMMAND   "EXTERN 'echo %s >> $PRIVATE/bookmarks/work'"
+keymap    dd        EXTERN_LINK   'TS_SOCKET=/tmp/download ts wget -c --content-disposition -P ~/Downloads'
+keymap    dy        EXTERN_LINK   'TS_SOCKET=/tmp/download ts yt-dlp -o "~/Downloads/%(title)s.%(ext)s"'
+keymap    dt        EXTERN_LINK   'torrent'
 keymap    ZZ        COMMAND     "EXTERN 'echo %s > $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; READ_SHELL $XDG_CONFIG_HOME/w3m/cgi-bin/restore_session.cgi ; EXIT"
 keymap    !!        COMMAND "READ_SHELL ~/.config/w3m/cgi-bin/fzf_magic_wand.cgi ; BACK ; GOTO file:/cgi-bin/fzf_execute.cgi ; BACK"
 keymap    :b        COMMAND "READ_SHELL ~/.config/w3m/cgi-bin/fzf_bookmarks.cgi ; BACK ; GOTO file:/cgi-bin/fzf_execute.cgi ; BACK"

@@ -184,7 +184,6 @@ keymap    C-y       DOWN            #scroll up
 keymap    gg        BEGIN           #go to beginning of site
 keymap    G         END             #go to end of site
 keymap    C-d       NEXT_PAGE       #scroll down one page
-keymap    d         NEXT_PAGE       #scroll down one page
 keymap    C-u       PREV_PAGE       #scroll up one page
 keymap    u         PREV_PAGE       #scroll up one page
 keymap    zz        CENTER_V        #center around current cursor position
@@ -204,6 +203,7 @@ keymap    UP        MOVE_UP1
 keymap    0         LINE_BEGIN      #move cursor to start of line
 keymap    $         LINE_END        #move cursor to end of line
 keymap    w         NEXT_WORD       #move cursor to next word
+#FIXME b PREV_WORD not working
 keymap    b         PREV_WORD       #move cursor to previous word
 ############################ cursor history ############################
 #### don't need this
@@ -212,9 +212,10 @@ keymap    b         PREV_WORD       #move cursor to previous word
 ############################## navigation ##############################
 keymap    :f        MOVE_LIST_MENU  #select from all links on site and move cursor
 keymap    :F        LIST_MENU       #select from all links on current site and open
+keymap    :M        MAIN_MENU       #handy menu for common nav & tasks
 keymap    J         NEXT_LINK       #move cursor to next link
 keymap    K         PREV_LINK       #move cursor to previous link
-keymap    :l        PEEK_LINK
+keymap    :l        PEEK_LINK       #peek cursor link, works with inline image too
 ############################ save/load page ############################
 keymap    C-s       SAVE            #save HTML from current site ~/.w3m/foo
 keymap    C-p       PRINT           #print current site
@@ -237,13 +238,14 @@ keymap    ?         ISEARCH_BACK    #search keywords upwards
 keymap    n         SEARCH_NEXT     #goto next keyword
 keymap    N         SEARCH_PREV     #goto previous keyword
 ############################### bookmarks ##############################
-#### use my own bookmark system with `bm`
+#### Don't use w3m default bookmarks, use custom scripts with $PRIVATE/bookmarks
 #keymap   a         ADD_BOOKMARK    #add bookark to ~/.w3m/bookmark.html
 #keymap   :b        VIEW_BOOKMARK   #show bookmarks and goto saved links 
-################################ images ################################
-## don't use this it downloads img into ~/.w3m
-#keymap    C-i      VIEW_IMAGE      #show current links image
-#keymap    C-I      DISPLAY_IMAGE   #show images on current page in terminal
+########################## open inline images ##########################
+## display image with external image viewer or whatever mailcap is set to
+keymap    i         VIEW_IMAGE      #show current inline image (not link)
+#gotta test this:
+#keymap    I      DISPLAY_IMAGE   #show images on current page in terminal
 ################################## tab #################################
 keymap    xx        CLOSE_TAB       #close current tab
 keymap    C-w       CLOSE_TAB
@@ -269,26 +271,22 @@ keymap    :q        QUIT            #confirmation turned off in config
 ####################### 2. custom script commands ######################
 ############################## navigation ##############################
 #### toggle hinting mode (vimium similar)
-keymap  SPC-f   COMMAND "SET_OPTION display_link_number=toggle ; RESHAPE"
+keymap    SPC-f     COMMAND "SET_OPTION display_link_number=toggle ; RESHAPE"
 #### jump to link number (e.g press 3ff) and hide hinting mode (similar to gg in vim)
-keymap  ff      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN"
+keymap    ff        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN"
 #### open current cursor link in new tab and hide hinting mode
-keymap  ft      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; TAB_LINK"
-#### copy link to clipboard (e.g press SPC-f then 4fy to yank url)
-keymap  fy      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null'"
+keymap    ft        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; TAB_LINK"
 #### jump to link number and open it (e.g 2fo)
-keymap  fo       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; GOTO_LINK"
+keymap    fo        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; GOTO_LINK"
 #### jump to link number and open it in new tab (e.g 2fn)
-keymap  fn       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; TAB_LINK"
-################## yank to x11 clipboard: requires x11 #################
-#keymap    yx        EXTERN_LINK   '(printf %s | xclip -sel clipboard)'    #yank link from cursor
-#keymap    YX        EXTERN        '(printf %s | xclip -sel clipboard)' #yank link from current site
-########################## yank to tmux buffer #########################
-#keymap    yy        EXTERN_LINK   'tmux set-buffer'     #if you ssh into server and have no x11
-#keymap    YY        EXTERN        'tmux set-buffer'
+keymap    fn        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; TAB_LINK"
 ####################### yank to multi clipboards #######################
-keymap  yy      EXTERN_LINK "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
-keymap  YY      EXTERN "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" > /dev/clipboard 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
+## if you ssh into server and have no x11 tmux buffer helps
+## copy link to clipboard (e.g press SPC-f then 4fy to yank url):
+keymap    fy        COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | xclip -sel clip -loop 0 >/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null'"
+## regular yanks:
+keymap    yy        EXTERN_LINK "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | xclip -sel clip -loop 0 >/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
+keymap    YY        EXTERN "url=%s ; printf "%b" "$url" > /tmp/clipbrd.txt ; printf "%b" "$url" | xsel -b 2>/dev/null ; printf "%b" "$url" | xclip -sel clip -loop 0 >/dev/null ; printf "%b" "$url" | tmux load-buffer - ; printf '%s' "$url" | wl-copy 2>/dev/null  ; printf '%s' "$url" | clip 2>/dev/null ; printf '%s' "$url" | pbcopy 2>/dev/null ; printf '%s' "$url" | termux-clipboard-set 2>/dev/null"
 ########################### open GUI browser ###########################
 #### requires exported env. variables: $BROWSER and $BROWSER_PRIVATE
 keymap    xb        EXTERN_LINK     '$BROWSER'    #open link on cursor in GUI
@@ -296,16 +294,28 @@ keymap    XB        EXTERN          '$BROWSER'    #open current site link in GUI
 keymap    xl        EXTERN_LINK     '$BROWSER_PRIVATE'
 keymap    XL        EXTERN          '$BROWSER_PRIVATE'
 ############################## open video ##############################
-keymap    xm        EXTERN_LINK   'TS_SOCKET=/tmp/w3m tsp mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
-keymap    XM        EXTERN        'TS_SOCKET=/tmp/w3m tsp mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
-############################## open image ##############################
-#### only works if img is direct link to it otherwise open link with gui browser `xb`
-keymap    xi        EXTERN_LINK   'feh' #can't use flags :(
-keymap    xI        EXTERN_LINK   'TS_SOCKET=/tmp/w3m tsp mpv --loop --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+keymap    xm        EXTERN_LINK   'TS_SOCKET=/tmp/w3m ts mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+keymap    XM        EXTERN        'TS_SOCKET=/tmp/w3m ts mpv --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+########################### open link images ###########################
+#### IMPORTANT: only works if img is direct link to it meaning an actual
+## link you can jump to. Use VIEW_IMAGE for inline images
+## gotta test:
+keymap    xi        EXTERN_LINK   '$SCRIPTS/feh'
+#this only works if terminal supports image display: (gotta test)
+keymap    xI        EXTERN_LINK   'w3m -o display_image=1 -o imgdisplay=w3mimgdisplay'
+## gotta test:
+#keymap    xI        EXTERN_LINK   'TS_SOCKET=/tmp/w3m ts mpv --loop --ontop --no-border --force-window --autofit=500x280 --geometry=-15-53'
+############################# save bookmark ############################
+## add bookmark to my bookmark system
+keymap    bm        COMMAND   "EXTERN_LINK 'echo %s >> $PRIVATE/bookmarks/work'"
+keymap    BM        COMMAND   "EXTERN 'echo %s >> $PRIVATE/bookmarks/work'"
 ############################## downloading #############################
-keymap    xd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp wget -c -P ~/Downloads'
-#keymap   xd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp curl -LJ --output-dir ~/Downloads' ##gotta test this
-keymap    yd        EXTERN_LINK   'TS_SOCKET=/tmp/download tsp youtube-dl -o "~/Downloads/%(title)s.%(ext)s"'
+## Download file:
+keymap    dd        EXTERN_LINK   'TS_SOCKET=/tmp/download ts wget -c --content-disposition -P ~/Downloads'
+## Download YT:
+keymap    dy        EXTERN_LINK   'TS_SOCKET=/tmp/download ts yt-dlp -o "~/Downloads/%(title)s.%(ext)s"'
+## Download torrent:
+keymap    dt        EXTERN_LINK   'torrent'
 ####################### quit & save last session #######################
 keymap    ZZ        COMMAND     "EXTERN 'echo %s > $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; NEXT_TAB ; EXTERN 'echo %s >> $XDG_CONFIG_HOME/w3m/RestoreSession.txt' ; READ_SHELL $XDG_CONFIG_HOME/w3m/cgi-bin/restore_session.cgi ; EXIT"
 ################################## fzf #################################
@@ -314,11 +324,13 @@ keymap    !!        COMMAND "READ_SHELL ~/.config/w3m/cgi-bin/fzf_magic_wand.cgi
 ## bookmark cmd: search and open bookmarks
 keymap    :b        COMMAND "READ_SHELL ~/.config/w3m/cgi-bin/fzf_bookmarks.cgi ; BACK ; GOTO file:/cgi-bin/fzf_execute.cgi ; BACK"
 ############################## dictionary ##############################
+##FIXME dictionary doesn't work in Alpine Linux w3m
 #### exec dictionary command:
 keymap    \\\d      COMMAND "SET_OPTION dictcommand=file:///cgi-bin/dictionary.cgi ; DICT_WORD"
 #### exec dictionary command for word at cursor
 keymap    \\\w      COMMAND "SET_OPTION dictcommand=file:///cgi-bin/dictionary.cgi ; DICT_WORD_AT"
 ################################## cmd #################################
+##FIXME dictionary cmds don't work in Alpine Linux w3m
 #### cmd: exec scripts with keywords via dictionary built-in bar
 #### use search engine with user input
 keymap    :w        COMMAND "SET_OPTION dictcommand=file:///cgi-bin/cmd_wikipedia.cgi ; DICT_WORD"

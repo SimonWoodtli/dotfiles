@@ -1,8 +1,8 @@
 #!/usr/bin/sh
-declare buffer=/tmp/w3m-buffer
-declare selection=""
+buffer=/tmp/w3m-buffer
+selection=""
 filterBookmarks() {
-  sed '/^#.*#$/d' "$HOME/Private/bookmarks/bookmarksWork" | grep -v '^#'
+  sed '/^#.*#$/d' "$HOME/Private/bookmarks/work" | grep -v '^#'
 }
 
 ## not running tmux
