@@ -1,7 +1,49 @@
-#!/bin/sh
-## open executable file wherever it is with `vic foo`
-cmd=$(command -v $1)
-test -n "$cmd" && exec vim "$cmd"
-#vic () {
-#  vim $(which $1);
-#} && export -f vic
+#!/bin/bash
+################################# About ################################
+## Author: Simon D. Woodtli
+## thanks to rwxrob for idea
+## Project: https://github.com/SimonWoodtli/dotfiles/blob/main/scripts/vic
+## Script Name: vic
+## License:  Apache-2.0
+## Dependency: fzf
+################################# Setup ################################
+## 1. Copy script into your Script dir and chmod it
+## 2. Add to your ~/.bashrc: (rm #)
+################################ bashrc ################################
+#export SCRIPTS=/home/username/where/you/store/your/scripts
+#export PATH=$SCRIPTS:$PATH
+################################# Usage ################################
+## * open any executable file in vim: `vic foo`
+## * fuzzy find your scripts with fzf: `vic`
+################################ Script ################################
+_have() { type "$1" >/dev/null; }
+_fzfViScripts() {
+  ## fzf only shows filename but selection outputs absolute file path
+  ## clear screen:
+  printf "\033c"
+  ## not running tmux:
+  if [[ -z "$TMUX" || -z "$TERM_PROGRAM" ]]; then
+    script="$(ls $SCRIPTS |                                            \
+      fzf --no-preview -i -e --prompt="vic: "                          \
+      --info=default --layout=reverse |                                \
+      xargs -I {} realpath $SCRIPTS/{})"
+  ## tmux -ge 3.2 popup
+  elif [[ "$TERM_PROGRAM" = tmux ]] ; then
+    script="$(ls $SCRIPTS |                                            \
+      fzf-tmux --no-preview -p --prompt="vic: "                        \
+      -w 80% -h 70% -i -e --info=default --layout=reverse |            \
+      xargs -I {} realpath $SCRIPTS/{})"
+  ## tmux -lt 3.2 regular split
+  elif [[ -n "$TMUX" ]] ; then
+    script="$(ls $SCRIPTS |                                            \
+      fzf-tmux --no-preview --prompt='emoji: '                         \
+      -i -e --info=default --layout=reverse |                          \
+      xargs -I {} realpath $SCRIPTS/{})"
+  fi
+  _have fzf && exec vim "$script"
+}
+_vic() {
+  cmd="$(command -v "$1")"
+  _have "$cmd" && exec vim "$cmd"
+}
+[ -z "$*" ] && _fzfViScripts || _vic "$1"
