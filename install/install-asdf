@@ -1,0 +1,37 @@
+#!/bin/sh
+################################# Setup ################################
+## add to your .bashrc:
+#source "$HOME/.asdf/asdf.sh"
+#source "$HOME/.asdf/completions/asdf.bash"
+################################ Script ################################
+## get latest version link with jq
+os=$(uname)
+## colors
+rd=$'\033[31m'
+yw=$'\033[33m'
+be=$'\033[34m'
+cn=$'\033[36m'
+rt=$'\033[0m'
+[ $os == 'Linux' ] || { echo "${rd}Error:$rt Sorry designed to be installed on Linux only."; exit 1; }
+url=$(curl -s https://api.github.com/repos/asdf-vm/asdf/releases/latest | jq -r ".tarball_url")
+
+echo "$cn
+ █████╗ ███████╗██████╗ ███████╗
+██╔══██╗██╔════╝██╔══██╗██╔════╝
+███████║███████╗██║  ██║█████╗
+██╔══██║╚════██║██║  ██║██╔══╝
+██║  ██║███████║██████╔╝██║
+╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝
+$rt"
+
+## download tarball
+curl -s -LJ -o /tmp/asdf.tar.gz "$url"
+
+## extract tarball
+tar -xzf /tmp/asdf.tar.gz -C /tmp
+
+## find file name cause github API does not provide
+name=$(find /tmp -maxdepth 1 -name "*asdf*" ! -name "*tar.gz" 2>/dev/null)
+
+## mv dir
+mv "$name" "$HOME/.asdf"
