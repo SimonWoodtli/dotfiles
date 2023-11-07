@@ -1,12 +1,4 @@
-#show-read-feeds no
-## always loads rss when newsboat opened (deactivate if cronjob is activated)
-#auto-reload yes
-
-## urlscan: program to get links out of file or input => install on your distro
-## linkhandler: script to open the scanned urls in an application. Depending on file type different programs get executed.
-external-url-viewer "urlscan -dc -r 'linkhandler {}'"
-
-# vim bindings
+############################## Keybindings #############################
 bind-key j down
 bind-key k up
 bind-key j next articlelist
@@ -15,51 +7,76 @@ bind-key J next-feed articlelist
 bind-key K prev-feed articlelist
 bind-key G end
 bind-key g home
-bind-key d pagedown
-bind-key u pageup
+bind-key ^D pagedown
+bind-key ^U pageup
+bind-key ^H toggle-show-read-feeds
 bind-key l open
 bind-key h quit
 bind-key a toggle-article-read
 bind-key n next-unread
 bind-key N prev-unread
 bind-key D pb-download
-bind-key U show-urls # important: key to open urlscan
+bind-key U show-urls # important: key to open urlscan `u|U`
 bind-key x pb-delete
+unbind-key , #default leader key
+bind-key SPACE macro-prefix #leader key for macros to open browser,mpv etc
 
-# colortheme
-color background         default   default
-color listnormal         default   default
-color listnormal_unread  default   default
-color listfocus          black     cyan
-color listfocus_unread   black     cyan
-color info               cyan      black
-color article            default   default
+############################ General Configs ###########################
+## urlscan: program to get links out of file or input => install on your distro
+## __urlscan-linkhandler: script to open the scanned urls in an application. Depending on url/file type different programs get executed.
+external-url-viewer "urlscan -dc -r '__urlscan-linkhandler {}'"
+max-items       100
+## text spans half of terminal
+text-width      87
 
-# configs
-max-items        100
-
-# important: open main links (blue) in another program use: ",w" for w3m etc.
-browser linkhandler
-macro , open-in-browser # important key: leader key set to ","
-macro m set browser "setsid -f mpv" ; open-in-browser ; set browser linkhandler #open link with mpv
-macro w set browser "w3m" ; open-in-browser ; set browser linkhandler #open link with terminal browser
-##TODO use xclip instead of xsel
-macro c set browser "xsel -b <<<" ; open-in-browser ; set browser linkhandler #copy link to clipboard
-##TODO fix download
-macro d set browser "yt-dlp -o ~/Downloads/%(title)s.%(ext)s" ; open-in-browser ; set browser linkhandler #download YT video
-
-# hightlighting when reading article
-highlight article "^Feed:.*" color5 color234
-highlight article "^Title:.*" color3 color234 bold
-highlight article "^Author:.*" color2 color234
-highlight article "^Date:.*" color223 color234
-highlight article "^Link:.*" color32 color234
-highlight article "^Flags:.*" color9 color234
-highlight article "\\[[0-9][0-9]*\\]" color66 default bold
-highlight article "\\[image [0-9][0-9]*\\]" color109 default bold
-highlight article "\\[embedded flash: [0-9][0-9]*\\]" color66 default bold
-
+## always loads rss when newsboat opened (deactivate if cronjob is activated)
+#auto-reload yes
+#refresh-on-startup yes
+#prepopulate-query-feeds yes
+#reload-threads 100
+## remove read articles
+#show-read-feeds no
+#show-read-articles no
 # Podboat items
+
 download-path "~/Downloads/%h/%n"
 max-downloads 3
 player "mpd"
+
+################################ Macros ################################
+## leader key: space -- space+m to open url in mpv
+## copy article link: `o`
+browser __urlscan-linkhandler #default browser is linkhandler script
+#open article links in GUI browser: #1 for first link or #2 for second
+#open article link with mpv:
+macro m set browser "setsid -f flatpak run --branch=stable --arch=x86_64 io.mpv.Mpv --no-sub-auto" ; open-in-browser ; set browser __urlscan-linkhandler
+macro c set browser "echo %u | xclip -r -sel c" ; open-in-browser ; set browser __urlscan-linkhandler #copy link
+macro C set browser "youtube-viewer --comments=%u" ; open-in-browser ; set browser __urlscan-linkhandler
+macro w set browser "w3m" ; open-in-browser ; set browser __urlscan-linkhandler #open link with terminal browser
+macro b set browser "xdg-open '%u'" ; open-in-browser ; set browser __urlscan-linkhandler #open link with GUI browser
+macro d set browser "__newsboat-yt-dlp-v" ; open-in-browser ; set browser __urlscan-linkhandler #download link/YT video
+macro D set browser "__newsboat-yt-dlp-a" ; open-in-browser ; set browser __urlscan-linkhandler #download YT audio
+
+################################ Colors ################################
+# colortheme
+include /usr/share/doc/newsboat/contrib/colorschemes/gruvbox
+# layout@main menu
+feedlist-format "%?T?║%4i %n %8u %8T %t &╠═══════════════════════════════════════════════════════════════%t?"
+highlight feedlist "[║│]" color3 color0
+highlight feedlist "╠═.*" color3 color0 
+## or customize colors:
+# colors@main menu
+## col # item              # fg      # bg
+#color background          color2   default        # the most bottom bar
+#color listnormal          color7   default        # unfocused and without N
+#color listnormal_unread   color7   default        # unfocused and with N
+#color listfocus           color7   color8         # focused and without N
+#color listfocus_unread    color7   color8   bold  # focused but with N
+#color info                color6   color3         # bottom and top info bars
+#color article             color7   default        # content of an article
+# colors@article menu
+#highlight article "^(Feed|Link):.*$" color6 default bold
+#highlight article "^(Title|Date|Author):.*$" color6 default bold
+#highlight article "https?://[^ ]+" color10 default underline
+#highlight article "\\[[0-9]+\\]" color10 default bold
+#highlight article "\\[image\\ [0-9]+\\]" color10 default bold
