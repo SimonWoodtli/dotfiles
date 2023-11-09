@@ -1,0 +1,6 @@
+#!/bin/bash
+## Some sites have annoying JS blockers to view content, `rdr URL`
+## circumvents that in some cases. From within w3m: !! rdrview
+bl=$'\033[34m'; re=$'\033[0m'
+url=${1:?"${bl}Warning:$re URL as argument required"}
+curl -A "Mozilla Firefox" -sL "$url" | rdrview -B w3m
