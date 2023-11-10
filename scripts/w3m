@@ -1,5 +1,8 @@
 #!/bin/bash
 ## Author: Simon D. Woodtli
+## circumvent annoying JS blockers:
+## within w3m: !! rdrview (requires my w3m configs)
+## from terminal: `rdr URL`
 declare w3mpath=/usr/bin/w3m
 [[ ! -x "$w3mpath" ]] && w3mpath=/usr/local/bin/w3m
 
