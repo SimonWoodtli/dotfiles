@@ -1,11 +1,7 @@
 #!/bin/sh
-## Only for Gnome Desktops
-## dark theme
-## grabs only the current dirs path not the original symlinked dir: (but gsettings is ok)
-gsettings set org.gnome.desktop.background picture-uri-dark file://$PWD/${1%/*}
-## grabs the original files path: (but subshell...)
-#gsettings set org.gnome.desktop.background picture-uri-dark file://$(readlink -f $1)
-## light theme
-gsettings set org.gnome.desktop.background picture-uri file://$PWD/${1%/*}
-
+## set wallpaper for Gnome Desktops
+## set dark theme:
+gsettings set org.gnome.desktop.background picture-uri-dark file://"$PWD/${1%/*}"
+## set light theme:
+gsettings set org.gnome.desktop.background picture-uri file://"$PWD/${1%/*}"
 ## if on window managers use feh
