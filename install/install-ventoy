@@ -1,22 +1,22 @@
 #!/bin/sh
 ## create variable for your system
-declare spruce_type=linux
-declare OS=$(uname)
+spruce_type=linux
+OS=$(uname)
 ## get correct link with jq
-declare URL=$(curl -s https://api.github.com/repos/ventoy/Ventoy/releases/latest | jq -r ".assets[] | select(.name | test(\"${spruce_type}\")) | .browser_download_url")
-declare TARBALL=${URL##*/}
-declare NAME=${TARBALL%-*}
+URL=$(curl -s https://api.github.com/repos/ventoy/Ventoy/releases/latest | jq -r ".assets[] | select(.name | test(\"${spruce_type}\")) | .browser_download_url")
+TARBALL=${URL##*/}
+NAME=${TARBALL%-*}
 ## colors
-declare red=$'\033[31m'
-declare black=$'\033[30m'
-declare green=$'\033[32m'
-declare yellow=$'\033[33m'
-declare blue=$'\033[34m'
-declare magenta=$'\033[35m'
-declare cyan=$'\033[36m'
-declare white=$'\033[37m'
-declare reset=$'\033[0m'
-declare bold=$'\033[1m'
+red=$'\033[31m'
+black=$'\033[30m'
+green=$'\033[32m'
+yellow=$'\033[33m'
+blue=$'\033[34m'
+magenta=$'\033[35m'
+cyan=$'\033[36m'
+white=$'\033[37m'
+reset=$'\033[0m'
+bold=$'\033[1m'
 
 if [ $OS != 'Linux' ] ; then
   echo "${red}Error:$reset ${bold}Sorry designed to be installed on Linux only.$reset"
