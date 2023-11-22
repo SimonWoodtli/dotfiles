@@ -1,0 +1,3 @@
+#!/bin/sh
+qrencode -t PNG -s 8 -o /tmp/tmp.png $(xclip -o -sel clip)
+feh /tmp/tmp.png
