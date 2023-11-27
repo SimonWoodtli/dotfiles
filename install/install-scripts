@@ -1,0 +1,15 @@
+#!/bin/sh
+dir="$HOME/.local/bin"
+url="https://raw.githubusercontent.com"
+
+## sshrc:
+## setup instructions: https://github.com/cdown/sshrc
+## get your bashrc, vimrc, fav. scripts etc. on each server you login with ssh
+curl -s "$url/cdown/sshrc/master/sshrc" -o "$dir/sshrc"
+chmod u+x "$dir/sshrc"
+## vimv:
+curl -s "$url/thameera/vimv/master/vimv" -o "$dir/vimv"
+chmod u+x "$dir/vimv"
+## ytfzf:
+curl -s "$url/pystardust/ytfzf/master/ytfzf" -o "$dir/ytfzf"
+chmod u+x "$dir/ytfzf"
