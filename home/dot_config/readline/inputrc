@@ -18,6 +18,7 @@ set completion-ignore-case On
 set completion-map-case on
 ## programs with GNU Readline command-line interface support VIM-mode (e.g in python REPL)
 ## particularly useful for psql
+## also `Esc v` enters vim as a bash REPL
 set editing-mode vi
 set keymap vi
 set keymap vi-insert
