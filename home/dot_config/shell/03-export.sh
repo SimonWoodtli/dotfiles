@@ -14,7 +14,7 @@ done
 
 export TESTUSER="SimonWoodtli"
 export USER="${USER:-$(whoami)}"
-export BROWSER="$(flatpak info --show-location com.brave.Browser)"
+export BROWSER="$HOME/.local/bin/brave"
 export VIRTUALMACHINES="$HOME/VirtualMachines"
 export TERM=xterm-256color
 _have git && export GITUSER="$(git config --global user.name)"
