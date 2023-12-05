@@ -25,8 +25,11 @@ __ps1() {
   # \u = user \h = host \W = current dir (\w = current dir + path)
   ## ANSI Colors need to be wrapped/escaped \[...\]
   ## @,: is hardcoded => no escape
-  ## $branch, $P are variables that change depending on whether git repo or root => no escape
-  export PS1="\[$yr\]\u\[$d\]@\[$b\]\h\[$d\]:\[$p\]\W$branch\[$br\]$P\[$x\] " #defaultp prompt has no (git-branch-name)
+
+   ## $branch, $P are variables that change depending on whether git repo or root => no escape
+   export PS1="\[$yr\]\u\[$d\]@\[$b\]\h\[$d\]:\[$p\]\W$branch\[$br\]$P\[$x\] " #defaultp prompt has no (git-branch-name)
+   #always prints new line: e.g `printf foo` prints foo on new line
+   #export PS1="$(printf "%$((`tput cols` -1))s\r")\[$yr\]\u\[$d\]@\[$b\]\h\[$d\]:\[$p\]\W$branch\[$br\]$P\[$x\] " #defaultp prompt has no (git-branch-name)
 }
 
 export PROMPT_COMMAND="__ps1"
