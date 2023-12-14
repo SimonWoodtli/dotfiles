@@ -2,12 +2,16 @@
 ############################## COMPLETION ##############################
 # Most completion is set near the function that uses it or internally inside
 # the command itself using https://github.com/rwxrob/cmdtab for completion.
+#
 
+#if [ -r /usr/share/bash-completion/completions/tmux ]; then
+  #source /usr/share/bash-completion/completions/tmux
+#fi
 if [ -r /usr/share/bash-completion/bash_completion ]; then
   source /usr/share/bash-completion/bash_completion
 fi
 
-owncomp=( cry pdf yt zet sshkey gm lorem tidder snippet )
+owncomp=( cry pdf yt zet sshkey ghe lorem tidder snippet )
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
 
 ## autocomplete for tldr
@@ -23,6 +27,8 @@ _have pandoc && . <(pandoc --bash-completion)
 _have docker && _source_if "$HOME/.local/share/docker/completion" # d
 _have docker-compose && complete -F _docker_compose dc # dc
 _have deno && source /usr/local/etc/bash_completion.d/deno.bash
+[[ -d "$HOME/.asdf" ]] && source "$HOME/.asdf/asdf.sh"
+_have asdf && source "$HOME/.asdf/completions/asdf.bash"
 
 # Check whether we're running a version of Bash that has support for
 # programmable completion. If we do, enable all modules installed in
