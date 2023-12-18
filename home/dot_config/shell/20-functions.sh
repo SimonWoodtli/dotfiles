@@ -7,19 +7,12 @@ cpr() { rsync --progress -auv "$1" "$2"; }
 ##TODO make a case so you can select what kind of comment you want to
 ##remove
 rmc() { sed 's|\s*#.*||g; /^$/ d' "$1" > "$2"; } #rm hashtag comment and empty line
-du1() { find . -maxdepth 1 -type d -exec du -shx {} \; | sort -hr }
+six() { printf "%s\n" "$(/usr/bin/img2sixel "$@")"; } #fix sixel bleeding into prompt
 ############################# zet commands #############################
-zc() { cd "$(zet get "$@")"; }
+zcd() { cd "$(zet get)"; }
 ze() { zet edit "$1"; }
 zc() { zet create "$1"; }
 zu() { zet use "$1"; }
-#man () {
-#  case "$(type -t -- "$1")" in
-#    builtin) help -m "$1" | less ;;
-#    keyword) man bash | less -p "^       $1 " ;;
-#    *) command man "$@" ;;
-#  esac
-#}
 ################################# path #################################
 pathappend() {
 	declare arg
@@ -41,25 +34,25 @@ pathprepend() {
 	done
 } && export -f pathprepend
 ########################## fzf ctrl-r history ##########################
-__fzfcmd() {                                                                    
+__fzfcmd() {
   [[ -n "$TMUX_PANE" ]] && { [[ "${FZF_TMUX:-0}" != 0 ]] || [[ -n "$FZF_TMUX_OPTS" ]]; } &&
     echo "fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- " || echo "fzf"
-} 
-history() {                                                                
-  local output opts script                                                         
+}
+history() {
+  local output opts script
   opts="--height ${FZF_TMUX_HEIGHT:-40%} --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS -n2..,.. --scheme=history --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS +m --read0"
   script='BEGIN { getc; $/ = "\n\t"; $HISTCOUNT = $ENV{last_hist} + 1 } s/^[ *]//; print $HISTCOUNT - $. . "\t$_" if !$seen{$_}++'
-  output=$(                                                                        
-    builtin fc -lnr -2147483648 |                                                  
+  output=$(
+    builtin fc -lnr -2147483648 |
       last_hist=$(HISTTIMEFORMAT='' builtin history 1) perl -n -l0 -e "$script" |
-      FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) --query "$READLINE_LINE"                
-  ) || return                                                                      
-  READLINE_LINE=${output#*$'\t'}                                                   
-  if [[ -z "$READLINE_POINT" ]]; then                                              
-    echo "$READLINE_LINE"                                                          
-  else                                                                             
-    READLINE_POINT=0x7fffffff                                                      
-  fi                                                                               
+      FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) --query "$READLINE_LINE"
+  ) || return
+  READLINE_LINE=${output#*$'\t'}
+  if [[ -z "$READLINE_POINT" ]]; then
+    echo "$READLINE_LINE"
+  else
+    READLINE_POINT=0x7fffffff
+  fi
 }
 # CTRL-R - Paste the selected command from history into the command line
 # Since Ctrl-R already is a command in many terminals to view history I'm
@@ -68,8 +61,7 @@ bind -m emacs-standard -x '"\C-r": history'
 bind -m vi-command -x '"\C-r": history'
 bind -m vi-insert -x '"\C-r": history'
 ############################# fzf commands #############################
-# https://git.sr.ht/~mlaparie/passfzf
-ftags() {
+tagsf() {
 # ftags - search ctags with preview
 # only works if tags-file was generated with --excmd=number
   local line
@@ -84,59 +76,28 @@ ftags() {
   ) && ${EDITOR:-vim} $(cut -f3 <<< "$line") -c "set nocst" \
                                       -c "silent tag $(cut -f2 <<< "$line")"
 }
-fvic() {
-  ## fuzzy vic but only on $SCRIPTS. Not on every program like vic: `vi `which $1``
-  fd --type f . $SCRIPTS | fzf | xargs -o vim
-  #\du -a $SCRIPTS | awk '{print $2}' | fzf | xargs -o vim
-  #ls -R $SCRIPTS | fzf | xargs -o vim
-}
-fcat() {
-  ## fuzzy cat to search through file
+catf() {
   local FZF_DEFAULT_OPTS="--layout=reverse --info=inline"
   cat "$1" | fzf
 }
-# intersting code snippet but I don't need. I got `open` and regular
-# `fzf` with keybindings
-#fzfopen() {
-#  IFS=$'\n' out=("$(fzf-tmux --query="$1" --exit-0 --expect=ctrl-o,ctrl-e)")
-#  key=$(head -1 <<< "$out")
-#  file=$(head -2 <<< "$out" | tail -1)
-#  if [ -n "$file" ]; then
-#    [ "$key" = ctrl-o ] && open "$file" || ${EDITOR:-vim} "$file"
-#  fi
-#}
-fvi() {
-  ## if you want to open all the files related to a project in different
-  ## vim buffers, fuzzy search them and tab to mark files
-  vim $(fzf)
+vif() {
+  vim "$(fd --max-depth 1 --type f . "$PWD" | fzf)"
 }
-
-fo() {
-  ## fuzzy open only from current dir in vim
-  fd --max-depth 1 --type f . "$PWD" | fzf | xargs -o vim
-}
-frm() {
-  ## fuzzy remove selected files (select multiple files with tab)
+rmf() {
   rm -rf "$(ls | fzf -m)"
 }
-fpath() {
-  ## fuzzy search files and copy its path to x11 xlipboard
+xclipf() {
   fd -a --type f | fzf | tr -d '\n' | xclip -sel clip
 }
-
-frg() {
+rgf() {
   ##TODO how to get FZF to use RG instead of fd so you can search within
   #files > like the fzf vimplugin command :Rg
-  #local FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-ignore-vcs -g "!{node_modules,.git}"'
-  #local FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git'"
   ## fuzzy search with ripgrep
-  echo $FZF_DEFAULT_COMMAND
-  #rg "$1" | fzf
-  #echo $1 | fzf
+  rg "$1" | fzf
+  #/usr/bin/rg --column --line-number --no-heading --color=always --smart-case "$@" | /usr/bin/fzf
+  #/usr/bin/rg "$@" | /usr/bin/fzf
 }
-
-fcd() {
-  ## fuzzy search dir and cd into it
+cdf() {
   cd "$(fd --type d | fzf)"
 }
 
@@ -204,12 +165,10 @@ miniprompt() {
   PS1="\[\e[38;5;168m\]$ \[\e[0m\]"
 }
 ################################## git #################################
-#
 gcr() {
   echo 'gh repo create nameOfProject --description "🌍 a brief description example" --public --source=. --remote=upstream --push' | tr -d "\n" | xclip -sel clip
   echo 'gh repo create nameOfProject --description "🌍 a brief description example" --public --source=. --remote=upstream --push'
 }
-
 gvi() {
   ## $1 is an URL to an issue like https://github.com/cli/cli/issues/1055
   ##TODO find a way to grab to URL from CLI
