@@ -11,7 +11,7 @@
 
 ## CHECK for latest LTS and change $rel if needed
 ## TODO manually update $rel
-rel=v18.16.0
+rel=v20.9.0
 
 download () {
   echo -n "Downloading..."
