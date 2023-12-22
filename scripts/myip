@@ -10,7 +10,7 @@
 
 ## Lots of testing tools:https://bash.ws 
 
-curl -s https://myipv4.p1.opendns.com/get_my_ip | jq .ip
+curl -s https://myipv4.p1.opendns.com/get_my_ip | jq .ip | tr -d '"'
 
 #dig +short myip.opendns.com @resolver1.opendns.com || curl https://myipv4.p1.opendns.com/get_my_ip
 #if [ $? -gt 0 ]; then
