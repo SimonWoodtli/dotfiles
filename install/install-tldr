@@ -1,4 +1,5 @@
 #!/bin/sh
+## tldr-bash client: no --markdown/--raw flag  :( I prefer tealdeer
 ## autocomplete: complete -W "$(tldr 2>/dev/null --list)" tldr
 if [ -f $HOME/.local/bin/tldr ]; then
   rm $HOME/.local/bin/tldr
