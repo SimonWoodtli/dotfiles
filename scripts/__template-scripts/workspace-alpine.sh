@@ -11,7 +11,7 @@ if [[ ! -d "$HOME/Repos/github.com/SimonWoodtli/dotfiles" ]]; then
   mkdir -p "$folder"
   git -C "$folder" clone https://github.com/SimonWoodtli/dotfiles.git
   git -C "$folder" clone https://github.com/SimonWoodtli/zet.git
-  echo "Couldn't find SimonWoodtli/dotfiles so cloned it for you. 
+  echo "Couldn't find SimonWoodtli/dotfiles so cloned it for you.
 Next Steps:
   1. chezmoi -S $HOME/Repos/github.com/SimonWoodtli/dotfiles init --apply
   2. exec bash -l
@@ -45,7 +45,7 @@ for pkg in "${pipxPackages[@]}"; do
 done
 
 ## Don't use install-node script, cause node is compiled with glibc and Alpine uses musl
-## Install npm packages: 
+## Install npm packages:
 npmPackages=($(yq '.npm[]' < /tmp/recipe.yml))
 npm install -g npm@latest
 for pkg in "${npmPackages[@]}"; do
@@ -53,17 +53,30 @@ for pkg in "${npmPackages[@]}"; do
 done
 
 ## Install scripts:
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-sshrc
-$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-tldr
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-scripts
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-ripgrepall
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-go
 $HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-exec-oneliners
+$HOME/Repos/github.com/SimonWoodtli/dotfiles/install/install-asdf
 
 ## Install go packages:
 ##FIXME exercism does not install
 goPackages=($(yq '.go[]' < /tmp/recipe.yml))
 for pkg in "${goPackages[@]}"; do
   go install "$pkg"
+done
+
+#for firsttime use of asdf
+source "$HOME/.asdf/asdf.sh"
+## Install asdf packages:
+asdfName=($(yq '.asdf | .[].tools.name' < /tmp/recipe.yml))
+asdfUrl=($(yq '.asdf | .[].tools.url' < /tmp/recipe.yml))
+for x in "${!asdfName[@]}"; do
+  asdfVer=($(yq ".asdf | .[$x].tools.ver | .[]" < /tmp/recipe.yml))
+  asdf plugin add ${asdfName[x]} ${asdfUrl[x]}
+  for y in "${!asdfVer[@]}"; do
+    asdf install "${asdfName[x]}" "${asdfVer[y]}"
+  done
 done
 
 ## Fix bash completion for host CLI run via distrobox-host-exec:
