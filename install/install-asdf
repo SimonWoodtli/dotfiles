@@ -12,7 +12,7 @@ yw=$'\033[33m'
 be=$'\033[34m'
 cn=$'\033[36m'
 rt=$'\033[0m'
-[ $os == 'Linux' ] || { echo "${rd}Error:$rt Sorry designed to be installed on Linux only."; exit 1; }
+[ $os = 'Linux' ] || { echo "${rd}Error:$rt Sorry designed to be installed on Linux only."; exit 1; }
 url=$(curl -s https://api.github.com/repos/asdf-vm/asdf/releases/latest | jq -r ".tarball_url")
 
 echo "$cn
