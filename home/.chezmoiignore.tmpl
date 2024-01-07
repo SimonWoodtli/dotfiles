@@ -1,12 +1,13 @@
 {{- /* Allows `chezmoi init` to ignore files to copy from source to destination.
 It's useful when you want to ignore files you don't want on a specific
-machine. 
+machine.
 
 Important:
 
 1. The paths in Chezmoi ignore files are interpreted as paths in the destination folder.
 2. Chezmoi ignore files are processed as templates
 3. Test which files are ignored on current machine: `chezmoi execute-template < $(chezmoi source-path)/.chezmoiignore.tmpl`
+4. To see which files are on current machine ignored: `chezmoi ignored`
 */ -}}
 
 {{- if ( env "SHELL" | ne "/bin/bash" ) }}
@@ -23,8 +24,39 @@ Important:
 # using Zsh, so not ignoring Zsh environment
 {{- end }}
 
+{{- /*
+* access chezmoi auto-generated vars: .chezmoi.hostname, .chezmoi.arch,
+  .chezmoi.config.age.suffix, .chezmoi.configFile
+* access chezmoi custom static vars from .chezmoidata.yaml: .contact.email
+* access chezmoi custom dynamic vars from .chezmoi.yaml.tmpl: .personal,
+  .git.email, .osid, .usage
+*/ -}}
+
 {{ if ne .chezmoi.os "windows" }}
 # List all files that are windows specific here, but not used on any other platform
 {{- else }}
 # List all the files that you want to ignore on a windows host
+{{- end }}
+
+{{ if ne .usage "server" }}
+# List all files that are server specific here, but not used on home|work
+{{- else }}
+# List all the files that you want to ignore on your server
+# Ignore All files:
+*
+# Except:
+!.bashrc
+!.vimrc
+!.vim/
+!.vim/after/
+!.vim/after/plugin/
+!.vim/after/plugin/ftplugin/
+!.vim/after/plugin/ftplugin/*
+!.dircolors
+!.tool-versions
+!.config/
+!.config/shell/
+!.config/shell/*
+!.config/tmux/
+!.config/tmux/*
 {{- end }}

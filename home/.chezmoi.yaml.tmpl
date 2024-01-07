@@ -52,7 +52,7 @@ They cannot be initialized and set directly in a conditional statement.*/ -}}
 {{ $usage := get . "usage" }}
 {{- if not $usage -}}
   {{- if $interactive -}}
-    {{ $usage = promptString "Usage (work|home)" "home" }}
+    {{ $usage = promptString "Usage (work|home|server)" "home" }}
   {{- else -}}
     {{ $usage = coalesce (env "LOCATION") "home" }}
   {{- end -}}
@@ -108,10 +108,15 @@ This template (.chezmoy.yaml.tmpl) auto generates and writes to ~/.config/chezmo
   arguments and picks the first one that is a found value. If you combine
   it with looking for env. var. and only at the end have a hardcoded
   option it can be useful. 
-  Note the use of brackets to nest the function calls.*/ -}}
+  Note the use of brackets to nest the function calls. */ -}}
 
-{{- /* Custom path and name for my dotfile repo, (default ~/.local/share/chezmoi): */ -}}
+
+{{- /* FIXME: currently coalesce is having a bug where it says error string required, but got int
+until this is fixed you cannot use this: (I guess it's becausee CHEZMOI env var is empty but not sure )
 sourceDir: {{ coalesce (env "CHEZMOI") (expandenv "$HOME/Repos/github.com/SimonWoodtli/dotfiles") }}
+*/ -}}
+{{- /* Custom path and name for my dotfile repo, (default ~/.local/share/chezmoi): */ -}}
+sourceDir: {{ expandenv "$HOME/Repos/github.com/SimonWoodtli/dotfiles" }}
 data:
   templateScripts: {{ $templateScripts }}
   usage: {{ $usage }}
