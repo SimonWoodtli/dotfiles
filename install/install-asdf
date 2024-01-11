@@ -1,19 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 ################################# Setup ################################
 ## add to your .bashrc:
 #source "$HOME/.asdf/asdf.sh"
 #source "$HOME/.asdf/completions/asdf.bash"
 ################################ Script ################################
 ## get latest version link with jq
-os=$(uname)
+declare os=$(uname)
 ## colors
-rd=$'\033[31m'
-yw=$'\033[33m'
-be=$'\033[34m'
-cn=$'\033[36m'
-rt=$'\033[0m'
-[ $os = 'Linux' ] || { echo "${rd}Error:$rt Sorry designed to be installed on Linux only."; exit 1; }
-url=$(curl -s https://api.github.com/repos/asdf-vm/asdf/releases/latest | jq -r ".tarball_url")
+declare rd=$'\033[31m'
+declare yw=$'\033[33m'
+declare be=$'\033[34m'
+declare cn=$'\033[36m'
+declare rt=$'\033[0m'
+[[ $os == 'Linux' ]] || { echo "${rd}Error:$rt Sorry designed to be installed on Linux only."; exit 1; }
 
 echo "$cn
  █████╗ ███████╗██████╗ ███████╗
@@ -24,14 +23,31 @@ echo "$cn
 ╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝
 $rt"
 
-## download tarball
-curl -s -LJ -o /tmp/asdf.tar.gz "$url"
+_checkCommand() { command -v "$@" &>/dev/null; }
+_checkDependencies() {
+  local -a dependencies=( jq curl )
+  local -a missingDependencies=()
+  for dependency in "${dependencies[@]}"; do
+    _checkCommand "$dependency" || missingDependencies+=( "$dependency" )
+  done
+  if [[ -n "${missingDependencies[@]}" ]]; then
+    echo "ERROR: Missing dependency(ies): "${missingDependencies[@]}""
+    exit 1
+  fi
+}
+_download() {
+	local url=$(curl -s https://api.github.com/repos/asdf-vm/asdf/releases/latest | jq -r ".tarball_url")
+	## download tarball
+	curl -s -LJ -o /tmp/asdf.tar.gz "$url"
+}
+_install() {
+	tar -xzf /tmp/asdf.tar.gz -C /tmp
+	## find file name cause github API does not provide
+	local name=$(find /tmp -maxdepth 1 -name "*asdf*" ! -name "*tar.gz" 2>/dev/null)
+	mv "$name" "$HOME/.asdf"
+}
 
-## extract tarball
-tar -xzf /tmp/asdf.tar.gz -C /tmp
-
-## find file name cause github API does not provide
-name=$(find /tmp -maxdepth 1 -name "*asdf*" ! -name "*tar.gz" 2>/dev/null)
-
-## mv dir
-mv "$name" "$HOME/.asdf"
+_checkDependencies && _download && _install
+echo 'Source asdf:
+source "$HOME/.asdf/asdf.sh"
+source "$HOME/.asdf/completions/asdf.bash"'
