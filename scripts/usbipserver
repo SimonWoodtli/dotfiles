@@ -1,0 +1,39 @@
+#!/bin/bash
+## Author: Simon D. Woodtli
+## thanks to David McKone for idea
+################################# Setup ################################
+## 1. Go to __usbip/server and run setup script
+## 2. Edit usbipserver file: `sudo vi /usr/sbin/usbipserver`:
+## Change the usbIds value to your own USBs you want to share
+declare arg="$1"
+declare -a busIds=()
+##TODO add your usb ids that you want to share here: to check for ids `lsusb`
+declare -a usbIds=("0951:1666")
+
+
+_getBusIds() {
+  for usbId in "${usbIds[@]}"; do
+    busIds+=("$(/usr/sbin/usbip list -p -l | grep "$usbId" | cut '-d#' -f1 | cut '-d=' -f2)")
+  done
+}
+
+_startUsbip() {
+  _getBusIds
+  for busId in "${busIds[@]}"; do
+    /usr/sbin/usbip bind --busid="$busId"
+  done
+}
+
+_stopUsbip() {
+  _getBusIds
+  for busId in "${busIds[@]}"; do
+    /usr/sbin/usbip unbind --busid="$busId"
+  done
+  killall usbipd
+}
+
+case $arg in
+  start) _startUsbip;;
+  stop) _stopUsbip;;
+  *) echo "Warning: Cmd requires argument start|stop";;
+esac
