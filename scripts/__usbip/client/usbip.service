@@ -1,0 +1,10 @@
+[Unit]
+Description=usbip client daemon
+After=network.target
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPost=/bin/bash -c '/usr/sbin/usbipclient start'
+ExecStop=/bin/bash -c '/usr/sbin/usbipclient stop'
+[Install]
+WantedBy=multi-user.target

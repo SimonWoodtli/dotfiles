@@ -1,0 +1,17 @@
+#!/bin/bash
+## Setup for usbip host/server service
+## Debian:
+#sudo apt-get install usbip -y
+## Fedora:
+#sudo dnf install usbip -y
+## Ubuntu:
+#sudo apt-get install linux-tools-generic -y
+_checkCommand() { command -v "$@" &>/dev/null; }
+_checkCommand usbip || { echo "Warning: Remember to install the usbip packages first"; exit 1; }
+
+sudo modprobe usbip_host
+sudo sh -c 'printf "%s\n" "usbip_host" >> /etc/modules'
+sudo cp "$PWD/usbip.service" /lib/systemd/system/usbip.service
+sudo curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/scripts/usbipserver -o /usr/sbin/usbipserver
+sudo systemctl --system daemon-reload
+sudo systemctl enable usbip.service --now
