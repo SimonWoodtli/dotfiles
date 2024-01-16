@@ -1,28 +1,42 @@
 #!/bin/bash
-##TODO add your usb ids here to check for ids `lsusb`
-declare -a usbIds=("0951:1666" "046d:c53f" )
-declare -a busIds=()
+## Author: Simon D. Woodtli
+## thanks to David McKone for idea
+################################# Setup ################################
+## 1. Change to root user: `sudo su - root`
+## 2. Run setup script: dotfiles/scripts/__usbip/server/setup
+## 3. Edit usbipserver file: `sudo vi /usr/sbin/usbipserver`:
+## Change the usbIds value to your own USBs you want to attach/detacch from server
 declare arg="$1"
+declare -a busIds=()
+##TODO adjust the usbIds: add the ones you want to attach to this client
+declare -a usbIds=("0951:1666")
+##TODO adjust the server IP that runs usbip as a server
+declare server="192.168.8.99"
+#TODO refactor it so multiple servers can be used and usbIds are
+#connected to the correct server using associative arrays
 
 _getBusIds() {
   for usbId in "${usbIds[@]}"; do
-    busIds+=("$(/usr/sbin/usbip list -p -l | grep "$usbId" | cut '-d#' -f1 | cut '-d=' -f2)")
+    busIds+=("$(/usr/sbin/usbip list -r "$server" | grep "$usbId" | cut '-d:' -f1)")
   done
 }
 
 _startUsbip() {
   _getBusIds
   for busId in "${busIds[@]}"; do
-    /usr/sbin/usbip bind --busid="$busId"
+    /usr/sbin/usbip attach -r "$server" --busid="$busId"
   done
 }
 
 _stopUsbip() {
-  _getBusIds
-  for busId in "${busIds[@]}"; do
-    /usr/sbin/usbip unbind --busid="$busId"
+  local output="$(/usr/sbin/usbip port)"
+  ##I think directly running a subshell with `usbip port` without printf
+  ##and output var won't work. Instead it'd add all ports to array
+  ##element 0
+  local -a ports=( $(printf '%s\n' "$output" | sed -En 's/^Port\s([0-9]{2}):.*/\1/p') )
+  for port in "${ports[@]}"; do
+    /usr/sbin/usbip detach --port="$port"
   done
-  killall usbipd
 }
 
 case $arg in
@@ -30,25 +44,3 @@ case $arg in
   stop) _stopUsbip;;
   *) echo "Warning: Cmd requires argument start|stop";;
 esac
-
-
-#CLIENT::
-#Check what USB devices are found usbip list -p -l --- Linux Client Switch to root account su -
-#Check USB device is attached lsusb Install software and create a service
-#apt install usbip hwdata usbutils -y
-#modprobe vhci-hcd echo 'vhci-hcd' >> /etc/modules
-#Create start script nano /usr/sbin/usbip_start.sh
-##!/bin/bash
-#server1='192.168.200.7'
-#usb1='0781:5567'
-#usb2='0658:0200'
-#/usr/sbin/usbip attach -r $server1 -b $(/usr/sbin/usbip list -r $server1 | grep $usb1 | cut -d: -f1)
-#/usr/sbin/usbip attach -r $server1 -b $(/usr/sbin/usbip list -r $server1 | grep $usb2 | cut -d: -f1)
-#Make this executable chmod +x /usr/sbin/usbip_start.sh
-#Create stop script nano /usr/sbin/usbip_stop.sh
-##!/bin/bash
-#/usr/sbin/usbip detach --port=$(/usr/sbin/usbip port | grep '<Port in Use>' | sed -E 's/^Port ([0-9][0-9]).*/\1/')
-#/usr/sbin/usbip detach --port=$(/usr/sbin/usbip port | grep '<Port in Use>' | sed -E 's/^Port ([0-9][0-9]).*/\1/')
-#Make this executable chmod +x /usr/sbin/usbip_stop.sh
-#Create service nano /lib/systemd/system/usbip.service
-#
