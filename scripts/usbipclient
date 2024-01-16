@@ -1,0 +1,54 @@
+#!/bin/bash
+##TODO add your usb ids here to check for ids `lsusb`
+declare -a usbIds=("0951:1666" "046d:c53f" )
+declare -a busIds=()
+declare arg="$1"
+
+_getBusIds() {
+  for usbId in "${usbIds[@]}"; do
+    busIds+=("$(/usr/sbin/usbip list -p -l | grep "$usbId" | cut '-d#' -f1 | cut '-d=' -f2)")
+  done
+}
+
+_startUsbip() {
+  _getBusIds
+  for busId in "${busIds[@]}"; do
+    /usr/sbin/usbip bind --busid="$busId"
+  done
+}
+
+_stopUsbip() {
+  _getBusIds
+  for busId in "${busIds[@]}"; do
+    /usr/sbin/usbip unbind --busid="$busId"
+  done
+  killall usbipd
+}
+
+case $arg in
+  start) _startUsbip;;
+  stop) _stopUsbip;;
+  *) echo "Warning: Cmd requires argument start|stop";;
+esac
+
+
+#CLIENT::
+#Check what USB devices are found usbip list -p -l --- Linux Client Switch to root account su -
+#Check USB device is attached lsusb Install software and create a service
+#apt install usbip hwdata usbutils -y
+#modprobe vhci-hcd echo 'vhci-hcd' >> /etc/modules
+#Create start script nano /usr/sbin/usbip_start.sh
+##!/bin/bash
+#server1='192.168.200.7'
+#usb1='0781:5567'
+#usb2='0658:0200'
+#/usr/sbin/usbip attach -r $server1 -b $(/usr/sbin/usbip list -r $server1 | grep $usb1 | cut -d: -f1)
+#/usr/sbin/usbip attach -r $server1 -b $(/usr/sbin/usbip list -r $server1 | grep $usb2 | cut -d: -f1)
+#Make this executable chmod +x /usr/sbin/usbip_start.sh
+#Create stop script nano /usr/sbin/usbip_stop.sh
+##!/bin/bash
+#/usr/sbin/usbip detach --port=$(/usr/sbin/usbip port | grep '<Port in Use>' | sed -E 's/^Port ([0-9][0-9]).*/\1/')
+#/usr/sbin/usbip detach --port=$(/usr/sbin/usbip port | grep '<Port in Use>' | sed -E 's/^Port ([0-9][0-9]).*/\1/')
+#Make this executable chmod +x /usr/sbin/usbip_stop.sh
+#Create service nano /lib/systemd/system/usbip.service
+#
