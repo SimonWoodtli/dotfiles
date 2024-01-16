@@ -9,9 +9,10 @@
 _checkCommand() { command -v "$@" &>/dev/null; }
 _checkCommand usbip || { echo "Warning: Remember to install the usbip packages first"; exit 1; }
 
-sudo modprobe usbip_host
-sudo sh -c 'printf "%s\n" "usbip_host" >> /etc/modules'
-sudo cp "$PWD/usbip.service" /lib/systemd/system/usbip.service
-sudo curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/scripts/usbipserver -o /usr/sbin/usbipserver
-sudo systemctl --system daemon-reload
-sudo systemctl enable usbip.service --now
+modprobe usbip_host
+sh -c 'printf "%s\n" "usbip_host" >> /etc/modules'
+cp "$PWD/usbip.service" /lib/systemd/system/usbip.service
+curl -LJ https://raw.githubusercontent.com/SimonWoodtli/dotfiles/main/scripts/usbipserver -o /usr/sbin/usbipserver
+chmod +x /usr/sbin/usbipserver
+systemctl --system daemon-reload
+systemctl enable usbip.service --now
