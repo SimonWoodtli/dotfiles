@@ -2,8 +2,9 @@
 ## Author: Simon D. Woodtli
 ## thanks to David McKone for idea
 ################################# Setup ################################
-## 1. Go to __usbip/server and run setup script
-## 2. Edit usbipserver file: `sudo vi /usr/sbin/usbipserver`:
+## 1. Change to root user: `sudo su - root`
+## 2. Run setup script: dotfiles/scripts/__usbip/server/setup
+## 3. Edit usbipserver file: `sudo vi /usr/sbin/usbipserver`:
 ## Change the usbIds value to your own USBs you want to share
 declare arg="$1"
 declare -a busIds=()
