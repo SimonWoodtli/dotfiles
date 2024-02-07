@@ -1,0 +1,22 @@
+#!/bin/sh
+## Author: Simon D. Woodtli
+#
+## I run a workspace container (Alpine), which runs gpg-agent on a higher
+## version than my host (F silverblue). I think trying to use the yubikey
+## inside my work container is what causing the grief. However if I just
+## plugin my yubikey and run `gpg --card-status`, the agent won't get
+## connected. This fix aims to reastablish the gpg agent connection, the
+## unplug causes the pcscd daemon to error and the restarting of pcscd
+## fixes my issue.  
+
+gpgconf --kill gpg-agent
+gpg-connect-agent updatestartuptty /bye
+gpg --card-status
+read -p "Replug your Yubikey, done? [Y/n]"
+case $REPLY in
+  y|Y|"") echo yes;;
+  n|N) echo no ;;
+  *) echo "Enter y/n please, or empty response (default is Y)" ;;
+esac
+sudo systemctl restart pcscd
+gpg --card-status
