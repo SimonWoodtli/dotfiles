@@ -1,0 +1,43 @@
+#!/bin/bash
+## Author: Simon D. Woodtli
+################################# setup ################################
+#1. Install pipx
+#2. Install vosk: `pipx install vosk`
+#3. Change 'language' to the model you want to use
+#4. Change 'models' to the models/languages you want to download
+################################ script ################################
+declare voskPath="$HOME/.local/share/speechmodels/vosk"
+declare language="$voskPath/vosk-model-small-en-us-0.15/"
+declare rec="ffmpeg -y -f alsa -i default -acodec pcm_s16le -ac 1 -ar 44100 -t 4 -f wav $HOME/.cache/audio.wav >/dev/null 2>&1"
+declare transcribe="vosk-transcriber -m $language -i $HOME/.cache/audio.wav -o $HOME/.cache/audio-text.txt >/dev/null 2>&1"
+if [[ -f /run/.containerenv ]]; then
+  host=/usr/bin/distrobox-host-exec
+fi
+
+#TODO make a fzf/wofi selection to select language on the go if you run `voice2text sel`
+#TODO add dependency check
+#dependencies: vosk, ffmpeg
+_haveContainer() {
+  if [[ -f /run/.containerenv ]]; then
+    return 0
+  fi
+  return 1
+}
+_init() {
+  local download="vosk-transcriber -l $model -i $HOME/.cache/audio.wav -o $HOME/.cache/audio-text.txt >/dev/null 2>&1"
+  local -a models=( "en-us" "de" "cn" "es" )
+  mkdir -p "$voskPath"
+  #create sample audio
+  _haveContainer && eval "$host $rec" || eval "$rec"
+  #download models
+  for model in "${models[@]}"; do
+    _haveContainer && eval "$host $download" || eval "$download"
+  done
+  mv "$HOME"/.cache/vosk/* "$voskPath"
+  rm -r "$HOME/.cache/vosk/"
+}
+[[ -d "$voskPath" ]] || _init
+# record voice/mic input 4s
+_haveContainer && eval "$host $rec" || eval "$rec"
+# convert it to txt: voice to text
+_haveContainer && eval "$host $transcribe" || eval "$transcribe"
