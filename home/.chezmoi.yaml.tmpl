@@ -61,9 +61,9 @@ They cannot be initialized and set directly in a conditional statement.*/ -}}
 {{ $gpgFingerprint := get . "gpgFingerprint" }}
 {{- if not $gpgFingerprint -}}
   {{- if $interactive -}}
-    {{ $gpgFingerprint = promptString "What is your PGP fingerprint you use for Github" "2FC28F5168AD0338C7FB6621AD7D3B42B920D815" }}
+    {{ $gpgFingerprint = promptString "What is your PGP fingerprint you use for Github" "171B60CFAEA065FAB62D11ADB7B58D98F3751A2D" }}
   {{- else -}}
-    {{ $gpgFingerprint = coalesce (env "GPGFINGERPRINT") "2FC28F5168AD0338C7FB6621AD7D3B42B920D815" }}
+    {{ $gpgFingerprint = coalesce (env "GPGFINGERPRINT") "171B60CFAEA065FAB62D11ADB7B58D98F3751A2D" }}
   {{ end }}
 {{ end }}
 
