@@ -5,39 +5,63 @@
 #2. Install vosk: `pipx install vosk`
 #3. Change 'language' to the model you want to use
 #4. Change 'models' to the models/languages you want to download
+################################# usage ################################
+# Record your voice and print: `voice2text`
+# Give audio and print: `voice2text foo.wav`
+# Record your voice and save txt: `voice2text save`
+# Give audio and save txt: `voice2text save foo.wav`
 ################################ script ################################
 declare voskPath="$HOME/.local/share/speechmodels/vosk"
 declare language="$voskPath/vosk-model-small-en-us-0.15/"
-declare rec="ffmpeg -y -f alsa -i default -acodec pcm_s16le -ac 1 -ar 44100 -t 4 -f wav $HOME/.cache/audio.wav >/dev/null 2>&1"
-declare transcribe="vosk-transcriber -m $language -i $HOME/.cache/audio.wav -o $HOME/.cache/audio-text.txt >/dev/null 2>&1"
-if [[ -f /run/.containerenv ]]; then
-  host=/usr/bin/distrobox-host-exec
-fi
+declare distrobox=/usr/bin/distrobox-host-exec
 
-#TODO make a fzf/wofi selection to select language on the go if you run `voice2text sel`
+#TODO make a fzf/wofi selection to select language on the go if you run `voice2text lang`
 #TODO add dependency check
 #dependencies: vosk, ffmpeg
-_haveContainer() {
-  if [[ -f /run/.containerenv ]]; then
-    return 0
-  fi
-  return 1
-}
+_haveContainer() { [[ -f /run/.containerenv ]]; }
 _init() {
-  local download="vosk-transcriber -l $model -i $HOME/.cache/audio.wav -o $HOME/.cache/audio-text.txt >/dev/null 2>&1"
   local -a models=( "en-us" "de" "cn" "es" )
   mkdir -p "$voskPath"
   #create sample audio
-  _haveContainer && eval "$host $rec" || eval "$rec"
-  #download models
+  _rec
+  #get vosk models
   for model in "${models[@]}"; do
-    _haveContainer && eval "$host $download" || eval "$download"
+    vosk="vosk-transcriber -l $model -i $HOME/.cache/voice2text.wav -o $HOME/.cache/voice2text.txt >/dev/null 2>&1"
+    _haveContainer && eval "$distrobox $vosk" || eval "$vosk"
   done
   mv "$HOME"/.cache/vosk/* "$voskPath"
   rm -r "$HOME/.cache/vosk/"
 }
+_rec() {
+  local rec="ffmpeg -y -f alsa -i default -acodec pcm_s16le -ac 1 -ar 44100 -t 4 -f wav $HOME/.cache/voice2text.wav >/dev/null 2>&1"
+  # record voice/mic input 4s
+  _haveContainer && eval "$distrobox $rec" || eval "$rec"
+}
+_raw() {
+  local audio="$1"
+  if [[ -z "$audio" ]]; then
+    _rec
+    audio="$HOME/.cache/voice2text.wav"
+  fi
+  local transcribe="vosk-transcriber -m $language -i $audio 2>/dev/null | head -n1"
+  #transcribe within container or on host (pipx installed on host)
+  _haveContainer && eval "$distrobox $transcribe" || eval "$transcribe"
+}
+save() {
+  local audio="$1"
+  if [[ -z "$audio" ]]; then
+    _rec
+    audio="$HOME/.cache/voice2text.wav"
+  fi
+  local transcribe="vosk-transcriber -m $language -i $audio -o $HOME/.cache/voice2text.txt >/dev/null 2>&1"
+  #transcribe within container or on host (pipx installed on host)
+  _haveContainer && eval "$distrobox $transcribe" || eval "$transcribe"
+  #TODO add txt to xclip and send-notify
+}
+################################ handler ###############################
 [[ -d "$voskPath" ]] || _init
-# record voice/mic input 4s
-_haveContainer && eval "$host $rec" || eval "$rec"
-# convert it to txt: voice to text
-_haveContainer && eval "$host $transcribe" || eval "$transcribe"
+case "$1" in
+  "") _raw ;;
+  save) save "$2";;
+  *) _raw "$1";;
+esac
