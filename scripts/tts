@@ -1,13 +1,14 @@
 #!/bin/bash
 ## Author: Simon D. Woodtli
+## A text to speech(tts) wrapper for piper
 ################################# setup ################################
 #1. Install pipx
 #2. Install piper: `pipx install piper-tts`
 ################################# Usage ################################
-#Pass in file: `text2voice < file`
-#Pass in arg: `text2voice "Pass in a string"`
-#Pipe in: `echo 'hello' | text2voice`
-#Copy to clipboard(same as before with $1 copy): `text2voice copy "hello"`
+#Pass in file and play: `tts < file`
+#Pass in arg and play: `tts "Pass in a string"`
+#Pipe in and play: `echo 'hello' | tts`
+#Pass in arg and save audio(works for file/pipe too): `tts save "hello"`
 ################################ script ################################
 declare piperPath="$HOME/.local/share/speechmodels/piper"
 declare language="$piperPath/en_US-joe-medium.onnx"
