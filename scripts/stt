@@ -1,21 +1,22 @@
 #!/bin/bash
 ## Author: Simon D. Woodtli
+## a speech to text(stt) wrapper for vosk
 ################################# setup ################################
 #1. Install pipx
 #2. Install vosk: `pipx install vosk`
 #3. Change 'language' to the model you want to use
 #4. Change 'models' to the models/languages you want to download
 ################################# usage ################################
-# Record your voice and print: `voice2text`
-# Give audio and print: `voice2text foo.wav`
-# Record your voice and save txt: `voice2text save`
-# Give audio and save txt: `voice2text save foo.wav`
+# Record your voice and print: `stt`
+# Give audio and print: `stt foo.wav`
+# Record your voice and save txt: `stt save`
+# Give audio and save txt: `stt save foo.wav`
 ################################ script ################################
 declare voskPath="$HOME/.local/share/speechmodels/vosk"
 declare language="$voskPath/vosk-model-small-en-us-0.15/"
 declare distrobox=/usr/bin/distrobox-host-exec
 
-#TODO make a fzf/wofi selection to select language on the go if you run `voice2text lang`
+#TODO make a fzf/wofi selection to select language on the go if you run `stt lang`
 #TODO add dependency check
 #dependencies: vosk, ffmpeg
 _haveContainer() { [[ -f /run/.containerenv ]]; }
