@@ -1,0 +1,31 @@
+#!/bin/sh
+## Author: Simon D. Woodtli
+## thanks to bugswriter for idea
+## In it's current state (vosk) this is a bit gimmicky. But still fun that it actually kind of work
+## yts youtube stream - stream music via your voice input and mpc
+################################# Setup ################################
+## Dependencies: stt, tts (my wrapper scripts)
+invidious="https://yt.artemislena.eu"
+
+# stop current song and clear playlist
+mpc stop; mpc clear
+# rec your voice and output text (bandnames is a bit wonky, but songs work well)
+voiceTxt=$(stt)
+echo "$voiceTxt"
+
+# Audio confirmation notification
+tts "Okay I got you. Let me play $voiceTxt"
+
+# make youtube search query
+query="$(printf '%s' "song audio $voiceTxt" | tr ' ' '+' )"
+
+# search on invidious (youtube) instance and grab first listed yt link
+ytUrl="$(curl -s "$invidious/search?q=$query" | grep 'Watch on' | head -n1 | grep -Eo "https://www.youtube.com/watch\?v=.{11}")"
+
+# stream music from googlevideo link with mpd
+mpc add "$(yt-dlp -f bestaudio --get-url "$ytUrl")"
+mpc play
+
+# Get youtube video title for system notification
+title=$(yt-dlp --get-title "$ytUrl")
+notify-send "Playing: " "$title"
