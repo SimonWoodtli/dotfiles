@@ -1,0 +1,280 @@
+#!/bin/bash
+## Author: Simon D. Woodtli
+##IMPORTANT: Don't use `pass` with `git` because if you add a password
+##the git commit history shows that password! E.g `git log -p`
+#
+#Use cases:
+#* use pass with env var: `export API_TOKEN=$(pass show github/api/token`
+#* use pass with CLI cmds that require API tokens or passwords auth.
+#Useful env vars:
+#PASSWORD_STORE_DIR
+################################# Setup ################################
+#1. Install dependencies: fzf, gpg, pass
+#2. Download this script in your $PATH and chmod +x it
+#3. Initialize pass/pw `pw init <fingerprint>` (gpg --list-key)
+#4. Adjust backup() usbDevice var to device you want to back it up to
+#5. Add cronjob: `crontab -e`:
+#```
+#20 20 * * * /path/to/command/pw backup
+#```
+#Debug: `journalctl | grep CRON`
+############################# Utility Func #############################
+declare dbDir="$HOME/.local/share/passdb"
+declare db="$dbDir/passdb"
+declare space=60
+declare rt=$'\033[0m'       #reset
+declare rd=$'\033[31m'      #red
+declare gn=$'\033[32m'      #green
+declare yw=$'\033[33m'      #yellow
+declare be=$'\033[34m'      #blue
+declare cn=$'\033[36m'      #cyan
+############################# Utility Func #############################
+_checkCommand() { command -v "$@" &>/dev/null; }
+_checkDependencies() {
+  local -a dependencies=( fzf pass gpg )
+  local -a missingDependencies=()
+  for dependency in "${dependencies[@]}"; do
+    _checkCommand "$dependency" || missingDependencies+=( "$dependency" )
+  done
+  if [[ -n "${missingDependencies[@]}" ]]; then
+    echo "${rd}ERROR:$rt Missing dependency(ies): "${missingDependencies[@]}""
+    exit 1
+  fi
+}
+_getFilePath() {
+  #local filePath=$(fd --type f . "$HOME/.password-store/" | fzf)
+  #local basePath="$HOME/.password-store/"
+  #local file="${filePath#$basePath}"
+  #file=${file%.*}
+  file=$(sed '/^#.*#$/d' "$db" | grep -v '^#' | fzf --no-preview | cut -d' ' -f1)
+  echo "$file"
+}
+_date() {
+  date -u +%d%m%y
+}
+_initDb() {
+  #main reason for db is to have tags along path/filename to fuzzy search
+  mkdir -p "$dbDir"
+  local -a paths=( $(find "$HOME/.password-store/" -name "*.gpg") )
+  for path in "${paths[@]}"; do
+    path="${path%.*}"
+    path="${path#*/*/*/*/*/}"
+    printf "%-*s %s %s\n" $space "$path" "#tag1" >> "$db"
+  done
+}
+_help() {
+  cat <<EOF
+${yw}NAME:$rt
+    pw - a wrapper for \`pass\` to manage passwords with fzf.
+
+${yw}USAGE:$rt
+    pw [<subcommand>] [<pattern>]...
+
+${yw}ARGS:$rt
+    ${gn}<subcommand>$rt
+          The subcommand which invokes different functionalities to manage \
+passwords.
+    ${gn}<pattern>$rt
+          The pattern for subcommands which don't use fzf.
+
+${yw}OPTIONS:$rt
+    ${gn}-h$rt, ${gn}--help$rt
+          Show help information
+    ${gn}-v$rt, ${gn}--version$rt
+          Show version information
+    ${gn}-u$rt, ${gn}--usage$rt
+          List all commands
+
+${yw}ABOUT:$rt
+    Project: https://github.com/SimonWoodtli/dotfiles/tree/main/scripts/pw
+    Author: Simon Donald Woodtli <me@simonwoodtli.com>
+EOF
+}
+usage() {
+  cat <<EOF
+${yw}COMMANDS:$rt
+
+    pw add <pattern>
+    pw backup
+    pw copy
+    pw del
+    pw edit
+    pw generate <pattern>
+    pw help
+    pw init <pattern>
+    pw list
+    pw move <pattern>
+    pw print
+    pw restore
+    pw tags
+    pw usage
+EOF
+}
+version() {
+  echo "pw 0.0.1"
+}
+init() {
+  [[ -z "$1" ]] && { echo "${rd}Error:$rt Initializing pass/pw requires your fingerprint/gpg-id as input: \`pw init <fingerprint>\`"; exit 1; }
+  local fingerprint="$1" #also works with gpg-id/email
+  pass init "$fingerprint"
+}
+tags() {
+  #edit tags: `pw database`
+  "$EDITOR" "$db"
+}
+backup() {
+  #Unfortunately we cannot rsync tarballs directly. rsync can compress
+  #data during transit but not more. Hence we recreate the tarball
+  #locally and then sync it to wherever we want.
+  local tarball="$HOME/Backups/pass-data-$(_date)"
+  mkdir -p "$HOME/Backups"
+  local usbDevice="/var/mnt/usb-luks"
+  cd "$HOME"
+
+  #initially create 5 tarball versions:
+  if [ ! -f "${tarball}-1.tar.gz" ]; then
+    for x in {1..5}; do
+      tar czf "${tarball}-$x.tar.gz" .password-store/ .local/share/passdb/passdb
+      rsync -avzxiP --delete-after "${tarball}-$x.tar.gz" "$usbDevice"
+    done
+    return 0
+  fi
+
+  #delete 5, rename and sync rest (v=n+1):
+  rm "${tarball}-5.tar.gz"
+  for x in {5..1}; do
+    [[ $x -eq 1 ]] && continue
+    mv "${tarball}-$((x-1)).tar.gz" "${tarball}-$x.tar.gz"
+    rsync -avzxiP --delete-after "${tarball}-$x.tar.gz" "$usbDevice"
+  done
+
+  #create 1 and sync:
+  tar czf "${tarball}-1.tar.gz" .password-store/ .local/share/passdb/passdb
+  rsync -avzxiP --delete-after "${tarball}-1.tar.gz" "$usbDevice"
+
+  #rsync on remote machine: `rsync $tarball yourRemoteUser@192.168.2.54:~/backup`
+  #encrypted tarball: symmetric (with passphrase to decrypt). I tried `gpg --encrypt -r...` with keypair not working
+  #tar czvpf - .password-store/ .local/share/passdb/passdb | gpg --symmetric --cipher-algo aes256 -o pass-data.tar.gz.gpg
+}
+restore() {
+  local usbDevice="/var/mnt/usb-luks"
+  local tarball="$HOME/Backups/pass-data-$(_date)"
+  local backupDir="$HOME/Backups"
+  mkdir -p "$backupDir"
+  #1. from usb device copy all 5 versions to ~/Backups (if they don't exist)
+  if [ ! -f "${tarball}-1.tar.gz" ]; then
+    cp "${usbDevice}"/pass-data* "$backupDir"
+  fi
+  #2. make fzf to select which version to copy to ~/ and then extract it
+  local selectVer="$(find "$usbDevice" -name 'pass-data*' | fzf --no-preview)"
+  cp "$selectVer" "$HOME"
+  tar xfv "$HOME/${selectVer##*/}"
+  rm "$HOME/${selectVer##*/}"
+}
+############################### Sub Cmds ###############################
+move() {
+  #move password: `pw move homelab/rpi lab/rpi`
+  [[ -z "$2" ]] && { echo "${rd}Error:$rt Moving passwords requires to and from input: \`pw move foo/old foo/new\`"; exit 1; }
+  local oldPass="$1"
+  local newPass="$2"
+  local tags=$(grep "$oldPass" "$db" | awk '{$1=""; print $0}' | column -t)
+  pass mv "$oldPass" "$newPass"
+  #delete old pw filepath from db:
+  sed -i "\|$oldPass|d" "$db"
+  #add new pw filepath to db and keep tags:
+  printf "%-*s %s %s\n" $space "$newPass" "$tags" >> "$db"
+}
+copy() {
+  #copy password/username: 'pw copy'
+  local file=$(_getFilePath)
+  [[ -n "$file" ]] || { echo "${rd}Error:$rt Select an existing file to copy"; exit 1; }
+  pass "$file" 2>/dev/null | head -n1 | tr -d '\n' | xclip
+  pass "$file" 2>/dev/null | head -n2 | tail -n1 | tr -d '\n' | xclip -sel clip
+}
+print() {
+  #print password+notes: 'pw print'
+  local file=$(_getFilePath)
+  [[ -n "$file" ]] || { echo "${rd}Error:$rt Select an existing file to print"; exit 1; }
+  pass "$file" 2>/dev/null
+}
+edit() {
+  #edit: 'pw edit'
+  local file=$(_getFilePath)
+  [[ -n "$file" ]] || { echo "${rd}Error:$rt Select an existing file to edit"; exit 1; }
+  pass edit "$file" 2>/dev/null
+}
+generate() {
+  #generate: 'pw generate 16'
+  [[ -z "$1" ]] && { echo "${rd}Error:$rt Generating password requires password length input: \`pw generate 32\`"; exit 1; }
+  openssl rand -base64 "$1"
+}
+add() {
+  #add: 'pw add foo/foo/personal user@name.com 32'
+  [[ -z "$2" ]] && { echo "${rd}Error:$rt Adding credentials requires minimum filename and pw length: \`pw foo/personal 32\`"; exit 1; }
+  local file="$1"
+  local username="$2"
+  local passwordLength=$3
+  if [[ -z $passwordLength ]]; then
+    passwordLength=$2
+    username="N/A"
+  fi
+  [[ -z "${passwordLength//[0-9]/}" ]] || { echo "${rd}Error:$rt Last argument is password length and needs to be an integer. E.g \`pw foo/personal 32\`"; exit 1; }
+
+  local password=$(openssl rand -base64 "$passwordLength")
+  cat <<EOF | xclip -selection clipboard
+$password
+$username
+################################# notes ################################
+EOF
+  pass generate "$file" 6
+  pass edit "$file" #paste in the real data manually from clipboard
+  #add db entry
+  printf "%-*s %s %s\n" $space "$file" "#tag1" >> "$db"
+}
+del() {
+  #del: 'pw del'
+  local file=$(_getFilePath)
+  [[ -n "$file" ]] || { echo "${rd}Error:$rt Select an existing file to delete"; exit 1; }
+  pass rm "$file"
+  #can't use / delimiter bcos of path. Any other delimiter gots to get escaped \ first
+  sed -i "\|$file|d" "$db"
+}
+list() {
+  #tree: `pw list`
+  pass
+}
+############################## Cmd handler #############################
+_checkDependencies
+declare -a commands=( "add" "backup" "copy" "del" "edit" "generate" "help" "init" "list" "move" "print" "restore" "tags" "usage" "version" )
+
+[[ -n "$1" ]] || _help
+if [[ "$1" == "help" ]] || [[ "$1" == "-h" ]]; then
+  _help
+  exit 0
+fi
+if [[ "$1" == "-v" ]]; then
+  version
+  exit 0
+fi
+if [[ "$1" == "-u" ]]; then
+  usage
+  exit 0
+fi
+
+declare subcommand="$1"; shift
+[[ -d "$dbDir" ]] || _initDb
+## function call from $1 argument
+for i in ${commands[@]}; do
+  if [[ $i == "$subcommand" ]]; then
+    "$subcommand" $*
+    exit 0
+  fi
+done
+
+# Tab completion - add to bashrc: complete -C lorem lorem
+if [ -n "$COMP_LINE" ]; then
+  for cmd in ${commands[@]}; do
+    [[ "${cmd:0:${#1}}" == "$1" ]] && echo $cmd
+  done
+  exit 0
+fi
