@@ -8,37 +8,43 @@
 #    \|__|\|__| \|__|\|__|     \|_______|    \|__|  \|__|\|__|\|_______|
 #
 ##########################################################################
-## GNU READLINE config file
+## GNU READLINE config file: `man readline`
 #
-## Very useful for the tab completion
-set completion-ignore-case On
+## Very useful for tab completion
+set completion-ignore-case on
 ## Another way to enable tab completion without case sensitive
 #bind "set completion-ignore-case on"
 ## It treats hyphens and underscores equally during the completion
 set completion-map-case on
-## programs with GNU Readline command-line interface support VIM-mode (e.g in python REPL)
-## particularly useful for psql
-## also `Esc v` enters vim as a bash REPL
-set editing-mode vi
-set keymap vi
-set keymap vi-insert
-
 set show-all-if-ambiguous on
 set show-all-if-unmodified on
+set enable-bracketed-paste on
 
+$if Bash
+	#TODO change dircolors for empty files or find a way how some clis don't turn colors on tab completion
+  #set colored-stats on
+  #set colored-completion-prefix on
+  Tab: menu-complete
+$endif
 
-# No need for this!
+set editing-mode vi
+$if mode=vi
+	## programs with GNU Readline command-line interface support VIM-mode (e.g in python REPL)
+	## particularly useful for psql
+	## also `Esc v` enters vim as a bash REPL
+	set keymap vi-command
+	set keymap vi-insert
+	set keymap vi
+	"gg": beginning-of-history
+	"G": end-of-history
+	"k": history-search-backward
+	"j": history-search-forward
+	"?": reverse-search-history
+	"/": forward-search-history
+	"\C-l": clear-screen
+	"\C-n": next-history
+	"\C-p": previous-history
+$endif
+
+# turn bell off
 set bell-style none
-
-
-#$if mode=vi
-#"\C-a": beginning-of-line
-#"\C-e": end-of-line
-#"\C-l": clear-screen
-#"\C-n": next-history
-#"\C-p": previous-history
-#"\C-w": backward-kill-word
-#
-#"\e.": yank-last-arg
-#"\e_": yank-last-arg
-#$endif
