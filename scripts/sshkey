@@ -9,12 +9,12 @@ cmds="gen genYubi genPub pub list ls"
 gen() {
   local typ=ed25519
   local name=${1:-$(date -u +%Y%m%d%H%M%S)}
-  ssh-keygen -t "${typ}" -C "xnasero@posteo.net" -f "${confd}/$name"
+  ssh-keygen -t "${typ}" -C "me@simonwoodtli.com" -f "${confd}/$name"
 }
 genYubi() {
   local typ=ed25519-sk
   local name=${1:-$(date -u +%Y%m%d%H%M%S)}
-  ssh-keygen -t "${typ}" -C "xnasero@posteo.net" -f "${confd}/$name"
+  ssh-keygen -t "${typ}" -C "me@simonwoodtli.com" -f "${confd}/$name"
 }
 genPub() {
   ##$1 if given, or default value ed255
