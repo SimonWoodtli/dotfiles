@@ -12,6 +12,21 @@ for dir in desktop documents downloads mnt music pictures private public \
   fi
 done
 
+if [ -e /run/.dockerenv ] || [ -e /run/.containerenv ]; then
+  export CONTAINERENV=true
+elif systemd-detect-virt --quiet --container; then
+	export CONTAINERENV=true
+fi
+# Use Yubikey wtih PGP subkey for SSH, so replace SSH Agent with GPG Agent
+#export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+#export GPG_TTY=$(tty)
+## gpg-agent should be started by systemd but we need to refresh the tty
+#gpgsock=$(gpgconf --list-dirs agent-socket 2>/dev/null)
+#if [[ -S $gpgsock ]]; then
+	#gpg-connect-agent updatestartuptty /bye >/dev/null
+#fi
+#unset gpgsock
+
 export TESTUSER="SimonWoodtli"
 export USER="${USER:-$(whoami)}"
 export BROWSER="$HOME/.local/bin/brave"
