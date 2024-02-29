@@ -1,0 +1,22 @@
+[Unit]
+Description=Bookstack Quadlet
+Requires=bookstack-db.service
+
+[Container]
+Image=lscr.io/linuxserver/bookstack
+ContainerName=bookstack-quadlet
+HostName=bookstack
+PublishPort=6875:80
+EnvironmentFile=bookstack-secrets.env
+Environment=APP_URL=http://podmanhost.dragonflight.dk:6875
+User=root
+Group=root
+Volume=/opt/podmnts/bookstack/bookstack_app_data:/config:Z
+Network=bookstack.network
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

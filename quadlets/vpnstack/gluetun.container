@@ -1,0 +1,29 @@
+[Unit]
+Description=Gluetun Quadlet
+
+[Container]
+Image=docker.io/qmcgaw/gluetun:latest
+ContainerName=Gluetun-Quadlet
+
+AddCapability=NET_ADMIN
+
+PodmanArgs=--privileged --device /dev/net/tun --dns 1.1.1.1
+
+EnvironmentFile=secrets.txt
+EnvironmentFile=gluetun.env
+
+
+PublishPort=8112:8112
+PublishPort=6881:6881
+PublishPort=6881:6881/udp
+
+
+Volume=/opt/podmnts/gluetun/config:/gluetun:Z
+
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

@@ -1,0 +1,26 @@
+[Unit]
+Description=Plex Server Container
+After=local-fs.target
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=Plex
+Image=plexinc/pms-docker
+Network=host
+Environment=VERSION=latest
+Environment=PLEX_UID=1000
+Environment=PLEX_GID=1000
+Timezone=local
+Environment=PLEX_CLAIM=claim-2-xxxxxxxxxxxxxxxxx
+HostName=SUSE
+
+Volume=/home/xxxx/Plex/database:/config:rw,Z
+Volume=/home/xxxx/Plex/transcode/temp:/transcode:rw,Z
+Volume=/home/xxxx/Plex/media:/data:rw,Z
+Environment=ADVERTISE_IP=192.168.1.4
+Environment=ALLOWED_NETWORKS=192.168.1.0/24
+PublishPort=32400:32400/tcp
+
+[Service]
+Restart=always

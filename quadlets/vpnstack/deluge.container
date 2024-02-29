@@ -1,0 +1,24 @@
+[Unit]
+Description=Deluge Quadlet
+Requires=gluetun.service
+
+[Container]
+Image=lscr.io/linuxserver/deluge:latest
+ContainerName=Deluge-Quadlet
+
+Environment=TimeZone=Europe/Copenhagen
+Environment=DELUGE_LOGLEVEL=error
+
+PodmanArgs=-e PUID=1000 -e PGID=1000 --network container:Gluetun-Quadlet
+
+Volume=/opt/podmnts/sabnzbd/config:/config:Z
+Volume=/opt/podmnts/deluge/new/Torrents/Complete/:/downloads
+Volume=/opt/podmnts/deluge/new/Torrents/Incomplete/:/Incomplete
+
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target
