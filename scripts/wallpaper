@@ -1,7 +1,33 @@
 #!/bin/sh
-## set wallpaper for Gnome Desktops
-## set dark theme:
-gsettings set org.gnome.desktop.background picture-uri-dark file://"$PWD/${1%/*}"
-## set light theme:
-gsettings set org.gnome.desktop.background picture-uri file://"$PWD/${1%/*}"
-## if on window managers use feh
+################################# About ################################
+## Author: Simon D. Woodtli
+## License:  Apache-2.0
+## Dependencies: ffmpeg, yt-dlp
+################################ Script ################################
+##TODO finish this script make it by default `wallpaper $1` simply set
+#wallpaper and `wallpaper gif $1` use yt2Gif func
+#check if there is anything valuable from video-2-gif script and
+#integrate it. Actually even better have `video2gif` script with the
+#yt2Gif and regular video2gif funcs in it and import both functions to
+#this script so it can be extended. That way you have a script to only
+#use video2gif functioanality or set them as a wallpaper :)
+_setWallpaper() {
+  ## set dark theme:
+  gsettings set org.gnome.desktop.background picture-uri-dark file://"$PWD/${1%/*}"
+  ## set light theme:
+  gsettings set org.gnome.desktop.background picture-uri file://"$PWD/${1%/*}"
+}
+
+_yt2Gif() {
+  #check if 
+  name=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 )
+  num=$RANDOM
+  ##dl video section
+  ffmpeg -i $(yt-dlp -f bestvideo --get-url $1) -ss $2  -to $3 -f mp4 /tmp/vid${num}.mp4
+  ##slow down video
+  ffmpeg -i /tmp/vid${num}.mp4 -vf 'setpts=2.2*PTS' -f mp4 /tmp/slow${num}.mp4 
+  #adding effect and convert to gif
+  ffmpeg -i /tmp/slow${num}.mp4 -vf 'eq=brightness=0.07:saturation=2' -f gif $PICTURES/Wallpapers/gif/$name.gif
+  ##apply gif wallpaper
+  #swww img $PICTURES/Wallpapers/gif/$name.gif
+}
